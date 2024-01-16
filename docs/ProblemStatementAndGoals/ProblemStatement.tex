@@ -2,8 +2,9 @@
 
 \usepackage{tabularx}
 \usepackage{booktabs}
+\usepackage{amsmath}
 
-\title{Problem Statement and Goals\\\progname}
+\title{Problem Statement and Goals \\ Attitude Check: IMU-based Attitude Estimation}
 
 \author{\authname}
 
@@ -22,35 +23,63 @@
 \toprule
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
-Date1 & Name(s) & Description of changes\\
-Date2 & Name(s) & Description of changes\\
-... & ... & ...\\
+2024/01/15 & Adrian Sochaniwsky & Initial document creation.\\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \section{Problem Statement}
 
-\wss{You should check your problem statement with the
-\href{https://github.com/smiths/capTemplate/blob/main/docs/Checklists/ProbState-Checklist.pdf}
-{problem statement checklist}.}
-\wss{You can change the section headings, as long as you include the required information.}
+% \wss{You should check your problem statement with the
+% \href{https://github.com/smiths/capTemplate/blob/main/docs/Checklists/ProbState-Checklist.pdf}
+% {problem statement checklist}.}
+% \wss{You can change the section headings, as long as you include the required information.}
+
+The problem of attitude estimation is to determine the orientation of an object, such as a spacecraft, drone, or robot, using sensor measurements and mathematical models. Attitude estimation is essential for many applications, such as navigation, control, communication, and scientific exploration. However, attitude estimation is challenging due to the presence of noise, bias, drift, and uncertainty in the sensor data, as well as the complexity and nonlinearity of the dynamics and kinematics of the object. Therefore, the goal of this project is to develop and evaluate an efficient and robust attitude estimation algorithm that can handle various scenarios and requirements, such as different sensor configurations, varying sampling rates, limited computational resources, and changing environmental conditions \cite{statement}.
 
 \subsection{Problem}
 
 \subsection{Inputs and Outputs}
 
-\wss{Characterize the problem in terms of ``high level'' inputs and outputs.  
-Use abstraction so that you can avoid details.}
+Inputs to the software is data produced by a 9 degree-of-freedom (DoF) IMU
+\begin{align*}
+    \text{input} =& [\vec{\text{accel}}, \vec{\text{gyro}}, \vec{\text{mag}} ]
+\end{align*}
+where accel is the acceleration vector, gyro is the angular rotation vector, and mag is the magnetic field vector.
+
+The output of this software is the attitude of the IMU sensor.
+
+
+% \wss{Characterize the problem in terms of ``high level'' inputs and outputs.  
+% Use abstraction so that you can avoid details.}
 
 \subsection{Stakeholders}
 
+A stakeholder for such an attitude estimation algorithm could be anyone who is interested in or affected by the performance, accuracy, and reliability of the algorithm \cite{stake}. Some possible stakeholders are:
+\begin{itemize}
+    \item The developers and engineers who design, implement, and test the algorithm.
+    \item The customers and users who rely on the algorithm for their applications, such as navigation and control.
+    \item The researchers and scientists who use the algorithm to study the dynamics and behavior of the object.
+    % \item The regulators and authorities who set the standards and requirements for the algorithm.
+    \item The competitors and collaborators who offer or seek alternative or complementary solutions to the algorithm.
+\end{itemize}
+    
+
 \subsection{Environment}
 
-\wss{Hardware and software}
+Ubuntu 20.04 is officially supported. However, any system that can compile C++17 should work.
+
+% \wss{Hardware and software}
 
 \section{Goals}
 
 \section{Stretch Goals}
+
+\begin{thebibliography}{2}
+
+    \bibitem{stake} Bing Chat with GPT-4. “Who would be a stakeholder for a Attitude estimation algorithm?” [Online]. Available: \url{https://sl.bing.net/dnfjOHJSXDg}. [Accessed: Jan. 15, 2024].
+    \bibitem{statement} Bing Chat with GPT-4. “can you create a problem statement for a attitude estimation project" [Online]. Available \url{https://sl.bing.net/hakggcilB2y}. [Accessed: Jan. 15, 2024].
+    
+\end{thebibliography}
 
 \end{document}
