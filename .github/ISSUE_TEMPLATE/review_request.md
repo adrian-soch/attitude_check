@@ -8,7 +8,7 @@ assignees: adrian-soch
 ---
 
 **Describe the request**
-A clear and concise description of what the bug is.
+A clear and concise description.
 
 **List the files**
 
