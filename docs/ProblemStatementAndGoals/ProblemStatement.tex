@@ -31,7 +31,13 @@
 
 \section{Problem Statement}
 
-The goal of attitude estimation is to determine the rotation of an object relative to a reference frame using sensor measurements. Attitude estimation is essential for many applications, such as navigation and control of spacecraft, drones, or robots. Once only possible with expensive hardware, advances in Micro-Electro-Mechanical systems (MEMS) allow an inexpensive Inertial Measurement Unit (IMU) to provide the necessary measurements for attitude estimation. However, challenges arise from the presence of noise, bias, drift, and uncertainty in the sensor data, as well as the nonlinearity of the object dynamics \cite{statement}.
+The goal of attitude estimation is to determine the rotation of an object relative to a reference
+frame using sensor measurements. Attitude estimation is essential for many applications, such as
+navigation and control of spacecraft, drones, or robots. Once only possible with expensive hardware,
+advances in Micro-Electro-Mechanical systems (MEMS) allow an inexpensive Inertial Measurement Unit
+(IMU) to provide the necessary measurements for attitude estimation. However, challenges arise from
+the presence of noise, bias, drift, and uncertainty in the sensor data, as well as the nonlinearity
+of the object dynamics \cite{statement}.
 
 \subsection{Problem}
 
@@ -44,21 +50,27 @@ Inputs to the software is data produced by a 9 degree-of-freedom (DoF) IMU
     \text{input} =& [\vec{\text{accel}}, \vec{\text{gyro}}, \vec{\text{mag}}]
 \end{align*}
 
-where $\vec{\text{accel}}$ is the acceleration vector, $\vec{\text{gyro}}$ is the angular rotation vector, and $\vec{\text{mag}}$ is the magnetic field vector.
+where $\vec{\text{accel}}$ is the acceleration vector, $\vec{\text{gyro}}$ is the angular rotation
+vector, and $\vec{\text{mag}}$ is the magnetic field vector.
 
 The output of this software is the attitude of the IMU sensor with respect to time.
 
 
 \subsection{Stakeholders}
 
-A stakeholder for such an attitude estimation algorithm could be anyone who is interested in or affected by the performance, accuracy, and reliability of the algorithm \cite{stake}. Some possible stakeholders are:
+A stakeholder for such an attitude estimation algorithm could be anyone who is interested in or
+affected by the performance, accuracy, and reliability of the algorithm \cite{stake}. Some possible
+stakeholders are:
 
 \begin{itemize}
     \item The developers and engineers who design, implement, and test the algorithm.
-    \item The customers and users who rely on the algorithm for their applications, such as navigation and control.
-    \item The researchers and scientists who use the algorithm to study the dynamics and behavior of the object.
+    \item The customers and users who rely on the algorithm for their applications, such as
+    navigation and control.
+    \item The researchers and scientists who use the algorithm to study the dynamics and behavior of
+    the object.
     % \item The regulators and authorities who set the standards and requirements for the algorithm.
-    \item The competitors and collaborators who offer or seek alternative or complementary solutions to the algorithm.
+    \item The competitors and collaborators who offer or seek alternative or complementary solutions
+    to the algorithm.
 \end{itemize}
     
 
