@@ -2,12 +2,14 @@
 
 \usepackage{tabularx}
 \usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{cite}
 
-\title{Problem Statement and Goals\\\progname}
+\title{Problem Statement and Goals \\ Attitude Check: IMU-based Attitude Estimation}
 
 \author{\authname}
 
-\date{}
+\date{\today}
 
 \input{../Comments}
 \input{../Common}
@@ -22,35 +24,70 @@
 \toprule
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
-Date1 & Name(s) & Description of changes\\
-Date2 & Name(s) & Description of changes\\
-... & ... & ...\\
+2024/01/15 & Adrian Sochaniwsky & Initial document creation.\\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \section{Problem Statement}
 
-\wss{You should check your problem statement with the
-\href{https://github.com/smiths/capTemplate/blob/main/docs/Checklists/ProbState-Checklist.pdf}
-{problem statement checklist}.}
-\wss{You can change the section headings, as long as you include the required information.}
+The problem of attitude estimation is to determine the rotation of an object relative to a reference frame using sensor measurements. Attitude estimation is essential for many applications, such as navigation and control of spacecraft, drones, or robots. Once only possible with expensive hardware, advances in Micro-Electro-Mechanical systems (MEMS) allow an inexpensive Inertial Measurement Unit (IMU) to provide the necessary measurements for attitude estimation. However, challenges arise from the presence of noise, bias, drift, and uncertainty in the sensor data, as well as the nonlinearity of the object dynamics \cite{statement}.
 
 \subsection{Problem}
 
+Given imperfect measurements, estimate the attitude of the IMU sensor.
+
 \subsection{Inputs and Outputs}
 
-\wss{Characterize the problem in terms of ``high level'' inputs and outputs.  
-Use abstraction so that you can avoid details.}
+Inputs to the software is data produced by a 9 degree-of-freedom (DoF) IMU
+\begin{align*}
+    \text{input} =& [\vec{\text{accel}}, \vec{\text{gyro}},  ]
+\end{align*}
+where $\vec{\text{accel}}$ is the acceleration vector, $\vec{\text{gyro}}$ is the angular rotation vector, and $\vec{\text{mag}}$ is the magnetic field vector.
+
+The output of this software is the attitude of the IMU sensor with respect to time.
+
+
+% \wss{Characterize the problem in terms of ``high level'' inputs and outputs.  
+% Use abstraction so that you can avoid details.}
 
 \subsection{Stakeholders}
 
+A stakeholder for such an attitude estimation algorithm could be anyone who is interested in or affected by the performance, accuracy, and reliability of the algorithm \cite{stake}. Some possible stakeholders are:
+\begin{itemize}
+    \item The developers and engineers who design, implement, and test the algorithm.
+    \item The customers and users who rely on the algorithm for their applications, such as navigation and control.
+    \item The researchers and scientists who use the algorithm to study the dynamics and behavior of the object.
+    % \item The regulators and authorities who set the standards and requirements for the algorithm.
+    \item The competitors and collaborators who offer or seek alternative or complementary solutions to the algorithm.
+\end{itemize}
+    
+
 \subsection{Environment}
 
-\wss{Hardware and software}
+Ubuntu 20.04 is officially supported. However, any system that can compile C++17 should work.
+
+% \wss{Hardware and software}
 
 \section{Goals}
 
+% The goal of this project is to develop and evaluate an efficient and robust attitude estimation algorithm that can handle various scenarios such as, varying sampling rates, limited computational resources, and changing environmental conditions \cite{statement}.
+
+\begin{itemize}
+    \item Validate input data, out-of-range checks, etc.
+    \item Convert imperfect measurment data into an attitude estimate.
+    \item Provide a sensor calibration procedure.
+    \item Provide a method to visualize the attitude with respect to time.
+\end{itemize}
+
 \section{Stretch Goals}
+
+\begin{itemize}
+    \item Use labelled data to validate the software
+    \item Port software to microcontroller for online attitude estimation.
+\end{itemize}
+
+\bibliography{bib}{}
+\bibliographystyle{plain}
 
 \end{document}
