@@ -1,4 +1,4 @@
-<Please keep the folder structure as given in the template repo.  We will
+<!-- <Please keep the folder structure as given in the template repo.  We will
 discuss each artifact as we get to it in the course.  In some cases, like for
 the SRS, you should have a file of the same name.  For other cases, like the
 design documentation, you are required to document your design, but it may not
@@ -24,9 +24,7 @@ the template that Dr. Mosser now uses in the third year requirements course.>
 
 <The Makefile assumes the SRS will be in a folder called SRS.  If you use the Makefile
 with a template other than the Scientific Computing template, you will have to delete
-the unnecessary folders and rename your folder to SRS.>
+the unnecessary folders and rename your folder to SRS.> -->
 # Documentation folders
 
-The folders and files for this folder are as follows:
-
-Describe ...
+Each folder contains the LaTex files required to generate the documentation for this project. Executing the make file at this elvel will invoke compilation of all the documents.
