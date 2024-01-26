@@ -18,10 +18,11 @@
 \usepackage{caption}
 \usepackage{pdflscape}
 \usepackage{afterpage}
+\usepackage{cite}
 
-\usepackage[round]{natbib}
+% \usepackage[round]{natbib}
 
-%\usepackage{refcheck}
+% \usepackage{refcheck}
 
 \hypersetup{
     bookmarks=true,         % show bookmarks bar?
@@ -128,7 +129,7 @@
 
 \begin{document}
 
-\title{Software Requirements Specification for \progname: subtitle describing software} 
+\title{Software Requirements Specification for Attitude Check: IMU-based Attitude Estimation} 
 \author{\authname}
 \date{\today}
 	
@@ -147,17 +148,9 @@
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+Date 1 & 1.0 & Initial Release.\\
 \bottomrule
 \end{tabularx}
-
-~\\
-\plt{This template is intended for use by CAS 741.  For CAS 741 the template
-should be used exactly as given, except the Reflection Appendix can be deleted.
-For the capstone course it is a source of ideas, but shouldn't be followed
-exactly.  The exception is the reflection appendix.  All capstone SRS documents
-should have a refelection appendix.}
 
 ~\newpage
 
@@ -180,11 +173,14 @@ description of the unit and the SI name.
     \textbf{symbol} & \textbf{unit} & \textbf{SI}\\
     \midrule 
     \si{\metre} & length & metre\\
-    \si{\kilogram} & mass	& kilogram\\
+    \si{\radian} & angle & radian\\
     \si{\second} & time & second\\
-    \si{\celsius} & temperature & centigrade\\
-    \si{\joule} & energy & joule\\
-    \si{\watt} & power & watt (W = \si{\joule\per\second})\\
+    \si{\hertz} & frequency & hertz\\
+    \si{\tesla}      & magnetic field & tesla \\
+    % \si{\kilogram} & mass & kilogram\\
+    % \si{\celsius} & temperature & centigrade\\
+    % \si{\joule} & energy & joule\\
+    % \si{\watt} & power & watt (W = \si{\joule\per\second})\\
     \bottomrule
   \end{tabular}
   %	\caption{Provide a caption}
@@ -192,13 +188,11 @@ description of the unit and the SI name.
 
 \plt{Only include the units that your SRS actually uses.}
 
-\plt{Derived units, like newtons, pascal, etc, should show their derivation
-    (the units they are derived from) if their constituent units are in the
-    table of units (that is, if the units they are derived from are used in the
-    document).  For instance, the derivation of pascals as
-    $\si{\pascal}=\si{\newton\per\square\meter}$ is shown if newtons and m are
-    both in the table.  The derivations of newtons would not be shown if kg and
-    s are not both in the table.}
+\plt{Derived units, like newtons, pascal, etc, should show their derivation (the units they are
+    derived from) if their constituent units are in the table of units (that is, if the units they
+    are derived from are used in the document).  For instance, the derivation of pascals as
+    $\si{\pascal}=\si{\newton\per\square\meter}$ is shown if newtons and m are both in the table.
+    The derivations of newtons would not be shown if kg and s are not both in the table.}
 
 \plt{The symbol for units named after people use capital letters, but the name
   of the unit itself uses lower case.  For instance, pascals use the symbol Pa,
@@ -210,25 +204,24 @@ description of the unit and the SI name.
 
 \subsection{Table of Symbols}
 
-The table that follows summarizes the symbols used in this document along with
-their units.  The choice of symbols was made to be consistent with the heat
-transfer literature and with existing documentation for solar water heating
-systems.  The symbols are listed in alphabetical order.
+The table that follows summarizes the symbols used in this document along with their units.  The
+choice of symbols was made to be consistent with the attitude and heading reference systems
+literature and existing documentation. The symbols are listed in alphabetical order.
 
 \renewcommand{\arraystretch}{1.2}
 %\noindent \begin{tabularx}{1.0\textwidth}{l l X}
 \noindent \begin{longtable*}{l l p{12cm}} \toprule
 \textbf{symbol} & \textbf{unit} & \textbf{description}\\
 \midrule 
-$A_C$ & \si[per-mode=symbol] {\square\metre} & coil surface area
-\\
-$A_\text{in}$ & \si[per-mode=symbol] {\square\metre} & surface area over 
-which heat is transferred in
-\\ 
+% $A_C$ & \si[per-mode=symbol] {\square\metre} & coil surface area \\
+$\mathsf{v}$ & \si[per-mode=symbol] {\meter\per\second} & linear velocity\\
+$a$ & \si[per-mode=symbol] {\meter\per\second\squared} & linear acceleration\\
+$\omega$ & \si[per-mode=symbol] {\radian\per\second} & angular velocity\\
+$g_0$ & \si[per-mode=symbol] {\meter\per\second\squared} & gravitational constant\\
+$b$ & \si{\tesla} & earth's magnetic field\\
 \bottomrule
 \end{longtable*}
-\plt{Use your problems actual symbols.  The si package is a good idea to use for
-  units.}
+\plt{Use your problems actual symbols.  The si package is a good idea to use for units.}
 
 \subsection{Abbreviations and Acronyms}
 
@@ -246,14 +239,32 @@ which heat is transferred in
   PS & Physical System Description\\
   R & Requirement\\
   SRS & Software Requirements Specification\\
-  \progname{} & \plt{put an expanded version of your program name here (as appropriate)}\\
+  % \progname{} & \plt{put an expanded version of your program name here (as appropriate)}\\
   TM & Theoretical Model\\
+  IMU & Inertial Measurement Unit\\
+  MEMS & Micro-electromechanical System \\
   \bottomrule
 \end{tabular}\\
 
 \plt{Add any other abbreviations or acronyms that you add}
 
 \subsection{Mathematical Notation}
+
+Vectors will be distinguised via \textbf{bold} face font such as, $\mathbf{b}$. \newline
+
+
+\noindent Matricies will be distinguised via \textbf{bold} face font and capitalization such as, $\mathbf{R}$. \newline
+
+
+\noindent Orientation will be represented by the quaternion,
+\begin{align}
+  q = w + ix + jy + zk
+\end{align}
+where 
+\begin{align}
+  i^2 = j^2 = k^2 = ijk = -1 
+\end{align}
+please see \cite{quat} for more information.
 
 \plt{This section is optional, but should be included for projects that make use
   of notation to convey mathematical information.  For instance, if typographic
@@ -271,7 +282,7 @@ which heat is transferred in
 
 \pagenumbering{arabic}
 
-\plt{This SRS template is based on \citet{SmithAndLai2005, SmithEtAl2007,
+\plt{This SRS template is based on \cite{SmithAndLai2005, SmithEtAl2007,
   SmithAndKoothoor2016}.  It will get you started.  You should not modify the
   section headings, without first discussing the change with the course
   instructor.  Modification means you are not following the template, which
@@ -337,25 +348,52 @@ which heat is transferred in
 
 \section{Introduction}
 
+The goal of attitude estimation is to determine the rotation of an object relative to a reference
+frame using sensor measurements. Attitude estimation is essential for many applications, such as
+navigation and control of spacecraft, drones, or robots. Once only possible with expensive hardware,
+advances in Micro-Electro-Mechanical systems (MEMS) allow an inexpensive Inertial Measurement Unit
+(IMU) to provide the necessary measurements for attitude estimation. Typical IMU sensors contain a 3-axis accerlerometer, 3-axis magnetometer, and 3-axis gyroscope. However, challenges arise from
+the presence of noise, bias, drift, and uncertainty in the sensor data, as well as the nonlinearity
+of the object dynamics \cite{statement}.
+
 \plt{The introduction section is written to introduce the problem.  It starts
   general and focuses on the problem domain. The general advice is to start with
 a paragraph or two that describes the problem, followed by a ``roadmap''
 paragraph.  A roadmap orients the reader by telling them what sub-sections to
 expect in the Introduction section.}
 
+
 \subsection{Purpose of Document}
 
-\plt{This section summarizes the purpose of the SRS document.  It does not focus
-  on the problem itself.  The problem is described in the ``Problem
-  Description'' section (Section~\ref{Sec_pd}).  The purpose is for the document
-  in the context of the project itself, not in the context of this course.
-  Although the ``purpose'' of the document is to get a grade, you should not
-  mention this.  Instead, ``fake it'' as if this is a real project.  The purpose
-  section will be similar between projects.  The purpose of the document is the
-  purpose of the SRS, including communication, planning for the design stage,
-  etc.}
+\plt{This section summarizes the purpose of the SRS document.  It does not focus on the problem
+  itself.  The problem is described in the ``Problem Description'' section (Section~\ref{Sec_pd}).
+  The purpose is for the document in the context of the project itself, not in the context of this
+  course. Although the ``purpose'' of the document is to get a grade, you should not mention this.
+  Instead, ``fake it'' as if this is a real project.  The purpose section will be similar between
+  projects.  The purpose of the document is the purpose of the SRS, including communication,
+  planning for the design stage, etc.}
 
-\subsection{Scope of Requirements} 
+This document defines the scope, requirements, and functionality, of a software product. It serves
+as a contract between the developers and the stakeholders, ensuring that both parties have a clear
+and common understanding of what the software should do and how it should perform. This SRS also
+helps the developers to plan, design, test, and maintain the software according to the agreed-upon
+requirements. This document can reduce the risk of errors, delays, and conflicts during the software
+development process. \cite{purpose}
+
+\subsection{Scope of Requirements}
+
+In the dynamics models of this project will only consider a flat local earth, and the effect of the
+Earth's rotation will be ignored \cite{al-jlailaty_efficient_2020}.
+
+For MEMS sensor modelling we will simplify the measurement error characteristics. Additioanlly,
+magnetometers can experince significant local magnetic disturbances from nearby sources such as
+drone motors. However, we will assume there are no disturbances.
+
+The IMU is assumed to be mounted to a rigid body, the IMU orientation will be the orientation of the object it is attached to.
+
+All measurements are assumed to be in the range of the sensors. For example, the accelration value of the object will not exceed the range of the accerlerometer.
+
+Geomagnetic secular variation will be ignored.
 
 \plt{Modelling the real world requires simplification.  The full complexity of
   the actual physics, chemistry, biology is too much for existing models, and
@@ -374,6 +412,8 @@ expect in the Introduction section.}
 
 \subsection{Characteristics of Intended Reader} \label{sec_IntendedReader}
 
+The reader should have an understanding of university-level math including matrix and vector operations, numerical methods, and state estimation.
+
 \plt{This section summarizes the skills and knowledge of the readers of the
   SRS.  It does NOT have the same purpose as the ``User Characteristics''
   section (Section~\ref{SecUserCharacteristics}).  The intended readers are the
@@ -391,12 +431,14 @@ expect in the Introduction section.}
 
 \subsection{Organization of Document}
 
+The rest of this document is structured as follows. Section \ref{sec:general_desc} discusses the general context and descriptio of the system. Section \ref{sec:specific_user_desc} details the specific system description, goals, and definitions. Section \ref{sec:reqs} covers system requirements. Section \ref{sec:likely_changes} outlines likely changes for the system. Section \ref{sec:unlikely_changes} discusses unlikely changes. Section \ref{sec:trace} covers the traceability of the requirements. Section \ref{sec:dev_plan} discusses the system development plan.
+
 \plt{This section provides a roadmap of the SRS document.  It will help the
   reader orient themselves.  It will provide direction that will help them
   select which sections they want to read, and in what order.  This section will
   be similar between project.}
 
-\section{General System Description}
+\section{General System Description} \label{sec:general_desc}
 
 This section provides general information about the system.  It identifies the
 interfaces between the system and its environment, describes the user
@@ -429,38 +471,41 @@ characteristics and lists the system constraints.  \plt{This text can likely be
   They should only be named with a specific library name if this is required by
   the system constraint.}
 
+Figure \ref{fig:systemContext}...
+
 \begin{figure}[h!]
-\begin{center}
- \includegraphics[width=0.6\textwidth]{SystemContextFigure}
-\caption{System Context}
-\label{Fig_SystemContext} 
-\end{center}
+    \centerline{\includegraphics[width=0.6\textwidth, trim={0 2cm 0
+    0},clip]{cas741_attitudeCheck.pdf}}
+    \caption{System Context}
+    \label{fig:systemContext} 
 \end{figure}
 
 \plt{For each of the entities in the system context diagram its responsibilities
-  should be listed.  Whenever possible the system should check for data quality,
-  but for some cases the user will need to assume that responsibility.  The list
-  of responsibilites should be about the inputs and outputs only, and they
-  should be abstract.  Details should not be presented here.  However, the
-  information should not be so abstract as to just say ``inputs'' and
-  ``outputs''.  A summarizing phrase can be used to characterize the inputs.
-  For instance, saying ``material properties'' provides some information, but it
-  stays away from the detail of listing every required properties.}
+    should be listed.  Whenever possible the system should check for data quality,
+    but for some cases the user will need to assume that responsibility.  The list
+    of responsibilites should be about the inputs and outputs only, and they
+    should be abstract.  Details should not be presented here.  However, the
+    information should not be so abstract as to just say ``inputs'' and
+    ``outputs''.  A summarizing phrase can be used to characterize the inputs.
+    For instance, saying ``material properties'' provides some information, but it
+    stays away from the detail of listing every required properties.}
 
 \begin{itemize}
-\item User Responsibilities:
+    \item User Responsibilities:
 \begin{itemize}
-\item 
+    \item Provide IMU measurements.
 \end{itemize}
-\item \progname{} Responsibilities:
+    \item \progname{} Responsibilities:
 \begin{itemize}
-\item Detect data type mismatch, such as a string of characters instead of a
-  floating point number
-\item 
+    \item Detect data type mismatch, such as a string of characters instead of a
+  floating point number.
+    \item Return orientation value for each set of measurements.
 \end{itemize}
 \end{itemize}
 
 \subsection{User Characteristics} \label{SecUserCharacteristics}
+
+The typical user of \progname{} is expected to have an understanding of the purpose, inputs, and output of an attitiude estimator. This project is designed for developers of robotics and aerospace software systems looking to process IMU data. High-school level kinematics is required.
 
 \plt{This section summarizes the knowledge/skills expected of the user.
   Measuring usability, which is often a required non-function requirement,
@@ -473,6 +518,8 @@ characteristics and lists the system constraints.  \plt{This text can likely be
 
 \subsection{System Constraints}
 
+In typical attitude estimation system is expected to operate at high frequencies (100 Hz or more) and consume minimum computational resources. Many systems that use this kind of software are embedded systems with contrianed hardware. 
+
 \plt{System constraints differ from other type of requirements because they
   limit the developers' options in the system design and they identify how the
   eventual system must fit into the world. This is the only place in the SRS
@@ -480,7 +527,7 @@ characteristics and lists the system constraints.  \plt{This text can likely be
   abstraction is relaxed here.  However, system constraints should only be
   included if they are truly required.}
 
-\section{Specific System Description}
+\section{Specific System Description} \label{sec:specific_user_desc}
 
 This section first presents the problem description, which gives a high-level
 view of the problem to be solved.  This is followed by the solution characteristics
@@ -490,16 +537,17 @@ the instance models.  \plt{Add any project specific details that are relevant
 
 \subsection{Problem Description} \label{Sec_pd}
 
-\progname{} is intended to solve ... \plt{What problem does your program solve?
+\progname{} is intended to estimate the attitude of an IMU sensor, given noisy measurements.
+
+\plt{What problem does your program solve?
 The description here should be in the problem space, not the solution space.}
 
 \subsubsection{Terminology and  Definitions}
 
-\plt{This section is expressed in words, not with equations.  It provide the
-  meaning of the different words and phrases used in the domain of the problem.
-The terminology is used to introduce concepts from the world outside of the
-mathematical model  The terminology provides a real world connection to give the
-mathematical model meaning.}
+\plt{This section is expressed in words, not with equations.  It provide the meaning of the
+  different words and phrases used in the domain of the problem. The terminology is used to
+  introduce concepts from the world outside of the mathematical model  The terminology provides a
+  real world connection to give the mathematical model meaning.}
 
 This subsection provides a list of terms that are used in the subsequent
 sections and their meaning, with the purpose of reducing ambiguity and making it
@@ -507,7 +555,7 @@ easier to correctly understand the requirements:
 
 \begin{itemize}
 
-\item 
+\item Coordinate frame: the frame of reference for a particular rigid body, comprised of 3 orthoganal vectors. Atitude (orientation) is the angle of an object relative to another reference coordiante frame.
 
 \end{itemize}
 
@@ -526,28 +574,24 @@ easier to correctly understand the requirements:
   interactions between the elements and their physical environment; ii) the
   interactions between elements; and, iii) the initial or boundary conditions.}
 
-The physical system of \progname{}, as shown in Figure~?,
-includes the following elements:
+The physical system of \progname{}, as shown in Figure \ref{fig:ref_diag} includes the following
+elements:
 
 \begin{itemize}
 
-\item[PS1:] 
-
-\item[PS2:] ...
+\item[PS1:] Acceleration measurement model.
+\item[PS2:] Gyroscope measurement model.
+\item[PS3:] Magnetometer measurement model.
 
 \end{itemize}
 
-\plt{A figure here makes sense for most SRS documents}
+\begin{figure}[h!]
+    \centerline{\includegraphics[width=0.4\textwidth, trim={0 0 0 0},clip]{frame_diagram.pdf}}
+    \caption{System Context}
+    \label{fig:ref_diag} 
+\end{figure}
 
-% \begin{figure}[h!]
-% \begin{center}
-% %\rotatebox{-90}
-% {
-%  \includegraphics[width=0.5\textwidth]{<FigureName>}
-% }
-% \caption{\label{<Label>} <Caption>}
-% \end{center}
-% \end{figure}
+\plt{A figure here makes sense for most SRS documents}
 
 \subsubsection{Goal Statements}
 
@@ -857,7 +901,7 @@ Symbol &$q_C$\\
 \plt{All data types must be used by at least one of the models.}
 
 \plt{For the mathematical notation for expressing types, the recommendation is
-  to use the notation of~\citet{HoffmanAndStrooper1995}.}
+  to use the notation of~\cite{HoffmanAndStrooper1995}.}
 
 This section collects and defines all the data types needed to document the
 models. \plt{Modify the examples below for your problem, and add additional
@@ -1023,7 +1067,7 @@ A correct solution must exhibit \plt{fill in the details}.  \plt{These
   validation.  Those topics will be addressed in the Verification and Validation
   plan.}
 
-\section{Requirements}
+\section{Requirements} \label{sec:reqs}
 
 \plt{The requirements refine the goal statement.  They will make heavy use of
   references to the instance models.}
@@ -1119,7 +1163,7 @@ be covered in the Verification and Validation document.}
 should be provided for scope decisions, modelling decisions, assumptions and
 typical values.}
 
-\section{Likely Changes}    
+\section{Likely Changes} \label{sec:likely_changes}
 
 \noindent \begin{itemize}
 
@@ -1128,7 +1172,7 @@ typical values.}
 
 \end{itemize}
 
-\section{Unlikely Changes}    
+\section{Unlikely Changes} \label{sec:unlikely_changes}
 
 \noindent \begin{itemize}
 
@@ -1138,7 +1182,7 @@ typical values.}
 
 \end{itemize}
 
-\section{Traceability Matrices and Graphs}
+\section{Traceability Matrices and Graphs} \label{sec:trace}
 
 The purpose of the traceability matrices is to provide easy references on what
 has to be additionally modified if a certain component is changed.  Every time a
@@ -1257,28 +1301,9 @@ general definitions, data definitions, instance models, likely changes, and
 assumptions on each other. Figure~\ref{Fig_RTrace} shows the dependencies of
 instance models, requirements, and data constraints on each other.
 
-% \begin{figure}[h!]
-% 	\begin{center}
-% 		%\rotatebox{-90}
-% 		{
-% 			\includegraphics[width=\textwidth]{ATrace.png}
-% 		}
-% 		\caption{\label{Fig_ATrace} Traceability Matrix Showing the Connections Between Items of Different Sections}
-% 	\end{center}
-% \end{figure}
+%  
 
-
-% \begin{figure}[h!]
-% 	\begin{center}
-% 		%\rotatebox{-90}
-% 		{
-% 			\includegraphics[width=0.7\textwidth]{RTrace.png}
-% 		}
-% 		\caption{\label{Fig_RTrace} Traceability Matrix Showing the Connections Between Requirements, Instance Models, and Data Constraints}
-% 	\end{center}
-% \end{figure}
-
-\section{Development Plan}
+\section{Development Plan} \label{sec:dev_plan}
 
 \plt{This section is optional.  It is used to explain the plan for developing
   the software.  In particular, this section gives a list of the order in which
@@ -1299,8 +1324,8 @@ Their values are defined in this section for easy maintenance.}
 
 \newpage
 
-\bibliographystyle {plainnat}
-\bibliography {../../refs/References}
+\bibliography {../../refs/bib, ../../refs/References}
+\bibliographystyle{plain}
 
 \newpage
 
@@ -1343,27 +1368,5 @@ Their values are defined in this section for easy maintenance.}
   requirement could be more abstract
 \end{itemize}
 }
-
-\newpage{}
-\section*{Appendix --- Reflection}
-
-The information in this section will be used to evaluate the team members on the
-graduate attribute of Lifelong Learning.  Please answer the following questions:
-
-\begin{enumerate}
-  \item Which of the courses you have taken, or are currently taking, will help
-  your team to be successful with your capstone project.
-  \item What knowledge and skills will the team collectively need to acquire to
-  successfully complete this capstone project?  Examples of possible knowledge
-  to acquire include domain specific knowledge from the domain of your
-  application, or software engineering knowledge, mechatronics knowledge or
-  computer science knowledge.  Skills may be related to technology, or writing,
-  or presentation, or team management, etc.  You should look to identify at
-  least one item for each team member.
-  \item For each of the knowledge areas and skills identified in the previous
-  question, what are at least two approaches to acquiring the knowledge or
-  mastering the skill?  Of the identified approaches, which will each team
-  member pursue, and why did they make this choice?
-\end{enumerate}
 
 \end{document}
