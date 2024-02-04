@@ -250,21 +250,20 @@ $b$ & \si{\tesla} & earth's magnetic field\\
 
 \subsection{Mathematical Notation}
 
-Vectors will be distinguised via \textbf{bold} face font such as, $\mathbf{b}$. \newline
+\begin{itemize}
+  \item[Vector:] Vectors will be distinguised via \textbf{bold} face font such as, $\mathbf{b}$.
+  \item[Matrix:] Matricies will be distinguised via \textbf{bold} face font and capitalization such as, $\mathbf{R}$.
+\end{itemize}
 
-
-\noindent Matricies will be distinguised via \textbf{bold} face font and capitalization such as, $\mathbf{R}$. \newline
-
-
-\noindent Orientation will be represented by the quaternion,
-\begin{align}
-  q = w + ix + jy + zk
-\end{align}
-where 
-\begin{align}
-  i^2 = j^2 = k^2 = ijk = -1 
-\end{align}
-please see \cite{quat} for more information.
+% Orientation will be represented by the quaternion,
+% \begin{align}
+%   q = w + ix + jy + zk
+% \end{align}
+% where 
+% \begin{align}
+%   i^2 = j^2 = k^2 = ijk = -1 
+% \end{align}
+% please see \cite{quat} for more information.
 
 \plt{This section is optional, but should be included for projects that make use
   of notation to convey mathematical information.  For instance, if typographic
@@ -383,17 +382,13 @@ development process. \cite{purpose}
 \subsection{Scope of Requirements}
 
 In the dynamics models of this project will only consider a flat local earth, and the effect of the
-Earth's rotation will be ignored \cite{al-jlailaty_efficient_2020}.
+Earth's rotation will be ignored \cite{al-jlailaty_efficient_2020}. Furthermore, geomagnetic secular variation will be ignored, for more information see \cite{secular_var}. The models of this project assume the operating conditions are within the Earth's atmosphere, and that the distance travelled during algorithm execution does not cause a measurebale change in magnetic field intesnsity \cite{magnet}. Finally, the system will not operate during a geo-magnetic storm.
 
-For MEMS sensor modelling we will simplify the measurement error characteristics. Additioanlly,
+For MEMS sensor modelling we will simplify the measurement error characteristics. Additionally,
 magnetometers can experince significant local magnetic disturbances from nearby sources such as
 drone motors. However, we will assume there are no disturbances.
 
-The IMU is assumed to be mounted to a rigid body, the IMU orientation will be the orientation of the object it is attached to.
-
-All measurements are assumed to be in the range of the sensors. For example, the accelration value of the object will not exceed the range of the accerlerometer.
-
-Geomagnetic secular variation will be ignored.
+The IMU is assumed to be mounted to a rigid body, the IMU orientation will be the orientation of the object it is attached to. Additionally, the system will not operate when the range of the sensor are exceeded.
 
 \plt{Modelling the real world requires simplification.  The full complexity of
   the actual physics, chemistry, biology is too much for existing models, and
@@ -471,7 +466,7 @@ characteristics and lists the system constraints.  \plt{This text can likely be
   They should only be named with a specific library name if this is required by
   the system constraint.}
 
-Figure \ref{fig:systemContext}...
+Attitude estimation is a lower-level operation in an overall robotics or aerospace application. Once the hardware is installed and the software is compiled, there is no direct human interaction with the system in the context of measureing or estimating oreitnation. Figure \ref{fig:systemContext} shows the general system context of Attitude Check, the IMU measurements are filtered and the orientation estimate is calcualted for downstream use. Higher level functions that perform guidance, navigation, and control consume orientation to complete higher level objectives.
 
 \begin{figure}[h!]
     \centerline{\includegraphics[width=0.6\textwidth, trim={0 2cm 0
@@ -494,6 +489,7 @@ Figure \ref{fig:systemContext}...
     \item User Responsibilities:
 \begin{itemize}
     \item Provide IMU measurements.
+    \item Provide optional initial orientation estimate.
 \end{itemize}
     \item \progname{} Responsibilities:
 \begin{itemize}
@@ -505,20 +501,20 @@ Figure \ref{fig:systemContext}...
 
 \subsection{User Characteristics} \label{SecUserCharacteristics}
 
-The typical user of \progname{} is expected to have an understanding of the purpose, inputs, and output of an attitiude estimator. This project is designed for developers of robotics and aerospace software systems looking to process IMU data. High-school level kinematics is required.
+The typical user of \progname{} is expected to have an understanding of the purpose, inputs, and output of an attitiude estimator. This project is designed for users looking to process IMU data. To understand the sensor measurements, high-school level kinematics is required.
 
-\plt{This section summarizes the knowledge/skills expected of the user.
-  Measuring usability, which is often a required non-function requirement,
-  requires knowledge of a typical user.  As mentioned above, the user is a
-  different role from the ``intended reader,'' as given in
-  Section~\ref{sec_IntendedReader}.  As in Section~\ref{sec_IntendedReader}, the
-  user characteristics should be specific an unambiguous.  For instance, ``The
-  end user of \progname{} should have an understanding of undergraduate Level 1
-  Calculus and Physics.''}
+\plt{This section summarizes the knowledge/skills expected of the user. Measuring usability, which
+  is often a required non-function requirement, requires knowledge of a typical user.  As mentioned
+  above, the user is a different role from the ``intended reader,'' as given in
+  Section~\ref{sec_IntendedReader}.  As in Section~\ref{sec_IntendedReader}, the user
+  characteristics should be specific an unambiguous.  For instance, ``The end user of \progname{}
+  should have an understanding of undergraduate Level 1 Calculus and Physics.''}
 
 \subsection{System Constraints}
 
-In typical attitude estimation system is expected to operate at high frequencies (100 Hz or more) and consume minimum computational resources. Many systems that use this kind of software are embedded systems with contrianed hardware. 
+Attitude Check is often ported to microcontrollers or used in high performance applications. It should be implemented in C or C++ to be integrated into existing projects.
+
+% In typical attitude estimation system is expected to operate at high frequencies (100 Hz or more) and consume minimum computational resources. Many systems that use this kind of software are embedded systems with contrianed hardware. 
 
 \plt{System constraints differ from other type of requirements because they
   limit the developers' options in the system design and they identify how the
@@ -555,8 +551,9 @@ easier to correctly understand the requirements:
 
 \begin{itemize}
 
-\item Coordinate frame: the frame of reference for a particular rigid body, comprised of 3 orthoganal vectors. Atitude (orientation) is the angle of an object relative to another reference coordiante frame.
-
+\item Coordinate frame: the frame of reference for a particular rigid body, comprised of 3 orthoganal vectors.
+\item Atitude (orientation) is the angle of an object relative to another reference coordiante frame.
+\item Transform: a computation that converts data from one coordinate frame to another.
 \end{itemize}
 
 \subsubsection{Physical System Description} \label{sec_phySystDescrip}
@@ -578,16 +575,21 @@ The physical system of \progname{}, as shown in Figure \ref{fig:ref_diag} includ
 elements:
 
 \begin{itemize}
+  \item[PS1:] Problem Domain is $\mathbb{R}^n$, where $n=\{2,3\}$ (Certain applications ignore the Yaw angle).
+  \item[PS2:] Forces
+  \begin{itemize}
+    \item[PS2a:] Gravitational Acceleration.
+    \item[PS2b:] Earth's Magnetic Field can be measured to assist attitude estimation \cite{magnet}.
+  \end{itemize}
 
-\item[PS1:] Acceleration measurement model.
-\item[PS2:] Gyroscope measurement model.
-\item[PS3:] Magnetometer measurement model.
-
+  \item[PS3:] Gyroscopic effect: Rigidity in space and Precession \cite{gyro}.
+  \item[PS4:] All rigid body transformations reside in the special Euclidean group, SE(3) \cite{kumar_3_nodate}.
+  \item[PS4:] Initial conditions: The initial condition is the orientation of the system at startup. It is an optional value provided by the user. Otherwise the system will produce an estimated initial orientation.
 \end{itemize}
 
 \begin{figure}[h!]
     \centerline{\includegraphics[width=0.4\textwidth, trim={0 0 0 0},clip]{frame_diagram.pdf}}
-    \caption{System Context}
+    \caption{Physical System Context.}
     \label{fig:ref_diag} 
 \end{figure}
 
@@ -609,7 +611,9 @@ elements:
 
 \begin{itemize}
 
-\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] \plt{One
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{g:calc}:] Convert sequential IMU measurements into an orientation relative to the Earth.
+
+\plt{One
     sentence description of the goal.  There may be more than one.  Each Goal
     should have a meaningful label.}
 
@@ -670,13 +674,19 @@ models can be verified.
 
 \subsubsection{Types}
 
+All scalar measurements and values in this system are $\in \mathbb{R}$. 
+
 \plt{This section is optional. Defining types can make the document easier to
 understand.}
 
-\subsection{Scope Decisions}
+% \subsection{Scope Decisions}
 
-\plt{This section is optional.}
+% \plt{This section is optional.}
 \subsection{Modelling Decisions}
+
+% UPDATE LATER: Modelling of the earth magnetic field, ignoreing rotation, and variations in the field over distance travelled.
+
+System modelling only considers primary sources of error, smaller terms are not explicitly modelled. To account for other error sources the noise term can be adjusted \cite{al-jlailaty_efficient_2020}.
 
 \plt{This section is optional.}
 
@@ -699,12 +709,17 @@ change [LC], in which the respective assumption is used.
 
 \begin{itemize}
 
-\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_meaningfulLabel}:]
-  \plt{Short description of each assumption.  Each assumption
-    should have a meaningful label.  Use cross-references to identify the
-    appropriate traceability to TM, GD, DD etc., using commands like dref, ddref
-    etc.  Each assumption should be atomic - that is, there should not be an
-    explicit (or implicit) ``and'' in the text of an assumption.}
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{a:relative}:] Reletavistic effects can be ignored. The IMU will not be traveling near the speed of light.
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{a:gravity}:] Gravitational acceleration is assumed to be 9.81 \si{\meter\per\square\second}.
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{a:storm}:] The operation of the system will be under ''normal" weather conditions without deo-magnetic interference.
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{a:flat}:] The Earth is locally flat. The curvature of the earth is ignored when computing the attitude of the system.
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{a:secular}:] Geomagnetic secular variation is ignored. The timescale of the systems operation is assumed to be small enough that variations in the magnetic field are neglegable.
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{a:rotation}:] The rotation of the earth has no effect on the system. A consumer grade IMU cannot detect the rotation of the earth.
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{a:nonlinear}:] Sensor non-linearities are not considered.
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{a:gsense}:] Accelerometer g-sensity is not considered. Under constant linear accerleration the bias of an accerlerometer may shift. This project assumes the bias does not shift with time.
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{a:quant}:] Quantization and analog to conversion error is ignored. The error from measuring of continous phenomena with digital circuits will be ignored.
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{a:rigid}:] The IMU is mouted to a rigid object that will not deflect during system operation.
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{a:range}:] The IMU will not experince phenopmena outisde of the sensors measurement range.
 
 \end{itemize}
 
