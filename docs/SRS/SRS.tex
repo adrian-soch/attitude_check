@@ -22,8 +22,7 @@
 \usepackage{cite}
 % \usepackage[round]{natbib} \usepackage{refcheck}
 
-\hypersetup{
-    bookmarks=true,       % show bookmarks bar?
+\hypersetup{ bookmarks=true,       % show bookmarks bar?
     colorlinks=true,      % false: boxed links; true: colored links
     linkcolor=red,          % color of internal links (change box color with linkbordercolor)
     citecolor=green,        % color of links to bibliography
@@ -160,12 +159,9 @@ the symbol is given followed by a description of the unit and the SI name. ~\new
     \si{\metre} & length & metre\\
     \si{\radian} & angle & radian\\
     \si{\second} & time & second\\
-    \si{\hertz} & frequency & hertz\\
+    % \si{\hertz} & frequency & hertz\\
     \si{\tesla}      & magnetic field & tesla \\
     % \si{\kilogram} & mass & kilogram\\
-    % \si{\celsius} & temperature & centigrade\\
-    % \si{\joule} & energy & joule\\
-    % \si{\watt} & power & watt (W = \si{\joule\per\second})\\
     \bottomrule
   \end{tabular}
   %	\caption{Provide a caption}
@@ -197,7 +193,6 @@ literature and existing documentation. The symbols are listed in alphabetical or
 \noindent \begin{longtable*}{l l p{12cm}} \toprule \textbf{symbol} & \textbf{unit} &
 \textbf{description}\\
 \midrule 
-% $A_C$ & \si[per-mode=symbol] {\square\metre} & coil surface area \\
 % $v$ & \si[per-mode=symbol] {\meter\per\second} & linear velocity\\
 $a$ & \si[per-mode=symbol] {\meter\per\second\squared} & linear acceleration\\
 $\theta$ & \si[per-mode=symbol] {\radian} & angular position \\
@@ -611,17 +606,9 @@ elements:
     to assist attitude estimation \cite{magnet}. It may vary with position on the Earth's surface or
     time.
   \end{itemize}
-
-  % \item[\textbf{PS4:}] Gyroscopic effect. Rotating Object are subject to Rigidity in space and
-  % Precession \cite{gyro}.
-
   \item[\textbf{PS4:}] Initial conditions. The initial condition is the orientation of the system at
   startup. It is an optional value provided by the user. Otherwise, the system will produce an
   estimated initial orientation.
-% \item[\textbf{PS5:}] Mathematical Domain. All rigid body transformations reside in the special
-% Euclidean group, SE(3) \cite{kumar_3_nodate}.
-  % \item[\textbf{PS5:}] Environmental conditions. The gravitational force and magnetic force can
-  % vary based on an object's position and time.
 \end{itemize}
 
 \begin{figure}[h!]
@@ -714,17 +701,12 @@ so that the instance models can be verified.
 \plt{This section is optional. Defining types can make the document easier to understand.}
 
 % \subsection{Scope Decisions}
+\plt{This section is optional.}
 
-% \plt{This section is optional.}
-\subsection{Modelling Decisions}
+% \subsection{Modelling Decisions}
 
 % UPDATE LATER: Modelling of the earth magnetic field, ignoreing rotation, and variations in the
 % field over distance travelled.
-
-System modelling only considers primary sources of error, smaller terms are not explicitly modelled.
-To account for other error sources, the noise term can be adjusted
-\cite{al-jlailaty_efficient_2020}.
-
 \plt{This section is optional.}
 
 \subsubsection{Assumptions} \label{sec_assumpt}
@@ -811,7 +793,7 @@ the examples below for your problem, and add additional models as appropriate.}
 % #3 label
 {Sensor Measurement Model}
 % #4 equation
-{ $s = s_m + b_s + \mu_s$ }
+{ $\mathbf{s} = \mathbf{s}_m + \mathbf{b}_s + \bm{\mu}_s \in \mathbb{R}^n$ }
 % #5 description
 { The above equation gives the model for a sensor measurement. Where $s_m$ is the true measurment,
   $b_s$ is a bias, and $\mu_s$ is an additive measurement noise.
@@ -1310,29 +1292,29 @@ omitted. \plt{reference your instance models}
 \begin{minipage}{\textwidth}
 \renewcommand*{\arraystretch}{1.5}
 \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
-  \hline
-  \rowcolor[gray]{0.9}
-  Number& IM\refstepcounter{instnum}\theinstnum \label{i:o_from_comp_acc_gyro}\\
-  \hline
-  Label& \bf Orientation from Accelerometer and Gyroscope\\
-  \hline
-  Input& $\prescript{S}{E}{\mathbf{q}}_{\omega, t}, \prescript{S}{E}{\mathbf{q}}_{g, t},
-  \prescript{S}{}{\mathbf{a}}_t, \prescript{E}{}{\mathbf{g}}, \prescript{S}{}{\bm{\omega}_t}, \Delta
-  t$\\
-  & The sensor measurements are from the current time step, and the quaternion estimate is from the
-  previous time step. \\
-  \hline
-  Output & $\prescript{S}{E}{\mathbf{q}}_{t} = \beta \prescript{S}{E}{\mathbf{q}}_{\omega, t} +
-  (1-\beta) \prescript{S}{E}{\mathbf{q}}_{g, t}$\\
-  \hline
-  Description& Combining estimates from \iref{i:o_from_gyro} and \iref{i:o_from_min_acc} using the
-  complementary filter from \tref{TM:CF} produces a quaternion output using accelerometer and
-  gyroscope measurements. \\
-  \hline
-  Sources & \cite{madgwick_ecient_nodate}\\
-  \hline
-  Ref.\ By & \rref{r:calculate2}.\\
-  \hline
+    \hline
+    \rowcolor[gray]{0.9}
+    Number& IM\refstepcounter{instnum}\theinstnum \label{i:o_from_comp_acc_gyro}\\
+    \hline
+    Label& \bf Orientation from Accelerometer and Gyroscope\\
+    \hline
+    Input& $\prescript{S}{E}{\mathbf{q}}_{\omega, t}, \prescript{S}{E}{\mathbf{q}}_{g, t},
+    \prescript{S}{}{\mathbf{a}}_t, \prescript{E}{}{\mathbf{g}}, \prescript{S}{}{\bm{\omega}_t}, \Delta
+    t$\\
+    & The sensor measurements are from the current time step, and the quaternion estimate is from the
+    previous time step. \\
+    \hline
+    Output & $\prescript{S}{E}{\mathbf{q}}_{t} = \gamma \prescript{S}{E}{\mathbf{q}}_{\omega, t} +
+    (1-\gamma) \prescript{S}{E}{\mathbf{q}}_{g, t}$\\
+    \hline
+    Description& Combining estimates from \iref{i:o_from_gyro} and \iref{i:o_from_min_acc} using the
+    complementary filter from \tref{TM:CF} produces a quaternion output using accelerometer and
+    gyroscope measurements. \\
+    \hline
+    Sources & \cite{madgwick_ecient_nodate}\\
+    \hline
+    Ref.\ By & \rref{r:calculate2}.\\
+    \hline
 \end{tabular}
 \end{minipage}\\
 
@@ -1341,36 +1323,37 @@ omitted. \plt{reference your instance models}
 \begin{minipage}{\textwidth}
 \renewcommand*{\arraystretch}{1.5}
 \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
-  \hline
-  \rowcolor[gray]{0.9}
-  Number& IM\refstepcounter{instnum}\theinstnum \label{i:o_from_comp_all_3}\\
-  \hline
-  Label& \bf Orientation from Accelerometer, Gyroscope, and Magnetometer\\
-  \hline
-  Input& $\prescript{S}{E}{\mathbf{q}}_{\omega, t}, \prescript{S}{E}{\mathbf{q}}_{(g,b), t},
-  \prescript{S}{}{\mathbf{a}}_t, \prescript{E}{}{\mathbf{g}}, \prescript{S}{}{\bm{\omega}_t}, \Delta
-  t$\\
+\hline
+\rowcolor[gray]{0.9}
+Number& IM\refstepcounter{instnum}\theinstnum \label{i:o_from_comp_all_3}\\
+\hline
+Label& \bf Orientation from Accelerometer, Gyroscope, and Magnetometer\\
+\hline
+Input& $\prescript{S}{E}{\mathbf{q}}_{\omega, t}, \prescript{S}{E}{\mathbf{q}}_{(g,b), t},
+\prescript{S}{}{\mathbf{a}}_t, \prescript{E}{}{\mathbf{g}}, \prescript{S}{}{\bm{\omega}_t}, \Delta
+t$\\
 & The sensor measurements are from the current time step, and the quaternion estimate is from the
 previous time step. \\
-  \hline
-  Output & $\prescript{S}{E}{\mathbf{q}}_{t} = \beta \prescript{S}{E}{\mathbf{q}}_{\omega, t} +
-  (1-\beta) \prescript{S}{E}{\mathbf{q}}_{(g,b), t}$\\
-  \hline
-  Description& Combining estimates from \iref{i:o_from_gyro} and \ref{i:o_from_min_acc_mag} using
-  the complementary filter from \tref{TM:CF} produces a quaternion output using accelerometer and
-  gyroscope measurements. \\
-  \hline
-  Sources & \cite{madgwick_ecient_nodate} \\
-  \hline
-  Ref.\ By & \rref{r:calculate1}.\\
-  \hline
+\hline
+Output & $\prescript{S}{E}{\mathbf{q}}_{t} = \gamma \prescript{S}{E}{\mathbf{q}}_{\omega, t} +
+(1-\gamma) \prescript{S}{E}{\mathbf{q}}_{(g,b), t}$\\
+\hline
+Description& Combining estimates from \iref{i:o_from_gyro} and \ref{i:o_from_min_acc_mag} using
+the complementary filter from \tref{TM:CF} produces a quaternion output using accelerometer and
+gyroscope measurements. \\
+\hline
+Sources & \cite{madgwick_ecient_nodate} \\
+\hline
+Ref.\ By & \rref{r:calculate1}.\\
+\hline
 \end{tabular}
 \end{minipage}\\
+
 % \subsubsection*{Derivation of ...}
 
-% \plt{The derivation shows how the IM is derived from the TMs/GDs.  In cases where the derivation
-%   cannot be described under the Description field, it will be necessary to include this
-%   subsection.}
+\plt{The derivation shows how the IM is derived from the TMs/GDs.  In cases where the derivation
+  cannot be described under the Description field, it will be necessary to include this
+  subsection.}
 
 \subsubsection{Input Data Constraints} \label{sec_DataConstraints}    
 
@@ -1402,7 +1385,7 @@ Value} & \textbf{Uncertainty}\\
     \tesla} & See sensor datasheet. \\
     $\omega$ & $-\infty < \omega < \infty$ & $|\mathbf{\omega}| \leq \omega_{\text{max}}$ & 1.0
     \si[per-mode=symbol] {\radian\per\second} & See sensor datasheet. \\
-    $\beta$ & - & $0.0 \leq \beta \leq 1.0$ & 0.5 & - \\
+    $\gamma$ & - & $0.0 \leq \gamma \leq 1.0$ & 0.5 & - \\
 \bottomrule
 \end{longtable*}
 \end{table}
@@ -1469,31 +1452,11 @@ exhibit.
     system inputs at initialization and every time step as listed below.
     
     \textbf{Initialization}: the sensor sampling time $\Delta t$, the local magnetic field intensity
-    vector, the gain parameter $\beta$, the desired output format, and the initial orientation if
+    vector, the gain parameter $\gamma$, the desired output format, and the initial orientation if
     magnetometer measurements are not present.
 
     \textbf{Each time step}: temporally synchronized (accelerometer, magnetometer, gyroscope)
     measurements or (accelerometer, gyroscope) measurements.
-    
-    % \item[R\refstepcounter{reqnum}\thereqnum \label{r:inputs_meas}:] \plt{Requirements for the
-    % inputs that are supplied by the user.  This information has to be explicit.} The user shall
-    % supply either  or accelerometer, gyroscope, and magnetometer measurements at each call of the
-    % program.
-    
-    % \item[R\refstepcounter{reqnum}\thereqnum \label{r:inputs_init}:] \plt{Requirements for the
-    % inputs that are supplied by the user.  This information has to be explicit.} At
-    % initialization, the user shall supply an initial orientation if only providing accelerometer
-    % and gyroscope measurements. If supplying all 3 measurement, an initial orientation is
-    % optional.
-    
-    % \item[R\refstepcounter{reqnum}\thereqnum \label{r:inputs_period}:] The user shall provide the
-    % period, $\Delta t$, that \progname{} shall operate at. This must be equal to the sensor
-    % sampling period.
-
-    % \item[R\refstepcounter{reqnum}\thereqnum \label{r:inputs_mag}:] The user shall provide the
-    % local magnetic field intensity vector.    
-    % \item[R\refstepcounter{reqnum}\thereqnum \label{r:inputs_out}:] The user shall provide the
-    % desired output format.
     
     \item[R\refstepcounter{reqnum}\thereqnum \label{r:calculate1}:] \progname{} shall calculate the
     orientation relative to the Earth frame when provided with  accelerometer, gyroscope, and
@@ -1502,12 +1465,6 @@ exhibit.
     \item[R\refstepcounter{reqnum}\thereqnum \label{r:calculate2}:] \progname{} shall calculate the
     yaw and pitch components of the orientation relative to the Earth frame when provided with
     accelerometer and gyroscope measurements.
-    
-    % \item[R\refstepcounter{reqnum}\thereqnum \label{r:bias}:] \progname{} shall perform online
-    % bias and drift compensation.
-    
-    % \item[R\refstepcounter{reqnum}\thereqnum \label{R_VerifyOutput}:] \plt{Verification related
-    % requirements.}
     
     \item[R\refstepcounter{reqnum}\thereqnum \label{r:output}:] \plt{Output related requirements.}
     \progname{} shall output the orientation in the user specified format.
@@ -1711,8 +1668,8 @@ and data constraints on each other.
 N/A.
 
 \plt{This section is optional.  It is used to explain the plan for developing the software.  In
-particular, this section gives a list of the order in which the requirements will be implemented.
-In the context of a course  this is where you can indicate which requirements will be implemented as
+particular, this section gives a list of the order in which the requirements will be implemented. In
+the context of a course  this is where you can indicate which requirements will be implemented as
 part of the course, and which will be ``faked'' as future work.  This section can be organized as a
 prioritized list of requirements, or it could should the requirements that will be implemented for
 ``phase 1'', ``phase 2'', etc.}
