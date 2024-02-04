@@ -17,7 +17,7 @@
 }
 
 @misc{quat,
-  title= {{Bing Chat with GPT-4.} Attitude representation: {Quaternion}},
+  title= {Attitude representation: {Quaternion}},
   howpublished = {\url{https://ahrs.readthedocs.io/en/latest/quaternion/quaternion.html}},
   note         = {Accessed: 2024-01-23},
   }
@@ -64,4 +64,55 @@
 	howpublished = {\url{https://www.seas.upenn.edu/~meam620/notes/RigidBodyMotion3.pdf}},
 	author = {Kumar, V},
 	file = {Kumar - 3. Rigid Body Motion and the Euclidean Group.pdf:/home/adrian/Zotero/storage/7BMCNJI7/Kumar - 3. Rigid Body Motion and the Euclidean Group.pdf:application/pdf},
+}
+
+@misc{mahoney,
+    title = {{Mahoney} {Orientation} {Filter}},
+    howpublished = {\url{https://ahrs.readthedocs.io/en/latest/filters/mahony.html}},
+    year = {2023}
+}
+
+@misc{madgwick_ahrs,
+    title = {{Madgwick} {Orientation} {Filter}},
+    howpublished = {\url{https://ahrs.readthedocs.io/en/latest/filters/madgwick.html}},
+    year = {2023}
+}
+
+@article{ins,
+author = {Nourmohammadi, Hossein and Keighobadi, Jafar},
+year = {2018},
+month = {01},
+pages = {434-449},
+title = {Fuzzy adaptive integration scheme for low-cost SINS/GPS navigation system},
+volume = {99},
+journal = {Mechanical Systems and Signal Processing},
+doi = {10.1016/j.ymssp.2017.06.030}
+}
+
+@misc{ned,
+    author = {Wikipedia},
+    title = {{Local} tangent plane coordinates},
+    howpublished = {\url{https://en.wikipedia.org/wiki/Local_tangent_plane_coordinates#Local_north,_east,_down_(NED)_coordinates}},
+    year = {2023}
+}
+
+@misc{hamilton,
+    author = {Wikipedia},
+    title = {{Hamilton} product},
+    howpublished = {\url{https://en.wikipedia.org/wiki/Quaternion#Hamilton_product}},
+    year = {2023}
+}
+
+@article{madgwick_ecient_nodate,
+	title = {An eﬃcient orientation ﬁlter for inertial and inertial/magnetic sensor arrays},
+	abstract = {This report presents a novel orientation ﬁlter applicable to IMUs consisting of tri-axis gyroscopes and accelerometers, and MARG sensor arrays that also include tri-axis magnetometers. The MARG implementation incorporates magnetic distortion and gyroscope bias drift compensation. The ﬁlter uses a quaternion representation, allowing accelerometer and magnetometer data to be used in an analytically derived and optimised gradient-descent algorithm to compute the direction of the gyroscope measurement error as a quaternion derivative. The beneﬁts of the ﬁlter include: (1) computationally inexpensive; requiring 109 (IMU) or 277 (MARG) scalar arithmetic operations each ﬁlter update, (2) eﬀective at low sampling rates; e.g. 10 Hz, and (3) contains 1 (IMU) or 2 (MARG) adjustable parameters deﬁned by observable system characteristics. Performance was evaluated empirically using a commercially available orientation sensor and reference measurements of orientation obtained using an optical measurement system. A simple calibration method is presented for the use of the optical measurement equipment in this application. Performance was also benchmarked against the propriety Kalman-based algorithm of orientation sensor. Results indicate the ﬁlter achieves levels of accuracy exceeding that of the Kalman-based algorithm; {\textless} 0.6◦ static RMS error, {\textless} 0.8◦ dynamic RMS error. The implications of the low computational load and ability to operate at low sampling rates open new opportunities for the use of IMU and MARG sensor arrays in real-time applications of limited power or processing resources or applications that demand extremely high sampling rates.},
+	language = {en},
+	author = {Madgwick, Sebastian O H},
+	file = {Madgwick - An eﬃcient orientation ﬁlter for inertial and iner.pdf:/home/adrian/Zotero/storage/6SS8TW92/Madgwick - An eﬃcient orientation ﬁlter for inertial and iner.pdf:application/pdf},
+}
+
+@misc{wmm,
+    title = {{World} {Magnetic} {Model}},
+    howpublished = {\url{https://ahrs.readthedocs.io/en/latest/wmm.html#module-ahrs.utils.wmm}},
+    year = {2023}
 }
