@@ -47,13 +47,12 @@ Given imperfect measurements, estimate the attitude of the IMU sensor.
 
 Inputs to the software is data produced by a 9 degree-of-freedom (DoF) IMU
 \begin{align*}
-    \text{input} =& [\vec{\text{accel}}, \vec{\text{gyro}}, \vec{\text{mag}}]
+    \text{input} =& [\mathbf{a}, \mathbf{m}, \mathbf{g}]
 \end{align*}
 
-where $\vec{\text{accel}}$ is the acceleration vector, $\vec{\text{gyro}}$ is the angular rotation
-vector, and $\vec{\text{mag}}$ is the magnetic field vector.
+where $\mathbf{a}$ is the acceleration measurement vector, $\mathbf{g}$ is the gyroscope measurment vector, and $\mathbf{m}$ is the mangetometer measurement vector.
 
-The output of this software is the attitude of the IMU sensor with respect to time.
+The output of this software is the attitude of the IMU sensor with respect to time. An orientation filter is used to estimate the orientation, see \cite{al-jlailaty_efficient_2020}.
 
 
 \subsection{Stakeholders}
@@ -94,7 +93,7 @@ Ubuntu 20.04 is officially supported. However, most modern operating systems sho
     \item Port software to microcontroller for online attitude estimation.
 \end{itemize}
 
-\bibliography{bib}{}
+\bibliography{../../refs/bib}{}
 \bibliographystyle{plain}
 
 \end{document}
