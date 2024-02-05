@@ -195,14 +195,17 @@ literature and existing documentation. The symbols are listed in alphabetical or
 \midrule 
 % $v$ & \si[per-mode=symbol] {\meter\per\second} & linear velocity\\
 $a$ & \si[per-mode=symbol] {\meter\per\second\squared} & linear acceleration\\
+$m$ & \si[per-mode=symbol] {\tesla} & magnetic field strength\\
 $\theta$ & \si[per-mode=symbol] {\radian} & angular position \\
 $\omega$ & \si[per-mode=symbol] {\radian\per\second} & angular velocity\\
+$\Delta t$ & \si[per-mode=symbol] {\milli\second} & sampling time\\
 $\mathbf{g}_0$ & \si[per-mode=symbol] {\meter\per\second\squared} & gravitational acceleration
 vector\\
-$\mathbf{b}$ & \si{\nano\tesla} & local magnetic field vector\\
-$\gamma$ & - & Complimentary filter parameter.\\
+${}^E\mathbf{b}$ & \si{\nano\tesla} & local magnetic field vector\\
+$\gamma$ & - & Complimentary filter parameter\\
 ${}^S_E\mathbf{q}$ & \si{\radian} & Attitude (orientation) of the sensor-frame relative to the
 earth-frame\\
+$\eta$ & - & Fraction of development time\\
 \bottomrule
 \end{longtable*}
 \plt{Use your problems actual symbols.  The si package is a good idea to use for units.}
@@ -355,20 +358,6 @@ requirements. This document can reduce the risk of errors, delays, and conflicts
 development process. \cite{purpose}
 
 \subsection{Scope of Requirements}
-
-% The dynamics models of this project will only consider a flat local earth, and the effect of the
-% Earth's rotation will be ignored \cite{al-jlailaty_efficient_2020}. Furthermore, geomagnetic
-% secular variation will be ignored, for more information see \cite{secular_var}. The models of this
-% project assume the operating conditions are within the Earth's atmosphere, and that the distance
-% travelled during algorithm execution does not cause a measurable change in magnetic field
-% intensity \cite{magnet}. Finally, the system will not operate during a geo-magnetic storm.
-
-% For MEMS sensor modelling, we will simplify the measurement error characteristics. 
-
-% Additionally, magnetometers can experience significant local magnetic disturbances from nearby
-% sources, such as drone motors. However, we will assume there are no disturbances.
-
-% Additionally, the system will not operate when the range of the sensor is exceeded.
 
 The scope of this document will only consider operating conditions where all measured values are
 within the range of the sensors, and the system is at or near the surface of the Earth.
@@ -694,7 +683,7 @@ so that the instance models can be verified.
 \begin{itemize}
     \item All scalar values in this system are $\in \mathbb{R}$.
     \item Each sensor produces a measurement vector $\in \mathbb{R}^3$.
-    \item All calculations with quaternions are $\in \mathbf{H}^4$, the quaternion space. And thus
+    \item All calculations with quaternions are $\in \mathbb{R}^4$, the quaternion space. And thus
     must follow quaternion algebra \cite{quat}.
 \end{itemize}
 
@@ -1220,16 +1209,16 @@ omitted. \plt{reference your instance models}
   \hline
   Label& \bf Orientation from Accelerometer measurements\\
   \hline
-  Input & $\prescript{S}{E}{\mathbf{q}},  \prescript{E}{}{\mathbf{g}}, \prescript{S}{}{\mathbf{a}}$
-  \\
+  Input & $\prescript{S}{E}{\mathbf{q}},  \prescript{E}{}{\mathbf{g}}_0,
+  \prescript{S}{}{\mathbf{a}}$ \\
   & The gravity vector is normalized to $\mathbf{g} = (0, 0, 1)^T$ (\aref{a:gravity}). The
   acceleration measurement is in the sensor frame, and constrained to $|a| \leq a_\text{max}$
   (\aref{a:range}).\\
   \hline
   Output  &  $\prescript{S}{E}{\mathbf{q}}_g = \min\limits_{\prescript{S}{E}{\mathbf{q}}\in
-  \mathbb{R}^4} f( \prescript{S}{E}{\mathbf{q}}, \,^E\mathbf{g}, \,^S\mathbf{a}) $\\
- % & $f( \prescript{S}{E}{\mathbf{q}}, \,^E\mathbf{g}, \,^S\mathbf{a}) =
- % \prescript{S}{F}{\mathbf{q}} \mathbf{p}(\prescript{E}{}{\mathbf{g}})
+  \mathbb{R}^4} f( \prescript{S}{E}{\mathbf{q}}, \prescript{E}{}{\mathbf{g}}_0, \,^S\mathbf{a}) $\\
+ % & $f( \prescript{S}{E}{\mathbf{q}}, \prescript{E}{}{\mathbf{g}}_0, \,^S\mathbf{a}) =
+ % \prescript{S}{F}{\mathbf{q}} \mathbf{p}(\prescript{E}{}{\mathbf{g}}_0)
  % \mathbf{p}(\prescript{S}{}{\mathbf{a}}) - \prescript{S}{}{\mathbf{a}}$ \\
   \hline
   Description & Using the known gravitational field in the Earth frame, and a measured sensor-frame
@@ -1261,19 +1250,21 @@ omitted. \plt{reference your instance models}
   \hline
   Label& \bf Orientation from Accelerometer and Magnetometer\\
   \hline
-  Input& $\prescript{S}{E}{\mathbf{q}}, \prescript{E}{}{\mathbf{g}}, \prescript{S}{}{\mathbf{a}},
+  Input& $\prescript{S}{E}{\mathbf{q}}, \prescript{E}{}{\mathbf{g}}_0, \prescript{S}{}{\mathbf{a}},
   \,^E\mathbf{b}, \,^S\mathbf{m}$\\
-    & The gravity vector is normalized to $\mathbf{g} = (0, 0, 1)^T$ (\aref{a:gravity}). Following
-    \aref{a:east_mag} the magnetic field vector is simplified to $\mathbf{b} = (b_x, 0, b_z)^T$. The
-    acceleration  and magnetometer measurements are in the sensor frame.\\
+    & The gravity vector is normalized to $\prescript{E}{}{\mathbf{g}}_0 = (0, 0, 1)^T$
+    (\aref{a:gravity}). Following \aref{a:east_mag} the magnetic field vector is simplified to
+    $\mathbf{b} = (b_x, 0, b_z)^T$. The acceleration  and magnetometer measurements are in the
+    sensor frame.\\
   \hline
   Output  &  $\prescript{S}{E}{\mathbf{q}}_{g, b} = \min\limits_{\prescript{S}{E}{\mathbf{q}}\in
-  \mathbb{R}^4} f_{g,b}( \prescript{S}{E}{\mathbf{q}},  \,^E\mathbf{g}, \,^S\mathbf{a},
-  \,^E\mathbf{b}, \,^S\mathbf{m}) $\\
+  \mathbb{R}^4} f_{g,b}( \prescript{S}{E}{\mathbf{q}},  \prescript{E}{}{\mathbf{g}}_0,
+  \,^S\mathbf{a}, \,^E\mathbf{b}, \,^S\mathbf{m}) $\\
 
-& $ f_{g,b}( \prescript{S}{E}{\mathbf{q}},  \,^E\mathbf{g}, \,^S\mathbf{a}, \,^E\mathbf{b},
-\,^S\mathbf{m})= \begin{bmatrix}f_g( \prescript{S}{E}{\mathbf{q}}, \,^E\mathbf{g}, \,^S\mathbf{a})
-\\ f_b( \prescript{S}{E}{\mathbf{q}}, \,^E\mathbf{b}, \,^S\mathbf{m})\end{bmatrix}$ \\
+& $ f_{g,b}( \prescript{S}{E}{\mathbf{q}},  \prescript{E}{}{\mathbf{g}}_0, \,^S\mathbf{a},
+\,^E\mathbf{b}, \,^S\mathbf{m})= \begin{bmatrix}f_g( \prescript{S}{E}{\mathbf{q}},
+\prescript{E}{}{\mathbf{g}}_0, \,^S\mathbf{a}) \\ f_b( \prescript{S}{E}{\mathbf{q}}, \,^E\mathbf{b},
+\,^S\mathbf{m})\end{bmatrix}$ \\
   
   \hline
   Description & Combining \iref{i:o_from_min_acc} with the known magnetic field in the Earth frame
@@ -1299,10 +1290,10 @@ omitted. \plt{reference your instance models}
     Label& \bf Orientation from Accelerometer and Gyroscope\\
     \hline
     Input& $\prescript{S}{E}{\mathbf{q}}_{\omega, t}, \prescript{S}{E}{\mathbf{q}}_{g, t},
-    \prescript{S}{}{\mathbf{a}}_t, \prescript{E}{}{\mathbf{g}}, \prescript{S}{}{\bm{\omega}_t}, \Delta
-    t$\\
-    & The sensor measurements are from the current time step, and the quaternion estimate is from the
-    previous time step. \\
+    \prescript{S}{}{\mathbf{a}}_t, \prescript{E}{}{\mathbf{g}}_0, \prescript{S}{}{\bm{\omega}_t},
+    \Delta t$\\
+    & The sensor measurements are from the current time step, and the quaternion estimate is from
+    the previous time step. \\
     \hline
     Output & $\prescript{S}{E}{\mathbf{q}}_{t} = \gamma \prescript{S}{E}{\mathbf{q}}_{\omega, t} +
     (1-\gamma) \prescript{S}{E}{\mathbf{q}}_{g, t}$\\
@@ -1330,7 +1321,7 @@ Number& IM\refstepcounter{instnum}\theinstnum \label{i:o_from_comp_all_3}\\
 Label& \bf Orientation from Accelerometer, Gyroscope, and Magnetometer\\
 \hline
 Input& $\prescript{S}{E}{\mathbf{q}}_{\omega, t}, \prescript{S}{E}{\mathbf{q}}_{(g,b), t},
-\prescript{S}{}{\mathbf{a}}_t, \prescript{E}{}{\mathbf{g}}, \prescript{S}{}{\bm{\omega}_t}, \Delta
+\prescript{S}{}{\mathbf{a}}_t, \prescript{E}{}{\mathbf{g}}_0, \prescript{S}{}{\bm{\omega}_t}, \Delta
 t$\\
 & The sensor measurements are from the current time step, and the quaternion estimate is from the
 previous time step. \\
@@ -1338,8 +1329,8 @@ previous time step. \\
 Output & $\prescript{S}{E}{\mathbf{q}}_{t} = \gamma \prescript{S}{E}{\mathbf{q}}_{\omega, t} +
 (1-\gamma) \prescript{S}{E}{\mathbf{q}}_{(g,b), t}$\\
 \hline
-Description& Combining estimates from \iref{i:o_from_gyro} and \ref{i:o_from_min_acc_mag} using
-the complementary filter from \tref{TM:CF} produces a quaternion output using accelerometer and
+Description& Combining estimates from \iref{i:o_from_gyro} and \ref{i:o_from_min_acc_mag} using the
+complementary filter from \tref{TM:CF} produces a quaternion output using accelerometer and
 gyroscope measurements. \\
 \hline
 Sources & \cite{madgwick_ecient_nodate} \\
@@ -1352,8 +1343,7 @@ Ref.\ By & \rref{r:calculate1}.\\
 % \subsubsection*{Derivation of ...}
 
 \plt{The derivation shows how the IM is derived from the TMs/GDs.  In cases where the derivation
-  cannot be described under the Description field, it will be necessary to include this
-  subsection.}
+  cannot be described under the Description field, it will be necessary to include this subsection.}
 
 \subsubsection{Input Data Constraints} \label{sec_DataConstraints}    
 
@@ -1643,8 +1633,8 @@ and data constraints on each other.
 \iref{i:o_from_gyro}         & & & & & & & & & \\ \hline
 \iref{i:o_from_min_acc}      & & & & & & & & & \\ \hline
 \iref{i:o_from_min_acc_mag}  & & & & & & & & & \\ \hline
-\iref{i:o_from_comp_acc_gyro}& & & & & & & &X& \\ \hline
-\iref{i:o_from_comp_all_3}   & & & & & & &X& & \\ \hline
+\iref{i:o_from_comp_acc_gyro}& & & & & &X& &X& \\ \hline
+\iref{i:o_from_comp_all_3}   & & & & & &X&X& & \\ \hline
 \rref{r:inputs}              & & & & & & & & & \\ \hline
 \rref{r:calculate1}          & & & & & & & & & \\ \hline
 \rref{r:calculate2}          & & & & & & & & & \\ \hline
