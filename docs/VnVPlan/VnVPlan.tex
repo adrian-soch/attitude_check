@@ -4,6 +4,9 @@
 \usepackage{tabularx}
 \usepackage{hyperref}
 \usepackage{enumitem,amssymb}
+\usepackage{amsmath, mathtools}
+\usepackage{amsfonts}
+\usepackage{bm}
 \hypersetup{ colorlinks, citecolor=blue, filecolor=black, linkcolor=red, urlcolor=blue }
 \usepackage[round]{natbib}
 
@@ -74,17 +77,17 @@ For symbols and units see the Section 1 of the SRS \citep{SRS}. Table \ref{tab:a
   \caption{Table of Abbreviations and Acronyms}
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{l l} 
-  \toprule		
-  \textbf{symbol} & \textbf{description}\\
-  \midrule 
-  % TM & Theoretical Model\\
-  IMU & Inertial Measurement Unit\\
-  SRS & Software Requirements Specification\\
-  VnV & Verification and Validation \\
-  % MEMS & Micro-electromechanical System \\
-  % NED & North-East-Down \\
-  % WMM & World Magnetic Model. \\
-  \bottomrule
+    \toprule
+    \textbf{symbol} & \textbf{description}\\
+    \midrule 
+    % TM & Theoretical Model\\
+    IMU & Inertial Measurement Unit\\
+    SRS & Software Requirements Specification\\
+    VnV & Verification and Validation \\
+    % MEMS & Micro-electromechanical System \\
+    % NED & North-East-Down \\
+    % WMM & World Magnetic Model. \\
+    \bottomrule
 \end{tabular}\\
 \label{tab:abb}
 \end{table}
@@ -122,8 +125,8 @@ estimate of the current orientation of the sensor relative to the Earth.
 The objectives of this Verification and Validation plan are the following:
 
 \begin{itemize}
-  \item Build confidence in the software correctness.
-  \item Demonstrate the software's ability to accurately estimate orientation.
+    \item Build confidence in the software correctness.
+    \item Demonstrate the software's ability to accurately estimate orientation.
 \end{itemize}
 
 \wss{State what is intended to be accomplished.  The objective will be around the qualities that are
@@ -135,8 +138,8 @@ The objectives of this Verification and Validation plan are the following:
 Objectives that are not included in the scope of this document:
 
 \begin{itemize}
-  \item Demonstration of adequate usability.
-  \item Verification of external libraries.
+    \item Demonstration of adequate usability.
+    \item Verification of external libraries.
 \end{itemize}
 
 It will be assumed that the documentation of \progname{} is adequate to facilitate adequate
@@ -182,12 +185,12 @@ This section will detail the plan for the verification of the documentation and 
 The SRS \citep{SRS} will be verified via feedback from a domain expert and secondary reviewers. The following is a checklist for SRS review:
 
 \begin{todolist}
-  \item Problem Statement: confirm it is a valid statement.
-  \item Goal Statement: confirm it is a valid goal.
-  \item Physical system: check for missing descriptions.
-  \item Assumptions: confirm assumptions are specific and meaningful.
-  \item Theory: confirm instance models and all required theory is logical and complete enough for development.
-  \item Requirements: confirm that the requirements are reasonably complete for testers and clients.
+    \item Problem Statement: confirm it is a valid statement.
+    \item Goal Statement: confirm it is a valid goal.
+    \item Physical system: check for missing descriptions.
+    \item Assumptions: confirm assumptions are specific and meaningful.
+    \item Theory: confirm instance models and all required theory is logical and complete enough for development.
+    \item Requirements: confirm that the requirements are reasonably complete for testers and clients.
 \end{todolist}
 
 
@@ -198,8 +201,14 @@ The SRS \citep{SRS} will be verified via feedback from a domain expert and secon
 
 \subsection{Design Verification Plan}
 
+To verify the design, a domain expert and secondary reviewer will use the following checklist:
+
 \begin{todolist}
-  \item 
+    \item Inspect the design document for the following items:
+    \begin{itemize}
+        \item 
+    \end{itemize}
+    \item Create a high-level diagram that represents the relationships between modules. This is intended to find gaps in the design.
 \end{todolist}
 
 \wss{Plans for design verification}
@@ -207,6 +216,12 @@ The SRS \citep{SRS} will be verified via feedback from a domain expert and secon
 \wss{Create a checklists?}
 
 \subsection{Verification and Validation Plan Verification Plan}
+
+This VnV plan will be verified via inspection from a domain expert and a secondary review. The inspection will look for the following items:
+\begin{todolist}
+    \item Confirm all sections contain a verification checklist or description.
+    \item Inspect system-level test cases for coverage of SRS requirements and goal statements.
+\end{todolist}
 
 \wss{The verification and validation plan is an artifact that should also be verified.  Techniques
 for this include review and mutation testing.}
@@ -222,6 +237,18 @@ for this include review and mutation testing.}
 
 \subsection{Automated Testing and Verification Tools}
 
+\begin{itemize}
+    \item GoogleTest \url{https://github.com/google/googletest}
+    \item Gcov, lCov for calculating and displaying test coverage
+    \item Valgring/memcheck for RAM usage and checking for memory leaks
+    \item Cmake for building
+    \item Uncrustify for automatic formatting
+    \item CppCheck for static analysis
+    \item Github PR checklists
+    \item Github CI workflow for automated regression test and checking thats builds pass before entering the main branch
+    \item Docker
+\end{itemize}
+
 \wss{What tools are you using for automated testing.  Likely a unit testing framework and maybe a
   profiling tool, like ValGrind.  Other possible tools include a static analyzer, make, continuous
   integration tools, test coverage tools, etc.  Explain your plans for summarizing code coverage
@@ -234,6 +261,9 @@ for this include review and mutation testing.}
 \wss{The details of this section will likely evolve as you get closer to the implementation.}
 
 \subsection{Software Validation Plan}
+
+For the scope of this project, software validation will consist of benchmarking against existing algorithms. The Root Mean Squared Error (RMSE) of \progname{} should lie within $\epsilon$ of the RMSE of attitude estimators implemented by \citet{broad_code}. The data will come from the BROAD dataset \citep{broad}.
+
 
 \wss{If there is any external data that can be used for validation, you should point to it here.  If
   there are no plans for validation, you should state that here.}
@@ -252,49 +282,65 @@ demo for the supervisor.}
 \wss{Include a blurb here to explain why the subsections below cover the requirements.  References
   to the SRS would be good here.}
 
-\subsubsection{Area of Testing1}
+\subsubsection{Inputs and Outputs}
+
+This section covers requirements R1 and R4 of the SRS. This includes the input and output requirements for \progname{}. For input constraints see Section 4.2.8 of the SRS.
 
 \wss{It would be nice to have a blurb here to explain why the subsections below cover the
   requirements.  References to the SRS would be good here.  If a section covers tests for input
   constraints, you should reference the data constraints table in the SRS.}
 		
-\paragraph{Title for Test}
+% \paragraph{Title for Test}
 
 \begin{enumerate}
 
-\item{test-id1\\}
+\item{\textbf{Input/Output Test}\\}
 
-Control: Manual versus Automatic
-					
-Initial State: 
-					
-Input: 
-					
-Output: \wss{The expected result for the given inputs}
+    \textbf{Control:} Automatic
+                
+    \textbf{Initial State:} Uninitialized
+                
+    \textbf{Input:} One complete valid set of initialization inputs, one set of measurements from: [Accelerometer, Gyroscope, Magnetometer].
+                
+    \textbf{Output:} Attitude Estimator (AE) object is initialized. Get parameters method returns the same parameters that were given. Orientation output is in the expected format.
 
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
-					
-How test will be performed: 
-					
-\item{test-id2\\}
+    \textbf{Test Case Derivation:} N/A
+                
+    \textbf{How test will be performed:} Test fixture will create and initialize the AE.
 
-Control: Manual versus Automatic
-					
-Initial State: 
-					
-Input: 
-					
-Output: \wss{The expected result for the given inputs}
+\item{Periodic Input Test\\}
+              
+    \textbf{Initial State:} Initialized
+                
+    \textbf{Input:}
+                
+    \textbf{Output:} \wss{The expected result for the given inputs}
 
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
+    \textbf{Test Case Derivation:} \wss{Justify the expected value given in the Output field}
 
-How test will be performed: 
+    \textbf{How test will be performed:}
 
 \end{enumerate}
 
-\subsubsection{Area of Testing2}
+\subsubsection{Calculations}
+\begin{enumerate}
+  
+\item{Periodic Input Test\\}
+            
+  \textbf{Initial State: }
+              
+  \textbf{Input:}
+              
+  \textbf{Output:} \wss{The expected result for the given inputs}
+  
+  \textbf{Test Case Derivation:} \wss{Justify the expected value given in the Output field}
+  
+  \textbf{How test will be performed:}
+  
+  \textbf{Note:} See Section 4.2.8 of the SRS for input constraints.
+  
+\end{enumerate}
 
-...
 
 \subsection{Tests for Nonfunctional Requirements}
 
@@ -308,41 +354,41 @@ How test will be performed:
 \wss{Static tests, review, inspections, and walkthroughs, will not follow the format for the tests
 given below.}
 
-\subsubsection{Area of Testing1}
+\subsubsection{Accuracy}
 		
-\paragraph{Title for Test}
+% \paragraph{Title for Test}
 
 \begin{enumerate}
 
 \item{test-id1\\}
 
-Type: Functional, Dynamic, Manual, Static etc.
-					
-Initial State: 
-					
-Input/Condition: 
-					
-Output/Result: 
-					
-How test will be performed: 
-					
-\item{test-id2\\}
-
-Type: Functional, Dynamic, Manual, Static etc.
-					
-Initial State: 
-					
-Input: 
-					
-Output: 
-					
-How test will be performed: 
-
+  Type: Functional, Dynamic, Manual, Static etc.
+            
+  Initial State: 
+            
+  Input/Condition: 
+            
+  Output/Result: 
+            
+  How test will be performed: 
 \end{enumerate}
 
-\subsubsection{Area of Testing2}
+\subsubsection{Portability}
 
-...
+\begin{enumerate}
+
+  \item{test-id1\\}
+  
+    Type: Functional, Dynamic, Manual, Static etc.
+              
+    Initial State: 
+              
+    Input/Condition: 
+              
+    Output/Result: 
+              
+    How test will be performed: 
+  \end{enumerate}
 
 \subsection{Traceability Between Test Cases and Requirements}
 
@@ -384,6 +430,43 @@ for all of the tests.}
   perspective.  Explain to the reader how the tests were selected.}
 
 \begin{enumerate}
+
+
+    \item{\textbf{Input Test}\\}
+                
+    \textbf{Initial State:} Uninitialized
+                
+      \textbf{Input:} \begin{align*}
+        \Delta t &= 1.0\\
+        {}^E\mathbf{b} &= [1.0, 1.0, 1.0]\\
+        \gamma &= 0.6\\
+        \text{outputTypeEnum} &= \text{Quaternion}
+      \end{align*}
+    
+      One set of measurements from: [Accelerometer, Gyroscope, Magnetometer]
+                
+      \textbf{Output:} Attitude Estimator (AE) object is initialized. Get parameters method returns the same parameters that were given.
+    
+      \textbf{Test Case Derivation:} N/A
+                
+      \textbf{How test will be performed:} Test fixture will create and initialize the AE.
+    
+      \textbf{Note:} See Section 4.2.8 of the SRS for input constraints.
+    
+    \item{Periodic Input Test\\}
+                
+    \textbf{Initial State:} Initialized
+                
+    \textbf{Input:}
+                
+    \textbf{Output:} \wss{The expected result for the given inputs}
+    
+    \textbf{Test Case Derivation:} \wss{Justify the expected value given in the Output field}
+    
+    \textbf{How test will be performed:}
+    
+    \textbf{Note:} See Section 4.2.8 of the SRS for input constraints.
+    
 
 \item{test-id1\\}
 
