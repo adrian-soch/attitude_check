@@ -16,6 +16,12 @@
 \newlist{todolist}{itemize}{2}
 \setlist[todolist]{label=$\square$}
 
+\newcommand{\testref}[1]{T\ref{#1}} \newcounter{testnum} %Requirement Number
+\newcommand{\Tthetestnum}{T\thetestnum}
+
+\newcommand{\utestref}[1]{UT\ref{#1}} \newcounter{utestnum} %Requirement Number
+\newcommand{\UTthetestnum}{UT\theutestnum}
+
 \begin{document}
 
 \title{Project Title: System Verification and Validation Plan for \progname{}} 
@@ -61,16 +67,13 @@ all sections filled in.}
 
 \section{Symbols, Abbreviations, and Acronyms}
 
-For symbols and units see the Section 1 of the SRS \citep{SRS}. Table \ref{tab:abb} defines the abbreviations and acronyms used in this document.
+For symbols and units see the Section 1 of the SRS \citep{SRS}. Table \ref{tab:abb} defines the
+abbreviations and acronyms used in this document.
 
-% \renewcommand{\arraystretch}{1.2}
-% \begin{tabular}{l l} 
-%   \toprule		
+% \renewcommand{\arraystretch}{1.2} \begin{tabular}{l l} \toprule        
 %   \textbf{symbol} & \textbf{description}\\
-%   \midrule 
-%   T & Test\\
-%   \bottomrule
-% \end{tabular}\\
+%   \midrule T & Test\\
+%   \bottomrule \end{tabular}\\
 
 \begin{table}[!h]
   \centering
@@ -81,7 +84,10 @@ For symbols and units see the Section 1 of the SRS \citep{SRS}. Table \ref{tab:a
     \textbf{symbol} & \textbf{description}\\
     \midrule 
     % TM & Theoretical Model\\
+    accel & Accerleromter \\
+    gyro & Gyroscope \\
     IMU & Inertial Measurement Unit\\
+    mag & Magnetometer \\
     SRS & Software Requirements Specification\\
     VnV & Verification and Validation \\
     % MEMS & Micro-electromechanical System \\
@@ -103,10 +109,18 @@ For symbols and units see the Section 1 of the SRS \citep{SRS}. Table \ref{tab:a
 
 \section{Introduction}
 
-A verification and validation (VnV) plan is a document that describes the objectives, scope, methods, and criteria for verifying and validating a software product. Verification is the process of checking whether the software meets the specified requirements and design specifications. Validation is the process of checking whether the software meets the user's needs and expectations. A VnV plan helps to ensure the quality, reliability, and functionality of the software, as well as to identify and correct any defects or errors before the software is released or deployed.
+A verification and validation (VnV) plan is a document that describes the objectives, scope,
+methods, and criteria for verifying and validating a software product. Verification is the process
+of checking whether the software meets the specified requirements and design specifications.
+Validation is the process of checking whether the software meets the user's needs and expectations.
+A VnV plan helps to ensure the quality, reliability, and functionality of the software, as well as
+to identify and correct any defects or errors before the software is released or deployed.
 
 
-This document details the plan for verification and validation of \progname{}. Section \ref{sec:general} provides an overview and objectives of this document. Section \ref{sec:plan} discusses the methods of achieving the objectives. Section \ref{sec:system_test} covers the test descriptions.
+This document details the plan for verification and validation of \progname{}. Section
+\ref{sec:general} provides an overview and objectives of this document. Section \ref{sec:plan}
+discusses the methods of achieving the objectives. Section \ref{sec:system_test} covers the test
+descriptions.
 
 \wss{provide an introductory blurb and roadmap of the Verification and Validation plan}
 
@@ -163,14 +177,16 @@ that you will assume that external library has already been verified by its impl
   documents (design documents, like MG, MIS, etc).  You can include these even before they are
   written, since by the time the project is done, they will be written.}
 
-See the Software Requirements Specification \citep{SRS} for \progname{}, it details the goals, requirements, assumptions, and theory of the software.
+See the Software Requirements Specification \citep{SRS} for \progname{}, it details the goals,
+requirements, assumptions, and theory of the software.
 
 \wss{Don't just list the other documents.  You should explain why they are relevant and how they
 relate to your VnV efforts.}
 
 \section{Plan} \label{sec:plan}
 
-This section will detail the plan for the verification of the documentation and software for \progname{}. The primary items that will be verified are: SRS, design, VnV, implementation.
+This section will detail the plan for the verification of the documentation and software for
+\progname{}. The primary items that will be verified are: SRS, design, VnV, implementation.
 
 \wss{Introduce this section.   You can provide a roadmap of the sections to come.}
 
@@ -182,15 +198,18 @@ This section will detail the plan for the verification of the documentation and 
 
 \subsection{SRS Verification Plan}
 
-The SRS \citep{SRS} will be verified via feedback from a domain expert and secondary reviewers. The following is a checklist for SRS review:
+The SRS \citep{SRS} will be verified via feedback from a domain expert and secondary reviewers. The
+following is a checklist for SRS review:
 
 \begin{todolist}
     \item Problem Statement: confirm it is a valid statement.
     \item Goal Statement: confirm it is a valid goal.
     \item Physical system: check for missing descriptions.
     \item Assumptions: confirm assumptions are specific and meaningful.
-    \item Theory: confirm instance models and all required theory is logical and complete enough for development.
-    \item Requirements: confirm that the requirements are reasonably complete for testers and clients.
+    \item Theory: confirm instance models and all required theory is logical and complete enough for
+    development.
+    \item Requirements: confirm that the requirements are reasonably complete for testers and
+    clients.
 \end{todolist}
 
 
@@ -208,7 +227,8 @@ To verify the design, a domain expert and secondary reviewer will use the follow
     \begin{itemize}
         \item 
     \end{itemize}
-    \item Create a high-level diagram that represents the relationships between modules. This is intended to find gaps in the design.
+    \item Create a high-level diagram that represents the relationships between modules. This is
+    intended to find gaps in the design.
 \end{todolist}
 
 \wss{Plans for design verification}
@@ -217,7 +237,8 @@ To verify the design, a domain expert and secondary reviewer will use the follow
 
 \subsection{Verification and Validation Plan Verification Plan}
 
-This VnV plan will be verified via inspection from a domain expert and a secondary review. The inspection will look for the following items:
+This VnV plan will be verified via inspection from a domain expert and a secondary review. The
+inspection will look for the following items:
 \begin{todolist}
     \item Confirm all sections contain a verification checklist or description.
     \item Inspect system-level test cases for coverage of SRS requirements and goal statements.
@@ -230,6 +251,10 @@ for this include review and mutation testing.}
 
 \subsection{Implementation Verification Plan}
 
+A combination of static and dynamic tests will be used to verify \progname{}. Cppcheck \citep{cppcheck} is a static code checking tool that will be employed to analyze the code for undefined behavior and poor design constructs.
+
+System and unit level tests will be used to dynamically verify \progname{}. Section \ref{sec:system_test} outlines the system-level tests. Section \ref{sec:unit_test} details the unit tests.
+
 \wss{You should at least point to the tests listed in this document and the unit testing plan.}
 \wss{In this section you would also give any details of any plans for static verification of the
   implementation.  Potential techniques include code walkthroughs, code inspection, static
@@ -238,15 +263,14 @@ for this include review and mutation testing.}
 \subsection{Automated Testing and Verification Tools}
 
 \begin{itemize}
-    \item GoogleTest \url{https://github.com/google/googletest}
-    \item Gcov, lCov for calculating and displaying test coverage
-    \item Valgring/memcheck for RAM usage and checking for memory leaks
-    \item Cmake for building
-    \item Uncrustify for automatic formatting
-    \item CppCheck for static analysis
-    \item Github PR checklists
-    \item Github CI workflow for automated regression test and checking thats builds pass before entering the main branch
-    \item Docker
+    \item Cmake \citep{cmake} is a build system tool that will be used to simplify building and testing \progname{}.
+    \item GoogleTest is a unit testing framework that support c++ code. It also includes a mocking framework. See \url{https://github.com/google/googletest}.
+    \item GCOV, LCOV are tools for calculating and displaying unit test coverage metrics.
+    \item Valgring is a suite of tools for memory and performance profiling. It will be used to check for memory leaks and efficient memory utilization.
+    \item Uncrustify is a tool that applies code formatting rules based on a configuration file. It will be used before every commit to the repo.
+    \item Github PR checklists will help reviewers/developers see and check that all rules and tests are completed before code enter a protected branch (i.e. main).
+    \item Github CI workflow will automate regression tests and checks that \progname{} builds are passing before a PR is merged into a protected branch.
+    \item Docker is a mechanism to containerize applications. It will be used to ensure installability and usability of the project.
 \end{itemize}
 
 \wss{What tools are you using for automated testing.  Likely a unit testing framework and maybe a
@@ -262,15 +286,17 @@ for this include review and mutation testing.}
 
 \subsection{Software Validation Plan}
 
-For the scope of this project, software validation will consist of benchmarking against existing algorithms. The Root Mean Squared Error (RMSE) of \progname{} should lie within $\epsilon$ of the RMSE of attitude estimators implemented by \citet{broad_code}. The data will come from the BROAD dataset \citep{broad}.
+For the scope of this project, software validation will consist of benchmarking against existing
+algorithms. The Root Mean Squared Error (RMSE) of \progname{} should lie within $\epsilon$ of the
+RMSE of attitude estimators implemented by \citet{broad_code}. The data will come from the BROAD
+dataset \citep{broad}.
 
 
 \wss{If there is any external data that can be used for validation, you should point to it here.  If
-  there are no plans for validation, you should state that here.}
-\wss{You might want to use review sessions with the stakeholder to check that the requirements
-document captures the right requirements.  Maybe task based inspection?}
-\wss{For teams without an external supervisor, user testing can serve the same purpose as a Rev 0
-demo for the supervisor.}
+  there are no plans for validation, you should state that here.} \wss{You might want to use review
+  sessions with the stakeholder to check that the requirements document captures the right
+  requirements.  Maybe task based inspection?} \wss{For teams without an external supervisor, user
+  testing can serve the same purpose as a Rev 0 demo for the supervisor.}
 \wss{This section might reference back to the SRS verification section.}
 
 \section{System Test Description} \label{sec:system_test}
@@ -279,12 +305,13 @@ demo for the supervisor.}
 
 \wss{Subsets of the tests may be in related, so this section is divided into different areas.  If
   there are no identifiable subsets for the tests, this level of document structure can be removed.}
-\wss{Include a blurb here to explain why the subsections below cover the requirements.  References
+  \wss{Include a blurb here to explain why the subsections below cover the requirements.  References
   to the SRS would be good here.}
 
 \subsubsection{Inputs and Outputs}
 
-This section covers requirements R1 and R4 of the SRS. This includes the input and output requirements for \progname{}. For input constraints see Section 4.2.8 of the SRS.
+This section covers requirements R1 and R4 of the SRS. This includes the input and output
+requirements for \progname{}. For input constraints see Section 4.2.8 of the SRS.
 
 \wss{It would be nice to have a blurb here to explain why the subsections below cover the
   requirements.  References to the SRS would be good here.  If a section covers tests for input
@@ -294,50 +321,104 @@ This section covers requirements R1 and R4 of the SRS. This includes the input a
 
 \begin{enumerate}
 
-\item{\textbf{Input/Output Test}\\}
+\item[\refstepcounter{testnum} \Tthetestnum \label{t:sys_io}:] \textbf{Input/Output Test} \\
 
     \textbf{Control:} Automatic
                 
     \textbf{Initial State:} Uninitialized
                 
-    \textbf{Input:} One complete valid set of initialization inputs, one set of measurements from: [Accelerometer, Gyroscope, Magnetometer].
-                
-    \textbf{Output:} Attitude Estimator (AE) object is initialized. Get parameters method returns the same parameters that were given. Orientation output is in the expected format.
+    \begin{table}[!h]
+    \centering
+    \begin{tabular}{|l|l|l|}
+    \hline
+    Step & Input & Output \\ \hline
+    1 &
+        \begin{tabular}[c]{@{}l@{}}Initialize with: $ \Delta t = 1.0,{}^E\mathbf{b} = [1.0, 1.0,
+        1.0],$ \\ $\gamma = 0.6, \text{outputType} = \text{Quat} $ \end{tabular} &
+        \begin{tabular}[c]{@{}l@{}}Get params method matches\\ the inputs.\end{tabular} \\ \hline
+    2 &
+        \begin{tabular}[c]{@{}l@{}}One set of {[}accel, gyro, mag{]}\\ measurements.\end{tabular} &
+        \begin{tabular}[c]{@{}l@{}}Orientation output should match\\ output format from
+        above\end{tabular} \\ \hline
+    3 &
+    \begin{tabular}[c]{@{}l@{}}Initialize with: $ \Delta t = 1.0,{}^E\mathbf{b} = [1.0, 1.0, 1.0],$
+    \\ $\gamma = 0.6, \text{outputType} = \text{Rot} $ \end{tabular} &
+    \begin{tabular}[c]{@{}l@{}}Get params method matches\\ the inputs.\end{tabular} \\ \hline
+    4 &
+        \begin{tabular}[c]{@{}l@{}}One set of {[}accel, gyro, mag{]}\\ measurements.\end{tabular} &
+        \begin{tabular}[c]{@{}l@{}}Orientation output should match\\ output format from
+        above\end{tabular} \\ \hline
+    5 &
+        \begin{tabular}[c]{@{}l@{}}Initialize with: $ \Delta t = 1.0,{}^E\mathbf{b} = [1.0, 1.0,
+        1.0],$ \\ $\gamma = 0.6, \text{outputType} = \text{Euler} $ \end{tabular} &
+        \begin{tabular}[c]{@{}l@{}}Get params method matches\\ the inputs.\end{tabular} \\ \hline
+    6 &
+        \begin{tabular}[c]{@{}l@{}}One set of {[}accel, gyro, mag{]}\\ measurements.\end{tabular} &
+        \begin{tabular}[c]{@{}l@{}}Orientation output should match\\ output format from
+        above\end{tabular} \\ \hline
+    \end{tabular}
+    \end{table}
 
     \textbf{Test Case Derivation:} N/A
                 
-    \textbf{How test will be performed:} Test fixture will create and initialize the AE.
-
-\item{Periodic Input Test\\}
-              
-    \textbf{Initial State:} Initialized
-                
-    \textbf{Input:}
-                
-    \textbf{Output:} \wss{The expected result for the given inputs}
-
-    \textbf{Test Case Derivation:} \wss{Justify the expected value given in the Output field}
-
-    \textbf{How test will be performed:}
+    \textbf{How test will be performed:} At each step, apply the inputs and assert the output.
 
 \end{enumerate}
 
-\subsubsection{Calculations}
+\subsubsection{Calculations} \label{sec:calc}
+This section covers requirements R2 and R3 of the SRS. This includes the input and output
+requirements for \progname{}. For input constraints see Section 4.2.8 of the SRS.
+
 \begin{enumerate}
-  
-\item{Periodic Input Test\\}
+
+\item[\refstepcounter{testnum} \Tthetestnum \label{t:sys_calc_mag}:] \textbf{Orientation with Magnetometer} \\
+   
+    \textbf{Control:} Automatic
             
-  \textbf{Initial State: }
-              
-  \textbf{Input:}
-              
-  \textbf{Output:} \wss{The expected result for the given inputs}
+    \textbf{Initial State:} Uninitialized
+    
+    \begin{table}[!h]
+        \centering
+        \begin{tabular}{|l|l|l|}
+        \hline
+        Step & Input                                                                                       & Output \\ \hline
+        1    & \begin{tabular}[c]{@{}l@{}}One complete set of valid \\ initialization inputs.\end{tabular} & -      \\ \hline
+        2 & {[}accel, gyro, mag{]} measurements. & \begin{tabular}[c]{@{}l@{}}Calculate RMSE of output\\ vs. ground truth\end{tabular}     \\ \hline
+        3    & \begin{tabular}[c]{@{}l@{}}Repeat step 2 for all\\ measurements in dataset\end{tabular}     & -      \\ \hline
+        4 & Calculate average RMSE               & \begin{tabular}[c]{@{}l@{}}Assert average error is within\\ the tolerance.\end{tabular} \\ \hline
+        \end{tabular}
+        \end{table}
   
-  \textbf{Test Case Derivation:} \wss{Justify the expected value given in the Output field}
+    \textbf{Test Case Derivation:} Benchmark dataset with labelled ground truth orientation for each
+    set of sensor measurements.
+    
+    \textbf{How test will be performed:} At each step, apply the inputs and assert the output.
+
+\item[\refstepcounter{testnum} \Tthetestnum \label{t:sys_calc_no_mag}:] \textbf{Orientation without Magnetometer}\\
+
+    \textbf{Control:} Automatic
+            
+    \textbf{Initial State:} Uninitialized
+    
+    \begin{table}[!h]
+        \centering
+        \begin{tabular}{|l|l|l|}
+        \hline
+        Step & Input                                                                                       & Output \\ \hline
+        1    & \begin{tabular}[c]{@{}l@{}}One complete set of valid \\ initialization inputs.\end{tabular} & -      \\ \hline
+        2    & {[}accel, gyro, mag{]} measurements.                                                        & -      \\ \hline
+        3 & {[}accel, gyro{]} measurements. & \begin{tabular}[c]{@{}l@{}}Calculate RMSE of output\\ vs. ground truth\end{tabular}     \\ \hline
+        4    & \begin{tabular}[c]{@{}l@{}}Repeat step 3 for all\\ measurements in dataset\end{tabular}     & -      \\ \hline
+        5 & Calculate average RMSE          & \begin{tabular}[c]{@{}l@{}}Assert average error is within\\ the tolerance.\end{tabular} \\ \hline
+        \end{tabular}
+        \end{table}
   
-  \textbf{How test will be performed:}
-  
-  \textbf{Note:} See Section 4.2.8 of the SRS for input constraints.
+    \textbf{Test Case Derivation:} Benchmark dataset with labelled ground truth orientation for each
+    set of sensor measurements.
+    
+    \textbf{How test will be performed:} At each step, apply the inputs and assert the output.
+    
+    \textbf{Note:} Only Pitch and Roll components are evaluated.
   
 \end{enumerate}
 
@@ -360,41 +441,86 @@ given below.}
 
 \begin{enumerate}
 
-\item{test-id1\\}
+\item[\refstepcounter{testnum} \Tthetestnum \label{t:a1}:] \textbf{test-a1} \\
 
-  Type: Functional, Dynamic, Manual, Static etc.
+    Type: Automatic
             
-  Initial State: 
+    This test refers to Section \ref{sec:calc}.
+\end{enumerate}
+
+\subsubsection{Usability}
+
+\begin{enumerate}
+
+\item[\refstepcounter{testnum} \Tthetestnum \label{t:u1}:] \textbf{test-u1} \\
+
+    Type: Manual
             
-  Input/Condition: 
+    Initial State: N/A
             
-  Output/Result: 
+    Input/Condition: N/A
             
-  How test will be performed: 
+    Output/Result: Successful integration with existing code.
+            
+    How test will be performed: A manual inspection of the code, specifically the header file. Can a developer read the documention/header file and correctly interact with the functions/objects?This test passes if this is true.
+\end{enumerate}
+
+\subsubsection{Maintainability}
+
+\begin{enumerate}
+
+\item[\refstepcounter{testnum} \Tthetestnum \label{t:m1}:] \textbf{test-m1} \\
+
+    Type: Manual
+            
+    Initial State: N/A
+            
+    Input/Condition: N/A
+            
+    Output/Result: Successful addition of a likely change within the threshold defined in NFR3 of the SRS. 
+            
+    How test will be performed: If a likely change needs to be added, measure the development time and compare it to the total development time. If it is less than the threshold specified in the SRS, this test passes.
 \end{enumerate}
 
 \subsubsection{Portability}
 
 \begin{enumerate}
 
-  \item{test-id1\\}
-  
-    Type: Functional, Dynamic, Manual, Static etc.
-              
-    Initial State: 
-              
-    Input/Condition: 
-              
-    Output/Result: 
-              
-    How test will be performed: 
-  \end{enumerate}
+\item[\refstepcounter{testnum} \Tthetestnum \label{t:p1}:] \textbf{test-p1} \\
+
+    Type: Manual
+            
+    Initial State: N/A
+            
+    Input/Condition: One set of initialization inputs, 1 set of measurements
+            
+    Output/Result: Result of compilation and execution.
+            
+    How test will be performed: Build the project, initialize and input 1 set of measurements. Test is successful if the build has no errors and if the code produces the same result on Windows 11, macOS, and Ubuntu.
+\end{enumerate}
 
 \subsection{Traceability Between Test Cases and Requirements}
 
+\begin{table}[!h]
+    \centering
+    \caption{Relation of Test Cases and Requirements.}
+    \label{tab:traceability}
+    \begin{tabular}{|l|l|l|l|l|l|l|l|l|}
+    \hline
+      & R1 & R2 & R3 & R4 & NFR1 & NFR2 & NFR3 & NFR4 \\ \hline
+    \testref{t:sys_io} & X  &    &    & X  &      &      &      &      \\ \hline
+    \testref{t:sys_calc_mag} &    & X  &    &    & X    &      &      &      \\ \hline
+    \testref{t:sys_calc_no_mag} &    &    & X  &    & X    &      &      &      \\ \hline
+    \testref{t:a1} &    &    &    &    & X    &      &      &      \\ \hline
+    \testref{t:u1} &    &    &    &    &      & X    &      &      \\ \hline
+    \testref{t:m1} &    &    &    &    &      &      & X    &      \\ \hline
+    \testref{t:p1} &    &    &    &    &      &      &      & X    \\ \hline
+    \end{tabular}
+    \end{table}
+
 \wss{Provide a table that shows which test cases are supporting which requirements.}
 
-\section{Unit Test Description}
+\section{Unit Test Description} \label{sec:unit_test}
 
 \wss{This section should not be filled in until after the MIS (detailed design document) has been
   completed.}
@@ -431,78 +557,67 @@ for all of the tests.}
 
 \begin{enumerate}
 
-
-    \item{\textbf{Input Test}\\}
+\item[\refstepcounter{utestnum} \Tthetestnum:] \textbf{Inputs: Invalid time} \\
                 
-    \textbf{Initial State:} Uninitialized
+    \textbf{Initial State:} ...
                 
-      \textbf{Input:} \begin{align*}
-        \Delta t &= 1.0\\
-        {}^E\mathbf{b} &= [1.0, 1.0, 1.0]\\
-        \gamma &= 0.6\\
-        \text{outputTypeEnum} &= \text{Quaternion}
-      \end{align*}
-    
-      One set of measurements from: [Accelerometer, Gyroscope, Magnetometer]
+    \textbf{Input:} ...
+            
+    \textbf{Output:} ...
+
+    \textbf{Test Case Derivation:} ...
+            
+    \textbf{How test will be performed:} ...
+
+\item[\refstepcounter{utestnum} \Tthetestnum:] \textbf{Inputs: Invalid mag ref} \\
                 
-      \textbf{Output:} Attitude Estimator (AE) object is initialized. Get parameters method returns the same parameters that were given.
-    
-      \textbf{Test Case Derivation:} N/A
+    \textbf{Initial State:} ...
                 
-      \textbf{How test will be performed:} Test fixture will create and initialize the AE.
-    
-      \textbf{Note:} See Section 4.2.8 of the SRS for input constraints.
-    
-    \item{Periodic Input Test\\}
+    \textbf{Input:} ...
+            
+    \textbf{Output:} ...
+
+    \textbf{Test Case Derivation:} ...
+            
+    \textbf{How test will be performed:} ...
+
+\item[\refstepcounter{utestnum} \Tthetestnum:] \textbf{Inputs: Invalid gamma} \\
                 
-    \textbf{Initial State:} Initialized
+    \textbf{Initial State:} ...
                 
-    \textbf{Input:}
+    \textbf{Input:} ...
+            
+    \textbf{Output:} ...
+
+    \textbf{Test Case Derivation:} ...
+            
+    \textbf{How test will be performed:} ...
+
+\item[\refstepcounter{utestnum} \Tthetestnum:] \textbf{Inputs: Invalid output type} \\
                 
-    \textbf{Output:} \wss{The expected result for the given inputs}
-    
-    \textbf{Test Case Derivation:} \wss{Justify the expected value given in the Output field}
-    
-    \textbf{How test will be performed:}
-    
-    \textbf{Note:} See Section 4.2.8 of the SRS for input constraints.
-    
+    \textbf{Initial State:} ...
+                
+    \textbf{Input:} ...
+            
+    \textbf{Output:} ...
 
-\item{test-id1\\}
+    \textbf{Test Case Derivation:} ...
+            
+    \textbf{How test will be performed:} ...
 
-Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will be automatic}
-					
-Initial State: 
-					
-Input: 
-					
-Output: \wss{The expected result for the given inputs}
+\item[\refstepcounter{utestnum} \Tthetestnum:] \textbf{Inputs: Valid} \\
+                
+    \textbf{Initial State:} ...
+                
+    \textbf{Input:} ...
+            
+    \textbf{Output:} ...
 
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
-
-How test will be performed: 
-					
-\item{test-id2\\}
-
-Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will be automatic}
-					
-Initial State: 
-					
-Input: 
-					
-Output: \wss{The expected result for the given inputs}
-
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
-
-How test will be performed: 
-
-\item{...\\}
-    
+    \textbf{Test Case Derivation:} ...
+            
+    \textbf{How test will be performed:} ...
+        
 \end{enumerate}
-
-\subsubsection{Module 2}
-
-...
 
 \subsection{Tests for Nonfunctional Requirements}
 
@@ -570,11 +685,10 @@ section for easy maintenance.
 
 % \wss{This is a section that would be appropriate for some projects.}
 
-% \newpage{}
-% \section*{Appendix --- Reflection}
+% \newpage{} \section*{Appendix --- Reflection}
 
-% The information in this section will be used to evaluate the team members on the graduate attribute
-% of Lifelong Learning.  Please answer the following questions:
+% The information in this section will be used to evaluate the team members on the graduate
+% attribute of Lifelong Learning.  Please answer the following questions:
 
 
 
