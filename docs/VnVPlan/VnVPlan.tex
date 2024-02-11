@@ -16,10 +16,10 @@
 \newlist{todolist}{itemize}{2}
 \setlist[todolist]{label=$\square$}
 
-\newcommand{\testref}[1]{T\ref{#1}} \newcounter{testnum} %Requirement Number
+\newcommand{\testref}[1]{T\ref{#1}} \newcounter{testnum}
 \newcommand{\Tthetestnum}{T\thetestnum}
 
-\newcommand{\utestref}[1]{UT\ref{#1}} \newcounter{utestnum} %Requirement Number
+\newcommand{\utestref}[1]{UT\ref{#1}} \newcounter{utestnum}
 \newcommand{\UTthetestnum}{UT\theutestnum}
 
 \begin{document}
@@ -84,7 +84,7 @@ abbreviations and acronyms used in this document.
     \textbf{symbol} & \textbf{description}\\
     \midrule 
     % TM & Theoretical Model\\
-    accel & Accerleromter \\
+    accel & Accelerometer \\
     gyro & Gyroscope \\
     IMU & Inertial Measurement Unit\\
     mag & Magnetometer \\
@@ -242,6 +242,7 @@ inspection will look for the following items:
 \begin{todolist}
     \item Confirm all sections contain a verification checklist or description.
     \item Inspect system-level test cases for coverage of SRS requirements and goal statements.
+    \item Inspect all test cases for complete definitions.
 \end{todolist}
 
 \wss{The verification and validation plan is an artifact that should also be verified.  Techniques
@@ -251,9 +252,13 @@ for this include review and mutation testing.}
 
 \subsection{Implementation Verification Plan}
 
-A combination of static and dynamic tests will be used to verify \progname{}. Cppcheck \citep{cppcheck} is a static code checking tool that will be employed to analyze the code for undefined behavior and poor design constructs.
+A combination of static and dynamic tests will be used to verify \progname{}. Cppcheck
+\citep{cppcheck} is a static code checking tool that will be employed to analyze the code for
+undefined behaviour and poor design constructs.
 
-System and unit level tests will be used to dynamically verify \progname{}. Section \ref{sec:system_test} outlines the system-level tests. Section \ref{sec:unit_test} details the unit tests.
+System and unit level tests will be used to dynamically verify \progname{}. Section
+\ref{sec:system_test} outlines the system-level tests. Section \ref{sec:unit_test} details the unit
+tests.
 
 \wss{You should at least point to the tests listed in this document and the unit testing plan.}
 \wss{In this section you would also give any details of any plans for static verification of the
@@ -263,14 +268,21 @@ System and unit level tests will be used to dynamically verify \progname{}. Sect
 \subsection{Automated Testing and Verification Tools}
 
 \begin{itemize}
-    \item Cmake \citep{cmake} is a build system tool that will be used to simplify building and testing \progname{}.
-    \item GoogleTest is a unit testing framework that support c++ code. It also includes a mocking framework. See \url{https://github.com/google/googletest}.
+    \item Cmake \citep{cmake} is a build system tool that will be used to simplify building and
+    testing.
+    \item GoogleTest is a unit testing framework that support c++ code. It also includes a mocking
+    framework. See \url{https://github.com/google/googletest}.
     \item GCOV, LCOV are tools for calculating and displaying unit test coverage metrics.
-    \item Valgring is a suite of tools for memory and performance profiling. It will be used to check for memory leaks and efficient memory utilization.
-    \item Uncrustify is a tool that applies code formatting rules based on a configuration file. It will be used before every commit to the repo.
-    \item Github PR checklists will help reviewers/developers see and check that all rules and tests are completed before code enter a protected branch (i.e. main).
-    \item Github CI workflow will automate regression tests and checks that \progname{} builds are passing before a PR is merged into a protected branch.
-    \item Docker is a mechanism to containerize applications. It will be used to ensure installability and usability of the project.
+    \item Valgrind is a suite of tools for memory and performance profiling. It will be used to
+    check for memory leaks and efficient memory utilization.
+    \item Uncrustify is a tool that applies code formatting rules based on a configuration file. It
+    will be used before every commit to the repo.
+    \item GitHub PR checklists will help reviewers/developers see and check that all rules and tests
+    are completed before code enter a protected branch (i.e. main).
+    \item GitHub CI workflow will automate regression tests and checks that \progname{} builds are
+    passing before a PR is merged into a protected branch.
+    \item Docker is a mechanism to containerize applications. It will be used to ensure
+    installability and usability of the project.
 \end{itemize}
 
 \wss{What tools are you using for automated testing.  Likely a unit testing framework and maybe a
@@ -365,13 +377,14 @@ requirements for \progname{}. For input constraints see Section 4.2.8 of the SRS
 
 \end{enumerate}
 
-\subsubsection{Calculations} \label{sec:calc}
-This section covers requirements R2 and R3 of the SRS. This includes the input and output
-requirements for \progname{}. For input constraints see Section 4.2.8 of the SRS.
+\subsubsection{Calculations} \label{sec:calc} This section covers requirements R2 and R3 of the SRS.
+This includes the input and output requirements for \progname{}. For input constraints see Section
+4.2.8 of the SRS.
 
 \begin{enumerate}
 
-\item[\refstepcounter{testnum} \Tthetestnum \label{t:sys_calc_mag}:] \textbf{Orientation with Magnetometer} \\
+\item[\refstepcounter{testnum} \Tthetestnum \label{t:sys_calc_mag}:] \textbf{Orientation with
+Magnetometer} \\
    
     \textbf{Control:} Automatic
             
@@ -381,11 +394,16 @@ requirements for \progname{}. For input constraints see Section 4.2.8 of the SRS
         \centering
         \begin{tabular}{|l|l|l|}
         \hline
-        Step & Input                                                                                       & Output \\ \hline
-        1    & \begin{tabular}[c]{@{}l@{}}One complete set of valid \\ initialization inputs.\end{tabular} & -      \\ \hline
-        2 & {[}accel, gyro, mag{]} measurements. & \begin{tabular}[c]{@{}l@{}}Calculate RMSE of output\\ vs. ground truth\end{tabular}     \\ \hline
-        3    & \begin{tabular}[c]{@{}l@{}}Repeat step 2 for all\\ measurements in dataset\end{tabular}     & -      \\ \hline
-        4 & Calculate average RMSE               & \begin{tabular}[c]{@{}l@{}}Assert average error is within\\ the tolerance.\end{tabular} \\ \hline
+        Step & Input
+        & Output \\ \hline
+        1    & \begin{tabular}[c]{@{}l@{}}One complete set of valid \\ initialization
+        inputs.\end{tabular} & -      \\ \hline
+        2 & {[}accel, gyro, mag{]} measurements. & \begin{tabular}[c]{@{}l@{}}Calculate RMSE of
+        output\\ vs. ground truth\end{tabular}     \\ \hline
+        3    & \begin{tabular}[c]{@{}l@{}}Repeat step 2 for all\\ measurements in
+        dataset\end{tabular}     & -      \\ \hline
+        4 & Calculate average RMSE               & \begin{tabular}[c]{@{}l@{}}Assert average error
+        is within\\ the tolerance.\end{tabular} \\ \hline
         \end{tabular}
         \end{table}
   
@@ -394,7 +412,8 @@ requirements for \progname{}. For input constraints see Section 4.2.8 of the SRS
     
     \textbf{How test will be performed:} At each step, apply the inputs and assert the output.
 
-\item[\refstepcounter{testnum} \Tthetestnum \label{t:sys_calc_no_mag}:] \textbf{Orientation without Magnetometer}\\
+\item[\refstepcounter{testnum} \Tthetestnum \label{t:sys_calc_no_mag}:] \textbf{Orientation without
+Magnetometer}\\
 
     \textbf{Control:} Automatic
             
@@ -404,12 +423,18 @@ requirements for \progname{}. For input constraints see Section 4.2.8 of the SRS
         \centering
         \begin{tabular}{|l|l|l|}
         \hline
-        Step & Input                                                                                       & Output \\ \hline
-        1    & \begin{tabular}[c]{@{}l@{}}One complete set of valid \\ initialization inputs.\end{tabular} & -      \\ \hline
-        2    & {[}accel, gyro, mag{]} measurements.                                                        & -      \\ \hline
-        3 & {[}accel, gyro{]} measurements. & \begin{tabular}[c]{@{}l@{}}Calculate RMSE of output\\ vs. ground truth\end{tabular}     \\ \hline
-        4    & \begin{tabular}[c]{@{}l@{}}Repeat step 3 for all\\ measurements in dataset\end{tabular}     & -      \\ \hline
-        5 & Calculate average RMSE          & \begin{tabular}[c]{@{}l@{}}Assert average error is within\\ the tolerance.\end{tabular} \\ \hline
+        Step & Input
+        & Output \\ \hline
+        1    & \begin{tabular}[c]{@{}l@{}}One complete set of valid \\ initialization
+        inputs.\end{tabular} & -      \\ \hline
+        2    & {[}accel, gyro, mag{]} measurements.
+        & -      \\ \hline
+        3 & {[}accel, gyro{]} measurements. & \begin{tabular}[c]{@{}l@{}}Calculate RMSE of output\\
+        vs. ground truth\end{tabular}     \\ \hline
+        4    & \begin{tabular}[c]{@{}l@{}}Repeat step 3 for all\\ measurements in
+        dataset\end{tabular}     & -      \\ \hline
+        5 & Calculate average RMSE          & \begin{tabular}[c]{@{}l@{}}Assert average error is
+        within\\ the tolerance.\end{tabular} \\ \hline
         \end{tabular}
         \end{table}
   
@@ -462,7 +487,9 @@ given below.}
             
     Output/Result: Successful integration with existing code.
             
-    How test will be performed: A manual inspection of the code, specifically the header file. Can a developer read the documention/header file and correctly interact with the functions/objects?This test passes if this is true.
+    How test will be performed: A manual inspection of the code, specifically the header file. Can a
+    developer read the documention/header file and correctly interact with the
+    functions/objects?This test passes if this is true.
 \end{enumerate}
 
 \subsubsection{Maintainability}
@@ -477,9 +504,12 @@ given below.}
             
     Input/Condition: N/A
             
-    Output/Result: Successful addition of a likely change within the threshold defined in NFR3 of the SRS. 
+    Output/Result: Successful addition of a likely change within the threshold defined in NFR3 of
+    the SRS. 
             
-    How test will be performed: If a likely change needs to be added, measure the development time and compare it to the total development time. If it is less than the threshold specified in the SRS, this test passes.
+    How test will be performed: If a likely change needs to be added, measure the development time
+    and compare it to the total development time. If it is less than the threshold specified in the
+    SRS, this test passes.
 \end{enumerate}
 
 \subsubsection{Portability}
@@ -496,7 +526,9 @@ given below.}
             
     Output/Result: Result of compilation and execution.
             
-    How test will be performed: Build the project, initialize and input 1 set of measurements. Test is successful if the build has no errors and if the code produces the same result on Windows 11, macOS, and Ubuntu.
+    How test will be performed: Build the project, initialize and input 1 set of measurements. Test
+    is successful if the build has no errors and if the code produces the same result on Windows 11,
+    macOS, and Ubuntu.
 \end{enumerate}
 
 \subsection{Traceability Between Test Cases and Requirements}
@@ -658,14 +690,12 @@ How test will be performed:
 
 \end{enumerate}
 
-\subsubsection{Module ?}
-
-...
 
 \subsection{Traceability Between Test Cases and Modules}
 
 \wss{Provide evidence that all of the modules have been considered.}
 				
+\newpage
 \bibliographystyle{plainnat}
 
 \bibliography{../../refs/References, ../../refs/bib}
@@ -680,6 +710,18 @@ How test will be performed:
 
 The definition of the test cases will call for SYMBOLIC\_CONSTANTS. Their values are defined in this
 section for easy maintenance.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Param} & \textbf{Value} \\ \hline
+              $\epsilon$     &                \\ \hline
+                   &                \\ \hline
+                   &                \\ \hline
+                   &                \\ \hline
+    \end{tabular}
+    \end{table}
 
 % \subsection{Usability Survey Questions?}
 
