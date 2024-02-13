@@ -7,7 +7,9 @@
 \usepackage{amsmath, mathtools}
 \usepackage{amsfonts}
 \usepackage{bm}
-\hypersetup{ colorlinks, citecolor=blue, filecolor=black, linkcolor=red, urlcolor=blue }
+\usepackage{float}
+\usepackage{pdflscape}
+\hypersetup{ colorlinks, citecolor=blue, filecolor=cyan, linkcolor=red, urlcolor=blue }
 \usepackage[round]{natbib}
 
 \input{../Comments}
@@ -145,26 +147,26 @@ The objectives of this Verification and Validation plan are the following:
 
 \wss{State what is intended to be accomplished.  The objective will be around the qualities that are
   most important for your project.  You might have something like: ``build confidence in the
-  software correctness,'' ``demonstrate adequate usability.'' etc.  You won't list all the
+  software correctness,'' ``demonstrate adequate understandability.'' etc.  You won't list all the
   qualities, just those that are most important.}
 
 \noindent
 Objectives that are not included in the scope of this document:
 
 \begin{itemize}
-    \item Demonstration of adequate usability.
+    \item Demonstration of adequate understandability.
     \item Verification of external libraries.
 \end{itemize}
 
 It will be assumed that the documentation of \progname{} is adequate to facilitate adequate
-usability for developers wishing to use it. Furthermore, it is assumed that external libraries have
-been independently verified and validated.
+understandability for developers wishing to use it. Furthermore, it is assumed that external
+libraries have been independently verified and validated.
 
 
 \wss{You should also list the objectives that are out of scope.  You don't have the resources to do
 everything, so what will you be leaving out.  For instance, if you are not going to verify the
-quality of usability, state this.  It is also worthwhile to justify why the objectives are left
-out.}
+quality of understandability, state this.  It is also worthwhile to justify why the objectives are
+left out.}
 
 \wss{The objectives are important because they highlight that you are aware of limitations in your
 resources for verification and validation.  You can't do everything, so what are you going to
@@ -198,18 +200,16 @@ This section will detail the plan for the verification of the documentation and 
 
 \subsection{SRS Verification Plan}
 
-The SRS \citep{SRS} will be verified via feedback from a domain expert and secondary reviewers. The
-following is a checklist for SRS review:
+The SRS \citep{SRS} will be verified via feedback from a domain expert and assigned secondary
+reviewer. The following is a checklist for SRS review derived from \citep{wiegers2002peer}:
 
 \begin{todolist}
-    \item Problem Statement: confirm it is a valid statement.
-    \item Goal Statement: confirm it is a valid goal.
-    \item Physical system: check for missing descriptions.
-    \item Assumptions: confirm assumptions are specific and meaningful.
-    \item Theory: confirm instance models and all required theory is logical and complete enough for
-    development.
-    \item Requirements: confirm that the requirements are reasonably complete for testers and
-    clients.
+    \item Are all internal cross-references to other requirements correct?
+    \item Are all requirements written at a consistent and appropriate level of detail?
+    \item Do any requirements conflict with or duplicate other requirements?
+    \item Is each requirement written in clear, concise, unambiguous language?
+    \item Is each requirement verifiable by testing, demonstration, review, or analysis?
+    \item Are all requirements actually requirements, not design or implementation solutions?
 \end{todolist}
 
 
@@ -220,15 +220,13 @@ following is a checklist for SRS review:
 
 \subsection{Design Verification Plan}
 
-To verify the design, a domain expert and secondary reviewer will use the following checklist:
+To verify the design, feedback will be collected from domain expert and an assigned secondary
+reviewer will use the following checklist:
 
 \begin{todolist}
-    \item Inspect the design document for the following items:
-    \begin{itemize}
-        \item 
-    \end{itemize}
-    \item Create a high-level diagram that represents the relationships between modules. This is
-    intended to find gaps in the design.
+    \item Create a high-level diagram that represents the relationships between modules based on the
+    Module Guide (MG) and Module Interface Specification (MIS) [to be cited]. This is intended to
+    find gaps in the design.
 \end{todolist}
 
 \wss{Plans for design verification}
@@ -282,7 +280,7 @@ tests.
     \item GitHub CI workflow will automate regression tests and checks that \progname{} builds are
     passing before a PR is merged into a protected branch.
     \item Docker is a mechanism to containerize applications. It will be used to ensure
-    installability and usability of the project.
+    installability and understandability of the project.
 \end{itemize}
 
 \wss{What tools are you using for automated testing.  Likely a unit testing framework and maybe a
@@ -303,6 +301,7 @@ algorithms. The Root Mean Squared Error (RMSE) of \progname{} should lie within 
 RMSE of attitude estimators implemented by \citet{broad_code}. The data will come from the BROAD
 dataset \citep{broad}.
 
+The derivation of RMSE can be found in the Section \ref{sec:cal}.
 
 \wss{If there is any external data that can be used for validation, you should point to it here.  If
   there are no plans for validation, you should state that here.} \wss{You might want to use review
@@ -335,11 +334,12 @@ requirements for \progname{}. For input constraints see Section 4.2.8 of the SRS
 
 \item[\refstepcounter{testnum} \Tthetestnum \label{t:sys_io}:] \textbf{Input/Output Test} \\
 
+
     \textbf{Control:} Automatic
                 
     \textbf{Initial State:} Uninitialized
                 
-    \begin{table}[!h]
+    \begin{table}[H]
     \centering
     \begin{tabular}{|l|l|l|}
     \hline
@@ -347,27 +347,39 @@ requirements for \progname{}. For input constraints see Section 4.2.8 of the SRS
     1 &
         \begin{tabular}[c]{@{}l@{}}Initialize with: $ \Delta t = 1.0,{}^E\mathbf{b} = [1.0, 1.0,
         1.0],$ \\ $\gamma = 0.6, \text{outputType} = \text{Quat} $ \end{tabular} &
-        \begin{tabular}[c]{@{}l@{}}Get params method matches\\ the inputs.\end{tabular} \\ \hline
+        \begin{tabular}[c]{@{}l@{}l@{}}Assert ``get params" method equals\\ $ \Delta t =
+        1.0,{}^E\mathbf{b} = [1.0, 1.0, 1.0],$ \\ $\gamma = 0.6, \text{outputType} = \text{Quat}
+        $\end{tabular} \\ \hline
     2 &
-        \begin{tabular}[c]{@{}l@{}}One set of {[}accel, gyro, mag{]}\\ measurements.\end{tabular} &
-        \begin{tabular}[c]{@{}l@{}}Orientation output should match\\ output format from
-        above\end{tabular} \\ \hline
+        \begin{tabular}[c]{@{}l@{}l@{}}Call ``update" with: \\${}^S\mathbf{a}_t = [0,0,9.81], \quad$
+          ${}^S\mathbf{\bm{\omega}}_t = [0,0,0]$ \\ ${}^S\mathbf{m}_t = [16676.8, -3050.9, 49916.9]$
+          \end{tabular} &
+        \begin{tabular}[c]{@{}l@{}}Assert ``update" output is a \\ normalized quaternion $\in
+        \mathbb{R}^4$. \end{tabular} \\ \hline
     3 &
     \begin{tabular}[c]{@{}l@{}}Initialize with: $ \Delta t = 1.0,{}^E\mathbf{b} = [1.0, 1.0, 1.0],$
-    \\ $\gamma = 0.6, \text{outputType} = \text{Rot} $ \end{tabular} &
-    \begin{tabular}[c]{@{}l@{}}Get params method matches\\ the inputs.\end{tabular} \\ \hline
+      \\ $\gamma = 0.6, \text{outputType} = \text{Rot} $ \end{tabular} &
+      \begin{tabular}[c]{@{}l@{}l@{}}Assert ``get params" method equals\\ $ \Delta t =
+      1.0,{}^E\mathbf{b} = [1.0, 1.0, 1.0],$ \\ $\gamma = 0.6, \text{outputType} = \text{Rot}
+      $\end{tabular} \\ \hline
     4 &
-        \begin{tabular}[c]{@{}l@{}}One set of {[}accel, gyro, mag{]}\\ measurements.\end{tabular} &
-        \begin{tabular}[c]{@{}l@{}}Orientation output should match\\ output format from
-        above\end{tabular} \\ \hline
+    \begin{tabular}[c]{@{}l@{}l@{}}Call ``update" with: \\${}^S\mathbf{a}_t = [0,0,9.81], \quad$
+      ${}^S\mathbf{\bm{\omega}}_t = [0,0,0]$ \\ ${}^S\mathbf{m}_t = [16676.8, -3050.9, 49916.9]$
+      \end{tabular} &
+    \begin{tabular}[c]{@{}l@{}}Assert ``update" output is a \\ matrix $\in \mathbb{R}^{3 \times 3}$.
+    \end{tabular} \\ \hline
     5 &
-        \begin{tabular}[c]{@{}l@{}}Initialize with: $ \Delta t = 1.0,{}^E\mathbf{b} = [1.0, 1.0,
-        1.0],$ \\ $\gamma = 0.6, \text{outputType} = \text{Euler} $ \end{tabular} &
-        \begin{tabular}[c]{@{}l@{}}Get params method matches\\ the inputs.\end{tabular} \\ \hline
+    \begin{tabular}[c]{@{}l@{}}Initialize with: $ \Delta t = 1.0,{}^E\mathbf{b} = [1.0, 1.0, 1.0],$
+      \\ $\gamma = 0.6, \text{outputType} = \text{Euler} $ \end{tabular} &
+      \begin{tabular}[c]{@{}l@{}l@{}}Assert ``get params" method equals\\ $ \Delta t =
+      1.0,{}^E\mathbf{b} = [1.0, 1.0, 1.0],$ \\ $\gamma = 0.6, \text{outputType} = \text{Euler}
+      $\end{tabular} \\ \hline
     6 &
-        \begin{tabular}[c]{@{}l@{}}One set of {[}accel, gyro, mag{]}\\ measurements.\end{tabular} &
-        \begin{tabular}[c]{@{}l@{}}Orientation output should match\\ output format from
-        above\end{tabular} \\ \hline
+    \begin{tabular}[c]{@{}l@{}l@{}}Call ``update" with: \\${}^S\mathbf{a}_t = [0,0,9.81], \quad$
+      ${}^S\mathbf{\bm{\omega}}_t = [0,0,0]$ \\ ${}^S\mathbf{m}_t = [16676.8, -3050.9, 49916.9]$
+      \end{tabular} &
+    \begin{tabular}[c]{@{}l@{}}Assert ``update" output \\ is vector $\in \mathbb{R}^3$.
+    \end{tabular} \\ \hline
     \end{tabular}
     \end{table}
 
@@ -381,6 +393,23 @@ requirements for \progname{}. For input constraints see Section 4.2.8 of the SRS
 This includes the input and output requirements for \progname{}. For input constraints see Section
 4.2.8 of the SRS.
 
+The accuracy metric is described in \cite{broad}, it defines the error between two quaternions
+(\ref{eqn:diff_quat}), the total error (\ref{eqn:error}), and the RMSE (\ref{eqn:rmse}):
+\begin{align}
+    \mathbf{q}_{e, t} =& {}^S_E\mathbf{q}^{*}_{gt, t}  {}^S_E\mathbf{q}_{est, t} = [q_w, q_x, q_y, q_z]^T \label{eqn:diff_quat} \\
+    e_q =& 2 \arccos(|q_w|)  \label{eqn:error}\\
+    \text{RMSE} =& \sqrt{\cfrac{\sum_{t=0}^n(e)^2}{n}}  \label{eqn:rmse}
+\end{align}
+
+Often computing separate errors for the heading and inclination components provides better incite into the performance. When magnetometer data is not available, the header error will be much larger than the other sources of error.
+
+The equation for the heading only error is defined in (\ref{eqn:heading_err}) and the inclination only error is defined by (\ref{eqn:inc_error}):
+
+\begin{align}
+    e_{h} =& 2 \arctan(|\cfrac{q_z}{q_w}|) \label{eqn:heading_err} \\
+    e_{i} =&  2 \arccos(\sqrt{q_w^2 + q_z^2}) \label{eqn:inc_error}
+\end{align}
+
 \begin{enumerate}
 
 \item[\refstepcounter{testnum} \Tthetestnum \label{t:sys_calc_mag}:] \textbf{Orientation with
@@ -390,20 +419,19 @@ Magnetometer} \\
             
     \textbf{Initial State:} Uninitialized
     
-    \begin{table}[!h]
+    \begin{table}[H]
         \centering
         \begin{tabular}{|l|l|l|}
         \hline
-        Step & Input
-        & Output \\ \hline
-        1    & \begin{tabular}[c]{@{}l@{}}One complete set of valid \\ initialization
-        inputs.\end{tabular} & -      \\ \hline
-        2 & {[}accel, gyro, mag{]} measurements. & \begin{tabular}[c]{@{}l@{}}Calculate RMSE of
-        output\\ vs. ground truth\end{tabular}     \\ \hline
-        3    & \begin{tabular}[c]{@{}l@{}}Repeat step 2 for all\\ measurements in
-        dataset\end{tabular}     & -      \\ \hline
-        4 & Calculate average RMSE               & \begin{tabular}[c]{@{}l@{}}Assert average error
-        is within\\ the tolerance.\end{tabular} \\ \hline
+        Step & Input & Output \\ \hline
+        1    & \begin{tabular}[c]{@{}l@{}l@{}}Initialize with: $ \Delta t = 10.0, \gamma = 0.6,$ \\$
+        {}^E\mathbf{b} = [16676.8, -3050.9, 49916.9],$\\ $\text{outputType} = \text{Quat} $
+        \end{tabular} & - \\ \hline
+        2 & \begin{tabular}[c]{@{}l@{}}Call ``update" and loop through \\ measurements in Table
+        \ref{tab:gt_data} \end{tabular} & Assert output quat is normalized     \\ \hline
+        3 & \begin{tabular}[c]{@{}l@{}}Calculate RMSE for $e_q, e_h, e_i$\\ vs. ground truth in table
+            \ref{tab:gt_label}\end{tabular}             & \begin{tabular}[c]{@{}l@{}}Assert average
+            error is within\\ the tolerance.\end{tabular} \\ \hline
         \end{tabular}
         \end{table}
   
@@ -419,22 +447,21 @@ Magnetometer}\\
             
     \textbf{Initial State:} Uninitialized
     
-    \begin{table}[!h]
+    \begin{table}[H]
         \centering
         \begin{tabular}{|l|l|l|}
         \hline
-        Step & Input
-        & Output \\ \hline
-        1    & \begin{tabular}[c]{@{}l@{}}One complete set of valid \\ initialization
-        inputs.\end{tabular} & -      \\ \hline
-        2    & {[}accel, gyro, mag{]} measurements.
-        & -      \\ \hline
-        3 & {[}accel, gyro{]} measurements. & \begin{tabular}[c]{@{}l@{}}Calculate RMSE of output\\
-        vs. ground truth\end{tabular}     \\ \hline
-        4    & \begin{tabular}[c]{@{}l@{}}Repeat step 3 for all\\ measurements in
-        dataset\end{tabular}     & -      \\ \hline
-        5 & Calculate average RMSE          & \begin{tabular}[c]{@{}l@{}}Assert average error is
-        within\\ the tolerance.\end{tabular} \\ \hline
+        Step & Input & Output \\ \hline
+        1    & \begin{tabular}[c]{@{}l@{}l@{}}Initialize with: $ \Delta t = 10.0, \gamma = 0.6,$ \\$
+        {}^E\mathbf{b} = [16676.8, -3050.9, 49916.9],$\\ $\text{outputType} = \text{Quat} $
+        \end{tabular} & - \\ \hline
+        2 & \begin{tabular}[c]{@{}l@{}}Call ``update" with \\ measurements at $t=0$ from Table
+        \ref{tab:gt_data} \end{tabular} & Assert output quat is normalized     \\ \hline
+        3 & \begin{tabular}[c]{@{}l@{}}Call ``update" and loop through \\ \{accel, gyro\} measurements
+        in Table \ref{tab:gt_data} \end{tabular} & Assert output quat is normalized     \\ \hline
+        4 & \begin{tabular}[c]{@{}l@{}}Calculate RMSE of $e_q, e_h, e_i$\\ vs. ground truth in table
+            \ref{tab:gt_label}\end{tabular}             & \begin{tabular}[c]{@{}l@{}}Assert average
+            error is within\\ the tolerance.\end{tabular} \\ \hline
         \end{tabular}
         \end{table}
   
@@ -454,8 +481,8 @@ Magnetometer}\\
   functional tests from above.  The test cases should mention reporting the relative error for these
   tests.  Not all projects will necessarily have nonfunctional requirements related to accuracy}
 
-\wss{Tests related to usability could include conducting a usability test and survey.  The survey
-  will be in the Appendix.}
+\wss{Tests related to understandability could include conducting a understandability test and
+  survey.  The survey will be in the Appendix.}
 
 \wss{Static tests, review, inspections, and walkthroughs, will not follow the format for the tests
 given below.}
@@ -473,7 +500,7 @@ given below.}
     This test refers to Section \ref{sec:calc}.
 \end{enumerate}
 
-\subsubsection{Usability}
+\subsubsection{Understandability}
 
 \begin{enumerate}
 
@@ -485,11 +512,11 @@ given below.}
             
     Input/Condition: N/A
             
-    Output/Result: Successful integration with existing code.
+    Output/Result: Successful integration of \progname{} into a project. This represents how typical
+    users interact with the software.
             
-    How test will be performed: A manual inspection of the code, specifically the header file. Can a
-    developer read the documention/header file and correctly interact with the
-    functions/objects?This test passes if this is true.
+    How test will be performed: A manual inspection of the code, specifically the header file. Is
+    each input documented/commented? This test passes if this is true.
 \end{enumerate}
 
 \subsubsection{Maintainability}
@@ -570,12 +597,16 @@ for all of the tests.}
 
 \subsection{Unit Testing Scope}
 
+This will be updated when the MG and MIS are complete.
+
 \wss{What modules are outside of the scope.  If there are modules that are developed by someone
   else, then you would say here if you aren't planning on verifying them.  There may also be modules
   that are part of your software, but have a lower priority for verification than others.  If this
   is the case, explain your rationale for the ranking of module importance.}
 
 \subsection{Tests for Functional Requirements}
+
+This will be updated when the MG and MIS are complete.
 
 \wss{Most of the verification will be through automated unit testing.  If appropriate specific
   modules can be verified by a non-testing based technique.  That can also be documented in this
@@ -589,7 +620,7 @@ for all of the tests.}
 
 \begin{enumerate}
 
-\item[\refstepcounter{utestnum} \Tthetestnum:] \textbf{Inputs: Invalid time} \\
+\item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Inputs: Invalid time} \\
                 
     \textbf{Initial State:} ...
                 
@@ -601,7 +632,7 @@ for all of the tests.}
             
     \textbf{How test will be performed:} ...
 
-\item[\refstepcounter{utestnum} \Tthetestnum:] \textbf{Inputs: Invalid mag ref} \\
+\item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Inputs: Invalid mag ref} \\
                 
     \textbf{Initial State:} ...
                 
@@ -613,7 +644,7 @@ for all of the tests.}
             
     \textbf{How test will be performed:} ...
 
-\item[\refstepcounter{utestnum} \Tthetestnum:] \textbf{Inputs: Invalid gamma} \\
+\item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Inputs: Invalid gamma} \\
                 
     \textbf{Initial State:} ...
                 
@@ -625,7 +656,7 @@ for all of the tests.}
             
     \textbf{How test will be performed:} ...
 
-\item[\refstepcounter{utestnum} \Tthetestnum:] \textbf{Inputs: Invalid output type} \\
+\item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Inputs: Invalid output type} \\
                 
     \textbf{Initial State:} ...
                 
@@ -637,7 +668,7 @@ for all of the tests.}
             
     \textbf{How test will be performed:} ...
 
-\item[\refstepcounter{utestnum} \Tthetestnum:] \textbf{Inputs: Valid} \\
+\item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Inputs: Valid} \\
                 
     \textbf{Initial State:} ...
                 
@@ -660,11 +691,13 @@ for all of the tests.}
 \wss{These tests may involve collecting performance data from previously mentioned functional
   tests.}
 
-\subsubsection{Module ?}
+This will be updated when the MG and MIS are complete.
+
+\subsubsection{Module TBD}
 		
 \begin{enumerate}
 
-\item{test-id1\\}
+\item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{test-id1} \\
 
 Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will be automatic}
 					
@@ -676,22 +709,12 @@ Output/Result:
 					
 How test will be performed: 
 					
-\item{test-id2\\}
-
-Type: Functional, Dynamic, Manual, Static etc.
-					
-Initial State: 
-					
-Input: 
-					
-Output: 
-					
-How test will be performed: 
-
 \end{enumerate}
 
 
 \subsection{Traceability Between Test Cases and Modules}
+
+This will be updated when the MG and MIS are complete.
 
 \wss{Provide evidence that all of the modules have been considered.}
 				
@@ -716,14 +739,11 @@ section for easy maintenance.
     \begin{tabular}{|l|l|}
     \hline
     \textbf{Param} & \textbf{Value} \\ \hline
-              $\epsilon$     &                \\ \hline
-                   &                \\ \hline
-                   &                \\ \hline
-                   &                \\ \hline
+    $\epsilon$     &      5 \%          \\ \hline
     \end{tabular}
     \end{table}
 
-% \subsection{Usability Survey Questions?}
+% \subsection{Understandability Survey Questions?}
 
 % \wss{This is a section that would be appropriate for some projects.}
 
@@ -732,7 +752,63 @@ section for easy maintenance.
 % The information in this section will be used to evaluate the team members on the graduate
 % attribute of Lifelong Learning.  Please answer the following questions:
 
+\subsection{IMU Test Data}
 
+\begin{landscape}
+\begin{table}[]
+\caption{Sample of ground truth quaternion.}
+\label{tab:gt_label}
+% \small
+\centering
+\begin{tabular}{|l|l|l|l|l|} \hline
+$t$ & $q_w$ & $q_x$ & $q_y$ & $q_z$ \\ \hline
+\hline
+0&0.999926 & 0.001208 & -0.002004 & -0.011972 \\ \hline
+1&0.999923 & 0.001884 & -0.002375 & -0.012036 \\\hline
+2&0.999922 & 0.002302 & -0.002478 & -0.012057 \\\hline
+3&0.999925 & 0.002024 & -0.001862 & -0.011960 \\\hline
+4&0.999927 & 0.001747 & -0.001245 & -0.011863 \\\hline
+5&0.999927 & 0.001672 & -0.001145 & -0.011925 \\\hline
+6&0.999926 & 0.001621 & -0.001108 & -0.012006 \\\hline
+7&0.999926 & 0.001454 & -0.001265 & -0.012036 \\\hline
+8&0.999926 & 0.001176 & -0.001609 & -0.012017 \\\hline
+9&0.999926 & 0.001012 & -0.001949 & -0.012006 \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[]
+    \centering
+    \caption{Sample of sequential sensor measurements}
+    % \footnotesize
+    \label{tab:gt_data}
+    \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|}
+    \hline
+    \textbf{$t$} & \textbf{$\text{acc}_x$} & \textbf{$\text{acc}_y$} & \textbf{$\text{acc}_z$} &
+    \textbf{$\text{gyro}_x$} & \textbf{$\text{gyro}_y$} & \textbf{$\text{gyro}_z$} &
+    \textbf{$\text{mag}_x$} & \textbf{$\text{mag}_y$} & \textbf{$\text{mag}_z$} \\ \hline \hline
+    0 & 0.090941 & -0.031273 & 9.759028 & 0.005327 & -0.000000 & -0.004260 & 0.554144  & 14.948225 &
+    -41.506577 \\ \hline
+    1 & 0.130181 & -0.001843 & 9.793363 & 0.005327 & 0.001065  & -0.008522 & 0.035031  & 15.327949 &
+    -41.656347 \\ \hline
+    2 & 0.072302 & -0.006748 & 9.864976 & 0.003196 & 0.001065  & -0.007458 & -0.484083 & 15.707673 &
+    -41.806118 \\ \hline
+    3 & 0.062492 & 0.002081  & 9.855166 & 0.000000 & 0.002131  & -0.005327 & 0.183349  & 15.707673 &
+    -40.982379 \\ \hline
+    4 & 0.090941 & 0.069770  & 9.754123 & 0.005327 & 0.003196  & -0.001065 & 0.850781  & 15.707673 &
+    -40.158640 \\ \hline
+    5 & 0.077207 & 0.021701  & 9.735484 & 0.003196 & 0.002131  & -0.005327 & 0.850781  & 15.707673 &
+    -40.158640 \\ \hline
+    6 & 0.072302 & -0.112696 & 9.812002 & 0.003196 & 0.001065  & -0.004260 & 0.850781  & 15.707673 &
+    -40.158640 \\ \hline
+    7 & 0.115466 & 0.069770  & 9.893425 & 0.004260 & 0.001065  & -0.002131 & 0.183349  & 15.555783 &
+    -40.308411 \\ \hline
+    8 & 0.052682 & 0.021701  & 9.807097 & 0.001065 & 0.004260  & -0.003196 & -0.484083 & 15.403894 &
+    -40.458182 \\ \hline
+    9 & 0.029138 & 0.006986  & 9.816907 & 0.004260 & 0.001065  & -0.005327 & -0.261606 & 15.631728 &
+    -41.057264 \\ \hline
+    \end{tabular}
+    \end{table}
+\end{landscape}
 
 
 \end{document}
