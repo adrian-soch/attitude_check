@@ -1,0 +1,28 @@
+name: C/C++ CI # The name of the workflow
+
+on: # The trigger for the workflow
+  push: # When you push to any branch
+    branches: [ main ] # Only for the main branch
+  pull_request: # When you create or update a pull request
+    branches: [ main ] # Only for the main branch
+
+jobs: # The jobs for the workflow
+  build: # The name of the job
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest # The operating system to run the job on
+    steps: # The steps for the job
+      - name: Checkout # The name of the step
+        uses: actions/checkout@v2 # The action to use for the step
+      - name: Install dependencies # The name of the step
+        run: sudo apt-get install -y cmake # The command to run for the step
+      - name: Run custom build script
+        run: bash build.sh
+  unit-tests:
+    name: Run unit tests
+    if: success () # Only run this step if the previous step succeeded
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run custom test script
+        run: bash "build.sh test"
