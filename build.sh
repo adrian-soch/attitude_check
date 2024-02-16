@@ -15,7 +15,7 @@ case $1 in
     ctest
 
     # Generate the coverage report using gcov and lcov
-    lcov --capture --directory . --output-file coverage.info
+    lcov --capture --directory ../src --output-file coverage.info
     lcov --remove coverage.info '/usr/*' --output-file coverage.info
     lcov --list coverage.info
     genhtml coverage.info --output-directory out
@@ -35,5 +35,3 @@ case $1 in
     make
     ;;
 esac
-
-
