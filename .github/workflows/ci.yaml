@@ -14,7 +14,7 @@ jobs: # The jobs for the workflow
       - name: Checkout # The name of the step
         uses: actions/checkout@v2 # The action to use for the step
       - name: Install dependencies # The name of the step
-        run: sudo apt-get install -y cmake # The command to run for the step
+        run: sudo apt-get install -y cmake lcov # The command to run for the step
       - name: Run custom build script
         run: bash build.sh test
       - name: Run unit tests
