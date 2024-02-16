@@ -12,7 +12,13 @@ jobs: # The jobs for the workflow
     runs-on: ubuntu-latest # The operating system to run the job on
     steps: # The steps for the job
       - name: Checkout # The name of the step
-        uses: actions/checkout@v2 # The action to use for the step
+        # uses: actions/checkout@v2 # The action to use for the step
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github
+            src
+            test
       - name: Install dependencies # The name of the step
         run: sudo apt-get install -y cmake lcov # The command to run for the step
       - name: Install gtest
@@ -35,4 +41,3 @@ jobs: # The jobs for the workflow
           name: cachegrand-server
           fail_ci_if_error: false
           verbose: false
-
