@@ -7,7 +7,7 @@ on: # The trigger for the workflow
     branches: [ main ] # Only for the main branch
 
 jobs: # The jobs for the workflow
-  build: # The name of the job
+  build-and-unittest: # The name of the job
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest # The operating system to run the job on
     steps: # The steps for the job
@@ -16,24 +16,7 @@ jobs: # The jobs for the workflow
       - name: Install dependencies # The name of the step
         run: sudo apt-get install -y cmake # The command to run for the step
       - name: Run custom build script
-        run: bash build.sh
-      - name: Cache build output
-        uses: actions/cache@v2
-        with:
-          path: build # The path of the build output
-          key: ${{ runner.os }}-build-${{ github.sha }} # The key to identify the cache
-  unit-tests:
-    name: Run unit tests
-    if: success () # Only run this step if the previous step succeeded
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Restore build output
-        uses: actions/cache@v2
-        with:
-          path: build # The same path as the build job
-          key: ${{ runner.os }}-build-${{ github.sha }} # The same key as the build job
+        run: bash build.sh test
       - name: Run unit tests
         run: bash build.sh test
       - name: Generate coverage report
