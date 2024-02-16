@@ -33,11 +33,8 @@ jobs: # The jobs for the workflow
           lcov --remove coverage.info '/usr/*' --output-file coverage.info
           lcov --list coverage.info
           genhtml coverage.info --output-directory out
-      - name: Upload coverage report
-        uses: codecov/codecov-action@v3
-        with:
-          files: coverage.info
-          flags: unittests
-          name: cachegrand-server
-          fail_ci_if_error: false
-          verbose: false
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        env:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: adrian-soch/attitude_check
