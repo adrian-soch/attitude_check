@@ -2,7 +2,8 @@
 
 ---
 
-[![C/C++ CI](https://github.com/adrian-soch/attitude_check/actions/workflows/ci.yaml/badge.svg)](https://github.com/adrian-soch/attitude_check/actions/workflows/ci.yaml)
+[![C/C++ CI](https://github.com/adrian-soch/attitude_check/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/adrian-soch/attitude_check/actions/workflows/ci.yaml)
+[![codecov](https://codecov.io/gh/adrian-soch/attitude_check/graph/badge.svg?token=2VGQ9KA5G8)](https://codecov.io/gh/adrian-soch/attitude_check)
 
 This project will implement an atitude estimation algorithm that uses Inertial Measurement Unit (IMU) data. The primary focus of this repo is to apply software documentation principles.
 
