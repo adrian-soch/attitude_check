@@ -1,5 +1,9 @@
 # Attitude Check: An IMU-based Attitude Estimator
 
+---
+
+[![C/C++ CI](https://github.com/adrian-soch/attitude_check/actions/workflows/ci.yaml/badge.svg)](https://github.com/adrian-soch/attitude_check/actions/workflows/ci.yaml)
+
 This project will implement an atitude estimation algorithm that uses Inertial Measurement Unit (IMU) data. The primary focus of this repo is to apply software documentation principles.
 
 The repo structure is:
