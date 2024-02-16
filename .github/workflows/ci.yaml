@@ -20,7 +20,7 @@ jobs: # The jobs for the workflow
             src
             test
       - name: Install dependencies # The name of the step
-        run: sudo apt-get install -y cmake lcov # The command to run for the step
+        run: sudo apt-get install -y cmake lcov cppcheck # The command to run for the step
       - name: Install gtest
         run: sudo apt-get install libgtest-dev && cd /usr/src/gtest && sudo cmake CMakeLists.txt
       - name: Run custom build script
