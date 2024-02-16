@@ -17,6 +17,11 @@ jobs: # The jobs for the workflow
         run: sudo apt-get install -y cmake # The command to run for the step
       - name: Run custom build script
         run: bash build.sh
+      - name: Cache build output
+        uses: actions/cache@v2
+        with:
+          path: build # The path of the build output
+          key: ${{ runner.os }}-build-${{ github.sha }} # The key to identify the cache
   unit-tests:
     name: Run unit tests
     if: success () # Only run this step if the previous step succeeded
@@ -24,5 +29,25 @@ jobs: # The jobs for the workflow
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Run custom test script
-        run: bash "build.sh test"
+      - name: Restore build output
+        uses: actions/cache@v2
+        with:
+          path: build # The same path as the build job
+          key: ${{ runner.os }}-build-${{ github.sha }} # The same key as the build job
+      - name: Run unit tests
+        run: bash build.sh test
+      - name: Generate coverage report
+        run: |
+          lcov --capture --directory . --output-file coverage.info
+          lcov --remove coverage.info '/usr/*' --output-file coverage.info
+          lcov --list coverage.info
+          genhtml coverage.info --output-directory out
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v3
+        with:
+          files: coverage.info
+          flags: unittests
+          name: cachegrand-server
+          fail_ci_if_error: false
+          verbose: false
+

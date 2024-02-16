@@ -8,11 +8,17 @@ mkdir -p build && cd build
 case $1 in
   test)
     # Build the project with tests enabled
-    cmake -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Release ..
+    cmake -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-fprofile-arcs -ftest-coverage" ..
     make
     cd ./test
     # Run the tests
     ctest
+
+    # Generate the coverage report using gcov and lcov
+    lcov --capture --directory . --output-file coverage.info
+    lcov --remove coverage.info '/usr/*' --output-file coverage.info
+    lcov --list coverage.info
+    genhtml coverage.info --output-directory out
     ;;
   clean)
     # Remove the build directory
