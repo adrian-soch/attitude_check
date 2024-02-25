@@ -61,10 +61,10 @@ jobs: # The jobs for the workflow
           cmake-version: '3.14'
 
       - name: Install dependencies
-        if: matrix.os == 'ubuntu-latest'
+        if: startsWith(matrix.os, 'ubuntu')
         run: sudo apt-get install -y lcov cppcheck libgtest-dev
       - name: Install gtest
-        if: matrix.os == 'ubuntu-latest'
+        if: startsWith(matrix.os, 'ubuntu')
         run: cd /usr/src/gtest && sudo cmake CMakeLists.txt
       - name: Install dependencies
         if: matrix.os == 'macos-latest'
