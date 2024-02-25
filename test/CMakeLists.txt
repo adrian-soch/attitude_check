@@ -23,8 +23,8 @@ add_executable(
 
 target_link_libraries(
     ${BINARY}
-    PUBLIC ${CMAKE_PROJECT_NAME}_lib 
-    # gtest pthread
+    PUBLIC ${CMAKE_PROJECT_NAME}_lib
+    gtest
     GTest::gtest_main
 )
 
