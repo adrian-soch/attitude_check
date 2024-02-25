@@ -1,26 +1,25 @@
 name: C/C++ CI # The name of the workflow
 
 on: # The trigger for the workflow
-  push: # When you push to any branch
+  push:
     branches: [ main ] # Only for the main branch
-  pull_request: # When you create or update a pull request
-    branches: [ main ] # Only for the main branch
+  pull_request:
+    branches: [ main ]
 
 jobs: # The jobs for the workflow
-  build-and-unittest: # The name of the job
+  build-and-unittest:
     if: github.event.pull_request.draft == false
-    runs-on: ubuntu-latest # The operating system to run the job on
-    steps: # The steps for the job
-      - name: Checkout # The name of the step
-        # uses: actions/checkout@v2 # The action to use for the step
+    runs-on: ubuntu-20.04 # The operating system to run the job on
+    steps:
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           sparse-checkout: |
             .github
             src
             test
-      - name: Install dependencies # The name of the step
-        run: sudo apt-get install -y cmake lcov cppcheck # The command to run for the step
+      - name: Install dependencies
+        run: sudo apt-get install -y ca-certificates curl gnupg lsb-release cmake lcov cppcheck
       - name: Install gtest
         run: sudo apt-get install libgtest-dev && cd /usr/src/gtest && sudo cmake CMakeLists.txt
       - name: Run custom build script
@@ -73,10 +72,6 @@ jobs: # The jobs for the workflow
       - name: Install dependencies
         if: matrix.os == 'windows-latest'
         run: choco install lcov cppcheck gtest
-      - name: Configure CMake
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
-      - name: Build CMake
-        run: cmake --build ${{github.workspace}}/build --config Release
       - name: Run custom build script
         run: bash build.sh test
       - name: Run unit tests
