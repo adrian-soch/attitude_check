@@ -241,9 +241,10 @@ $\eta$ & - & Fraction of development time\\
 \subsection{Mathematical Notation}
 
 \begin{itemize}
-  \item[Vector:] Vectors will be distinguished via \textbf{bold} face font such as, $\mathbf{b}$.
-  \item[Matrix:] Matrices will be distinguished via \textbf{bold} face font and capitalization such
-  as, $\mathbf{R}$.
+  \item[Vector:] Vectors will be distinguished via \textbf{bold} face lowercase letters such as,
+  $\mathbf{b}$.
+  \item[Matrix:] Matrices will be distinguished via \textbf{bold} face upper case letters such as,
+  $\mathbf{R}$.
   \item[Time:] Variables for a given time step, $t$ will be denoted with a sub-postscript such as,
   $\mathbf{s}_t$.
   \item[Frame:] The reference frame for a variable will be denoted by a super-prescript, such as
@@ -539,9 +540,10 @@ should accomplish.
 \item Rotation Matrix: a $n \times n$ matrix used to perform rotation transformations in Euclidean
 space. They are also used to describe the orientation of a rigid body.
 \item Transform: a computation that converts data from one coordinate frame to another.
-\item Quaternion: A quaternion is a compact mathematical notation for representing 3D rotations.
-Unlike Euler angles, quaternions are not subject to gimbal lock. See \cite{quat} for more
-information.
+\item Quaternion: A quaternion is a compact mathematical notation for representing 3D rotations
+using a scalar component, $q_w \in \mathbb{R}$, and a vector component $(q_x, q_y, q_z) \in
+\mathbb{R}^3$ to create $q = [q_w q_x q_y q_z]^T$. Unlike Euler angles, quaternions numerically
+stable, and compact compared to rotation matrices. See \cite{quat} for more information.
 \end{itemize}
 
 \subsubsection{Physical System Description} \label{sec_phySystDescrip}
@@ -786,12 +788,12 @@ the examples below for your problem, and add additional models as appropriate.}
 % #4 equation
 { $\mathbf{s} = \mathbf{s}_m + \mathbf{b}_s + \bm{\mu}_s \in \mathbb{R}^n$ }
 % #5 description
-{ The above equation gives the model for a sensor measurement. Where $s_m$ is the true measurment,
+{ The above equation gives the model for a sensor measurement. Where $s_m$ is the true measurement,
   $b_s$ is a bias, and $\mu_s$ is an additive measurement noise.
 
   For this equation to apply, other forms of error such as non-linearities \aref{a:nonlinear},
 bandwidth limits \aref{a:bandwidth}, quantization error \aref{a:quant}, out-of-range measurements
-\aref{a:range} are assumed to be negligable. }
+\aref{a:range} are assumed to be negligible. }
 % #6 Notes
 { The symbol for bias, $b$, should not be confused with a magnetic field measurement. }
 % #7 Source
@@ -870,8 +872,8 @@ This formula assumes that $\omega$ is constant or nearly constant during the $\D
 % #4 equation
 { $a = \ddot{x}$ }
 % #5 description
-{ The above equation gives the definition of linear accerleration. Where $a$ is the second
-derivitive of the linear position, $x$, with repect to time. }
+{ The above equation gives the definition of linear acceleration. Where $a$ is the second derivative
+of the linear position, $x$, with respect to time. }
 % #6 Notes
 { None. }
 % #7 Source
