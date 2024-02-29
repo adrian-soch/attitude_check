@@ -542,8 +542,10 @@ space. They are also used to describe the orientation of a rigid body.
 \item Transform: a computation that converts data from one coordinate frame to another.
 \item Quaternion: A quaternion is a compact mathematical notation for representing 3D rotations
 using a scalar component, $q_w \in \mathbb{R}$, and a vector component $(q_x, q_y, q_z) \in
-\mathbb{R}^3$ to create $q = [q_w q_x q_y q_z]^T$. Unlike Euler angles, quaternions numerically
-stable, and compact compared to rotation matrices. See \cite{quat} for more information.
+\mathbb{R}^3$ to create $q = [q_w \quad q_x \quad q_y \quad q_z]^T$. Unlike Euler angles,
+quaternions numerically stable, and compact compared to rotation matrices. Quaternion multiplication
+uses the Hamilton product, refer to \cite{hamilton} for the definition. See \cite{quat} for more
+information.
 \end{itemize}
 
 \subsubsection{Physical System Description} \label{sec_phySystDescrip}
@@ -673,11 +675,6 @@ measurements into an orientation relative to the Earth.
 \noindent \plt{The relationships between the parts of the document are show in the following figure.
   In this diagram ``may ref'' has the same role as ``uses'' above.  The figure adds ``Likely
   Changes,'' which are able to reference (use) Assumptions.}
-
-\begin{figure}[H]
-  \includegraphics[scale=0.9]{RelationsBetweenTM_GD_IM_DD_A.pdf}
-  \label{fig:connections}
-\end{figure}
 
 The instance models that govern \progname{} are presented in Subsection~\ref{sec_instance}.  The
 information to understand the meaning of the instance models and their derivation is also presented,
@@ -822,7 +819,7 @@ the angular position, $\theta$, with respect to time. }
 % #6 Notes
 { None. }
 % #7 Source
-{}
+{\cite{serway2018physics}}
 % #8 Referenced by
 { \dref{gd:q}, \ddref{dd:gyro} }
 % #9 Preconditions
@@ -851,7 +848,7 @@ This formula assumes that $\omega$ is constant or nearly constant during the $\D
 % #6 Notes
 { None. }
 % #7 Source
-{}
+{\cite{serway2018physics}}
 % #8 Referenced by
 {
 \iref{i:o_from_gyro}
@@ -877,7 +874,7 @@ of the linear position, $x$, with respect to time. }
 % #6 Notes
 { None. }
 % #7 Source
-{}
+{\cite{serway2018physics}}
 % #8 Referenced by
 {
     \ddref{dd:acc}
@@ -904,7 +901,7 @@ of the linear position, $x$, with respect to time. }
 % #6 Notes
 { None. }
 % #7 Source
-{}
+{\cite{noauthor_complementary_nodate}}
 % #8 Referenced by
 { \iref{i:o_from_comp_acc_gyro}, \iref{i:o_from_comp_all_3}. }
 % #9 Preconditions
@@ -935,8 +932,11 @@ $\prescript{S}{F}{\mathbf{q}}_\alpha$, the quaternion that represents the orient
 frame relative to the fixed-frame. Where the subscript $d$ denotes the quaternion is minimized using
 $\prescript{F}{}{\mathbf{d}}$. }
 % #6 Notes
-{ The function $\mathbf{p}(\mathbf{v})$ creates a pure quaternion, $(0, v_x, v_y, v_z) \in
-\mathbf{R}^4$ from $\mathbf{v} \in \mathbf{R}^3$. }
+{
+The function $\mathbf{p}(\mathbf{v})$ creates a pure quaternion, $(0, v_x, v_y, v_z) \in
+\mathbf{R}^4$ from $\mathbf{v} \in \mathbf{R}^3$.  Quaternion multiplication uses the Hamilton
+product \cite{hamilton}.
+}
 % #7 Source
 {\cite{madgwick_ecient_nodate}}
 % #8 Referenced by
@@ -1452,20 +1452,22 @@ exhibit.
     \textbf{Each time step}: temporally synchronized (accelerometer, magnetometer, gyroscope)
     measurements or (accelerometer, gyroscope) measurements.
 
+    Refs \iref{i:o_from_comp_acc_gyro}, \iref{i:o_from_comp_all_3}.
+
     \item[R\refstepcounter{reqnum}\thereqnum \label{r:input2}:] If an initial orientation is not
     provided \progname{} shall use the initial magnetometer measurement to produce an initial
-    orientation.
+    orientation. Refs \iref{i:o_from_comp_acc_gyro}, \iref{i:o_from_comp_all_3}.
 
     \item[R\refstepcounter{reqnum}\thereqnum \label{r:calculate1}:] \progname{} shall calculate the
     orientation relative to the Earth frame when provided with  accelerometer, gyroscope, and
-    magnetometer measurements.
+    magnetometer measurements. Refs \iref{i:o_from_comp_all_3}.
 
     \item[R\refstepcounter{reqnum}\thereqnum \label{r:calculate2}:] \progname{} shall calculate the
     yaw and pitch components of the orientation relative to the Earth frame when provided with
-    accelerometer and gyroscope measurements.
+    accelerometer and gyroscope measurements. Refs \iref{i:o_from_comp_acc_gyro}.
 
     \item[R\refstepcounter{reqnum}\thereqnum \label{r:output}:] \plt{Output related requirements.}
-    \progname{} shall output the orientation in the user specified format.
+    \progname{} shall output the orientation in the user specified format. Refs \iref{i:o_from_comp_acc_gyro}, \iref{i:o_from_comp_all_3}.
 \end{itemize}
 
 \plt{Every IM should map to at least one requirement, but not every requirement has to map to a corresponding IM.}
@@ -1492,8 +1494,7 @@ exhibit.
         $<$engineering or scientific application$>$.  The level of accuracy achieved by \progname{}
         shall be described following the procedure given in Section~X of the Verification and
         Validation Plan.''  A link to the VnV plan would be a nice extra.} The level of accuracy
-        achieved by \progname{} shall be described in the Verification and Validation plan (not yet
-        created).
+        achieved by \progname{} shall be described in Section 5.2.1 of the Verification and Validation plan \cite{VnV}.
 
     \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{nfr:usability}:] \textbf{Usability}:
       \progname{} shall follow standard coding conventions such that the Application programming
@@ -1632,21 +1633,22 @@ and data constraints on each other.
 
 \begin{table}[h!]
 \centering
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
 \hline
 	&\iref{i:o_from_gyro}         &\iref{i:o_from_min_acc}      &\iref{i:o_from_min_acc_mag}
-	&\iref{i:o_from_comp_acc_gyro} &\iref{i:o_from_comp_all_3} & \rref{r:inputs}   &
+	&\iref{i:o_from_comp_acc_gyro} &\iref{i:o_from_comp_all_3} & \rref{r:inputs} & \rref{r:input2}   &
 	\rref{r:calculate1}  & \rref{r:calculate2}& \rref{r:output}    \\
 \hline
-\iref{i:o_from_gyro}         & & & & & & & & & \\ \hline
-\iref{i:o_from_min_acc}      & & & & & & & & & \\ \hline
-\iref{i:o_from_min_acc_mag}  & & & & & & & & & \\ \hline
-\iref{i:o_from_comp_acc_gyro}& & & & & &X& &X& \\ \hline
-\iref{i:o_from_comp_all_3}   & & & & & &X&X& & \\ \hline
-\rref{r:inputs}              & & & & & & & & & \\ \hline
-\rref{r:calculate1}          & & & & & & & & & \\ \hline
-\rref{r:calculate2}          & & & & & & & & & \\ \hline
-\rref{r:output}              & & & & & & & & & \\ \hline
+\iref{i:o_from_gyro}         & & & & & & & & & &\\ \hline
+\iref{i:o_from_min_acc}      & & & & & & & & & &\\ \hline
+\iref{i:o_from_min_acc_mag}  & & & & & & & & & &\\ \hline
+\iref{i:o_from_comp_acc_gyro}& & & & & &X&X& &X&\\ \hline
+\iref{i:o_from_comp_all_3}   & & & & & &X&X&X& &\\ \hline
+\rref{r:inputs}              & & & & & & & & & &\\ \hline
+\rref{r:input2}              & & & & & & & & & &\\ \hline
+\rref{r:calculate1}          & & & & & & & & & &\\ \hline
+\rref{r:calculate2}          & & & & & & & & & &\\ \hline
+\rref{r:output}              & & & & & & & & & &\\ \hline
 \end{tabular}
 \caption{Traceability Matrix Showing the Connections Between Requirements and Instance Models}
 \label{Table:R_trace}
