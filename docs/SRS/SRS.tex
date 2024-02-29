@@ -596,8 +596,7 @@ elements:
     time.
   \end{itemize}
   \item[\textbf{PS4:}] Initial conditions. The initial condition is the orientation of the system at
-  startup. It is an optional value provided by the user. Otherwise, the system will produce an
-  estimated initial orientation.
+  startup. It is an optional value provided by the user if magnetometer measurements are present.
 \end{itemize}
 
 \begin{figure}[h!]
@@ -1447,6 +1446,10 @@ exhibit.
 
     \textbf{Each time step}: temporally synchronized (accelerometer, magnetometer, gyroscope)
     measurements or (accelerometer, gyroscope) measurements.
+
+    \item[R\refstepcounter{reqnum}\thereqnum \label{r:input2}:] If an initial orientation is not
+    provided \progname{} shall use the initial magnetometer measurement to produce an inital
+    orientatation.
 
     \item[R\refstepcounter{reqnum}\thereqnum \label{r:calculate1}:] \progname{} shall calculate the
     orientation relative to the Earth frame when provided with  accelerometer, gyroscope, and
