@@ -788,7 +788,7 @@ the examples below for your problem, and add additional models as appropriate.}
 
   For this equation to apply, other forms of error such as non-linearities \aref{a:nonlinear},
 bandwidth limits \aref{a:bandwidth}, quantization error \aref{a:quant}, out-of-range measurements
-\aref{a:range}. }
+\aref{a:range} are assumed to be negligable. }
 % #6 Notes
 { The symbol for bias, $b$, should not be confused with a magnetic field measurement. }
 % #7 Source
@@ -812,8 +812,8 @@ bandwidth limits \aref{a:bandwidth}, quantization error \aref{a:quant}, out-of-r
 % #4 equation
 { $\omega = \dot{\theta}$ }
 % #5 description
-{ The above equation gives the definition of angular velocity. Where $\omega$ is the derivitive of
-the angular position, $\theta$, with repect to time. }
+{ The above equation gives the definition of angular velocity. Where $\omega$ is the derivative of
+the angular position, $\theta$, with respect to time. }
 % #6 Notes
 { None. }
 % #7 Source
@@ -841,7 +841,7 @@ angular position, $\theta_{t-1}$ is the previous position, $\Delta t$ is the per
 is the average angular velocity.
 
 ~\newline
-This formular assumes that $\omega$ is constant or nearly constant during the $\Delta t$
+This formula assumes that $\omega$ is constant or nearly constant during the $\Delta t$
 (\aref{a:static}). }
 % #6 Notes
 { None. }
@@ -888,13 +888,13 @@ derivitive of the linear position, $x$, with repect to time. }
 % #2 refname of theory
 {TM:CF}
 % #3 label
-{Complimentry Filter}
+{Complimentary Filter}
 % #4 equation
 { $s_f = \gamma s_1 + (1-\gamma)s_2$ }
 % #5 description
 { The complimentary filter is a simple method to fuse two values with the same units together. Where
     $s_f$ is the final result of fusing the two values $s_1$ and $s_2$. The parameter $\gamma \in
-    [0.0, 1.0]$, where a a value of 0 completly trusts $s_2$ and a value of 1 completly trusts
+    [0.0, 1.0]$, where a value of 0 completely trusts $s_2$ and a value of 1 completely trusts
     $s_1$. }
 % #6 Notes
 { None. }
@@ -922,12 +922,12 @@ f(\prescript{S}{F}{\mathbf{q}}, \,^F\mathbf{d}, \,^S\mathbf{s}) &= \prescript{S}
 \end{align*}
 }
 % #5 description
-{ Given a measurment of a vector in a non-intertial sensor frame, $\prescript{S}{}{\mathbf{s}}$, and
+{ Given a measurement of a vector in a non-intertial sensor frame, $\prescript{S}{}{\mathbf{s}}$, and
 a known field direction relative to a fixed-frame, $\prescript{F}{}{\mathbf{d}}$,  the quaternion
 for this orientation can be approximated. However, quaternions require a complete solution
-\cite{madgwick_ecient_nodate}. Thus the minimization problem presented solves for
+\cite{madgwick_ecient_nodate}. Thus, the minimization problem presented solves for
 $\prescript{S}{F}{\mathbf{q}}_\alpha$, the quaternion that represents the orientation of the sensor
-frame relative to the fixed-frame. Where the subscript $d$ denotes the quatenion is minimized using
+frame relative to the fixed-frame. Where the subscript $d$ denotes the quaternion is minimized using
 $\prescript{F}{}{\mathbf{d}}$. }
 % #6 Notes
 { The function $\mathbf{p}(\mathbf{v})$ creates a pure quaternion, $(0, v_x, v_y, v_z) \in
@@ -971,7 +971,7 @@ This section collects the laws and equations that will be used in building the i
 \rowcolor[gray]{0.9}
 Number& GD\refstepcounter{defnum}\thedefnum \label{gd:q}\\
 \hline
-Label &\bf Angular velocity as a Quaternion. \\
+Label &\bf Angular velocity as a quaternion. \\
 \hline
 SI Units&\si{\radian\per\second}\\
 \hline
@@ -1120,7 +1120,7 @@ Symbol &$\mathbf{m}$\\
 This section is not applicable.
 
 \plt{This section is optional.  In many scientific computing programs it isn't necessary, since the
-  inputs and outpus are straightforward types, like reals, integers, and sequences of reals and
+  inputs and outputs are straightforward types, like reals, integers, and sequences of reals and
   integers.  However, for some problems it is very helpful to capture the type information.}
 
 \plt{The data types are not derived; they are simply stated and used by other models.}
@@ -1229,7 +1229,7 @@ omitted. \plt{reference your instance models}
   heading angle, only pitch and role are accurate.
 
   ~\newline
-  The Earth frame is is assumed to be inertial \aref{a:rotation}. \\
+  The Earth frame is assumed to be inertial \aref{a:rotation}. \\
   \hline
   Sources & \cite{madgwick_ahrs}, \cite{madgwick_ecient_nodate} \\
   \hline
@@ -1448,8 +1448,8 @@ exhibit.
     measurements or (accelerometer, gyroscope) measurements.
 
     \item[R\refstepcounter{reqnum}\thereqnum \label{r:input2}:] If an initial orientation is not
-    provided \progname{} shall use the initial magnetometer measurement to produce an inital
-    orientatation.
+    provided \progname{} shall use the initial magnetometer measurement to produce an initial
+    orientation.
 
     \item[R\refstepcounter{reqnum}\thereqnum \label{r:calculate1}:] \progname{} shall calculate the
     orientation relative to the Earth frame when provided with  accelerometer, gyroscope, and
@@ -1509,7 +1509,7 @@ exhibit.
 \plt{This NFR is easier to write than the others.  The systems that \progname{} should run on should
     be listed here.  When possible the specific versions of the potential operating environments
     should be given.  To make the NFR verifiable a statement could be made that the tests from a
-    given section of the VnV plan can be successfully run on all of the possible operating
+    given section of the VnV plan can be successfully run on all the possible operating
     environments.}
 % \item Other NFRs that might be discussed include verifiability, understandability and reusability.
 \end{itemize}
