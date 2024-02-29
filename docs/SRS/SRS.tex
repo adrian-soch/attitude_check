@@ -360,9 +360,9 @@ development process. \cite{purpose}
 \subsection{Scope of Requirements}
 
 The scope of this document will only consider operating conditions where all measured values are
-within the range of the sensors, and the system is at or near the surface of the Earth.
-
-Furthermore, time varying changes in the Earths magnetic field are ignored.
+within the range of the sensors, and the system is at or near the surface of the Earth. Furthermore,
+timescale of the system's operation is small compared to time varying changes in the Earth's
+magnetic field.
 
 \plt{Modelling the real world requires simplification.  The full complexity of the actual physics,
   chemistry, biology is too much for existing models, and for existing computational solution
@@ -373,7 +373,7 @@ Furthermore, time varying changes in the Earths magnetic field are ignored.
 
 \plt{The scope section is related to the assumptions section (Section~\ref{sec_assumpt}).  However,
   the scope and the assumptions are not at the same level of abstraction.  The scope is at a high
-  level.  The focus is on the ``big picture'' assumptions.  The assumptions section lists, and
+  level.  The focus is on the ``big picture'' assumptions.  The assumptions' section lists, and
   describes, all of the assumptions.}
 
 \subsection{Characteristics of Intended Reader} \label{sec_IntendedReader}
@@ -749,7 +749,7 @@ refer to the theoretical model [TM], general definition [GD], data definition [D
     \item[A\refstepcounter{assumpnum}\theassumpnum \label{a:gyro}:] The gyroscope bias is assumed to
     be constant, and the sensor is calibrated and internally compensates for the bias.
     \item[A\refstepcounter{assumpnum}\theassumpnum \label{a:mag}:] The magnetometer is assumed to
-    experience no local disturbance.
+    experience no local disturbance or slow time varying changes.
     \item[A\refstepcounter{assumpnum}\theassumpnum \label{a:rigid}:] The body/IMU is assumed to be a
     rigid body.
     \item[A\refstepcounter{assumpnum}\theassumpnum \label{a:static}:] The system is assumed to be in
@@ -922,10 +922,10 @@ f(\prescript{S}{F}{\mathbf{q}}, \,^F\mathbf{d}, \,^S\mathbf{s}) &= \prescript{S}
 \end{align*}
 }
 % #5 description
-{ Given a measurement of a vector in a non-intertial sensor frame, $\prescript{S}{}{\mathbf{s}}$, and
-a known field direction relative to a fixed-frame, $\prescript{F}{}{\mathbf{d}}$,  the quaternion
-for this orientation can be approximated. However, quaternions require a complete solution
-\cite{madgwick_ecient_nodate}. Thus, the minimization problem presented solves for
+{ Given a measurement of a vector in a non-intertial sensor frame, $\prescript{S}{}{\mathbf{s}}$,
+and a known field direction relative to a fixed-frame, $\prescript{F}{}{\mathbf{d}}$,  the
+quaternion for this orientation can be approximated. However, quaternions require a complete
+solution \cite{madgwick_ecient_nodate}. Thus, the minimization problem presented solves for
 $\prescript{S}{F}{\mathbf{q}}_\alpha$, the quaternion that represents the orientation of the sensor
 frame relative to the fixed-frame. Where the subscript $d$ denotes the quaternion is minimized using
 $\prescript{F}{}{\mathbf{d}}$. }
