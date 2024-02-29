@@ -74,7 +74,7 @@
 \newpage
 \noindent \rule{\textwidth}{0.5mm}
 
-\paragraph{RefName: } \refstepcounter{theorynum}\tthetheorynum 
+\paragraph{RefName: } \refstepcounter{theorynum}\tthetheorynum
 \label{#2}
 \paragraph{Label:} #3
 
@@ -116,10 +116,10 @@
 
 \begin{document}
 
-\title{Software Requirements Specification for Attitude Check: IMU-based Attitude Estimation} 
+\title{Software Requirements Specification for Attitude Check: IMU-based Attitude Estimation}
 \author{\authname}
 \date{\today}
-	
+
 \maketitle
 
 ~\newpage
@@ -152,10 +152,10 @@ the symbol is given followed by a description of the unit and the SI name. ~\new
 
 \renewcommand{\arraystretch}{1.2}
 %\begin{table}[ht]
-  \noindent \begin{tabular}{l l l} 
-    \toprule		
+  \noindent \begin{tabular}{l l l}
+    \toprule
     \textbf{symbol} & \textbf{unit} & \textbf{SI}\\
-    \midrule 
+    \midrule
     \si{\metre} & length & metre\\
     \si{\radian} & angle & radian\\
     \si{\second} & time & second\\
@@ -178,7 +178,7 @@ the symbol is given followed by a description of the unit and the SI name. ~\new
 \plt{The symbol for units named after people use capital letters, but the name of the unit itself
   uses lower case.  For instance, pascals use the symbol Pa, watts use the symbol W, teslas use the
   symbol T, newtons use the symbol N, etc.  The one exception to this is degree Celsius.  Details on
-  writing metric units can be found on the 
+  writing metric units can be found on the
   \href{https://www.nist.gov/pml/weights-and-measures/writing-metric-units}
   {NIST} web-page.}
 
@@ -192,7 +192,7 @@ literature and existing documentation. The symbols are listed in alphabetical or
 %\noindent \begin{tabularx}{1.0\textwidth}{l l X}
 \noindent \begin{longtable*}{l l p{12cm}} \toprule \textbf{symbol} & \textbf{unit} &
 \textbf{description}\\
-\midrule 
+\midrule
 % $v$ & \si[per-mode=symbol] {\meter\per\second} & linear velocity\\
 $a$ & \si[per-mode=symbol] {\meter\per\second\squared} & linear acceleration\\
 $m$ & \si[per-mode=symbol] {\tesla} & magnetic field strength\\
@@ -213,10 +213,10 @@ $\eta$ & - & Fraction of development time\\
 \subsection{Abbreviations and Acronyms}
 
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{l l} 
-  \toprule		
+\begin{tabular}{l l}
+  \toprule
   \textbf{symbol} & \textbf{description}\\
-  \midrule 
+  \midrule
   A & Assumption\\
   API & Application Programming Interface \\
   DD & Data Definition\\
@@ -369,7 +369,7 @@ Furthermore, time varying changes in the Earths magnetic field are ignored.
   techniques.  Rather than say what is in the scope, it is usually easier to say what is not.  You
   can think of it as the scope is initially everything, and then it is constrained to create the
   actual scope.  For instance, the problem can be restricted to 2 dimensions, or it can ignore the
-  effect of temperature (or pressure) on the material properties, etc.}  
+  effect of temperature (or pressure) on the material properties, etc.}
 
 \plt{The scope section is related to the assumptions section (Section~\ref{sec_assumpt}).  However,
   the scope and the assumptions are not at the same level of abstraction.  The scope is at a high
@@ -446,7 +446,7 @@ navigation, and control consume orientation to complete higher level objectives.
     \centerline{\includegraphics[width=0.6\textwidth, trim={0 2cm 0
     0},clip]{cas741_attitudeCheck.pdf}}
     \caption{System Context}
-    \label{fig:systemContext} 
+    \label{fig:systemContext}
 \end{figure}
 
 \plt{For each of the entities in the system context diagram its responsibilities should be listed.
@@ -477,23 +477,23 @@ navigation, and control consume orientation to complete higher level objectives.
 The typical user of \progname{} is expected to have an understanding of the purpose, inputs, and
 output of an attitude estimator. This project is designed for users looking to process IMU data.
 High-school level kinematics is required. For optimal results the user will be required to adjust
-the gain parameter, this may require experimentation. 
+the gain parameter, this may require experimentation.
 
 \plt{This section summarizes the knowledge/skills expected of the user. Measuring usability, which
   is often a required non-function requirement, requires knowledge of a typical user.  As mentioned
   above, the user is a different role from the ``intended reader,'' as given in
   Section~\ref{sec_IntendedReader}.  As in Section~\ref{sec_IntendedReader}, the user
-  characteristics should be specific an unambiguous.  For instance, ``The end user of \progname{}
+  characteristics should be specific and unambiguous.  For instance, ``The end user of \progname{}
   should have an understanding of undergraduate Level 1 Calculus and Physics.''}
 
 \subsection{System Constraints}
 
-Attitude Check is often ported to microcontrollers or used in high performance applications. Since
-existing infrastructure for system that require attitude estimation are developed in C/C++, this
-library should use the same programming language for ease of integration. 
+Attitude Check is often ported to microcontrollers or used in high performance applications.
+Attitude check should be implemented in a language that is compatible with common microcontrollers
+and existing robotics code bases.
 
 \plt{System constraints differ from other type of requirements because they limit the developers'
-  options in the system design and they identify how the eventual system must fit into the world.
+  options in the system design, and they identify how the eventual system must fit into the world.
   This is the only place in the SRS where design decisions can be specified.  That is, the quality
   requirement for abstraction is relaxed here.  However, system constraints should only be included
   if they are truly required.}
@@ -585,7 +585,7 @@ elements:
         \item The z-axis is the rotational axis of the Earth.
         \end{itemize}
   \end{itemize}
-  
+
   \item[\textbf{PS3:}] Forces:
   \begin{itemize}
     \item[\textbf{PS3a:}] Gravitational Force. All objects in the domain that have mass are subject
@@ -604,7 +604,7 @@ elements:
     \centerline{\includegraphics[width=0.65\textwidth, trim={0 0 0
     0},clip]{Reference-coordinates-frames-in-inertial-navigation-systems.png}} \caption{Physical
     System Context \cite{ins}.}
-    \label{fig:ref_diag} 
+    \label{fig:ref_diag}
 \end{figure}
 
 \textbf{Note:} This document will refer to the Navigational frame as the Earth frame, since this
@@ -748,7 +748,7 @@ refer to the theoretical model [TM], general definition [GD], data definition [D
     phenomena outside the sensor's measurement range. I.e. the system will not accelerate beyond the
     accelerometer's measurement range.
     \item[A\refstepcounter{assumpnum}\theassumpnum \label{a:gyro}:] The gyroscope bias is assumed to
-    be constant, and the sensor is calibrated and internally compensates for the bias. 
+    be constant, and the sensor is calibrated and internally compensates for the bias.
     \item[A\refstepcounter{assumpnum}\theassumpnum \label{a:mag}:] The magnetometer is assumed to
     experience no local disturbance.
     \item[A\refstepcounter{assumpnum}\theassumpnum \label{a:rigid}:] The body/IMU is assumed to be a
@@ -1028,16 +1028,16 @@ Label& \bf Acceleration Measurement\\
 Symbol &$a$\\
 \hline
   SI Units & \si{\meter\per\square\second}\\
-  \hline 
+  \hline
 
   Equation& $\mathbf{a} = \mathbf{a}_m + \mathbf{b}_a + \bm{\mu}_a \in \mathbb{R}^3 $\\
   \hline
   Description & $\mathbf{a_m}$ is the true acceleration vector defined by \tref{TM:LA}.
   $\mathbf{b_a}$ is the bias for each axis of the accelerometer. $\mu_a$ is the additive noise
-  vector. The accelerometer measurement vector $\mathbf{a}$ is the sum of the components above. 
-  
+  vector. The accelerometer measurement vector $\mathbf{a}$ is the sum of the components above.
+
   % This assumes that body/IMU does not deflect during acceleration \aref{a:rigid}.
-  
+
   ~\newline
   Often, acceleration measurements will have the reference frame and time step added. Example:
   $\prescript{S}{}{\mathbf{a}}_t$. \\
@@ -1063,14 +1063,14 @@ Label& \bf Gyroscope Measurement\\
 Symbol &$\bm{\omega}$\\
 \hline
   SI Units & \si{\radian\per\second}\\
-  \hline 
+  \hline
 
   Equation& $\bm{\omega} = \bm{\omega}_m + \mathbf{b}_g+ \bm{\mu}_g \in \mathbb{R}^3 $\\
   \hline
   Description & $\bm{\omega}_m$ is the true gyroscopic rate vector defined by \tref{TM:AV}.
   $\mathbf{b}_g$ is the bias for each axis of the gyroscope. $\mu_g$ is the additive noise vector.
   The gyroscope measurement vector $\bm{\omega}$ is the sum of the components above.
-    
+
   ~\newline
   Often, gyroscope measurements will have the reference frame and time step added. Example:
   $\prescript{S}{}{\bm{\omega}}_t$. \\
@@ -1097,14 +1097,14 @@ Label& \bf Magnetometer Measurement\\
 Symbol &$\mathbf{m}$\\
 \hline
   SI Units & \si{\tesla}\\
-  \hline 
+  \hline
 
   Equation& $\mathbf{m} = \mathbf{m}_m + \mathbf{b}_m + \bm{\mu}_m \in \mathbb{R}^3 $\\
   \hline
   Description & $\mathbf{m}_m$ is the true magnetometer vector. $\mathbf{b}_m$ is the bias for each
   axis of the magnetometer. $\mu_m$ is the additive noise vector. The magnetometer measurement
   vector $\mathbf{m}$ is the sum of the components above.
-    
+
   ~\newline
   Often, magnetometer measurements will have the reference frame and time step added. Example:
   $\prescript{S}{}{\mathbf{m}}_t$. \\
@@ -1144,7 +1144,7 @@ This section is not applicable.
 %   \hline Sources & Citation here, if the type is borrowed from another source\\
 %   \hline \end{tabular} \end{minipage}\\
 
-\subsubsection{Instance Models} \label{sec_instance}    
+\subsubsection{Instance Models} \label{sec_instance}
 
 \plt{The motivation for this section is to reduce the problem defined in ``Physical System
   Description'' (Section~\ref{sec_phySystDescrip}) to one expressed in mathematical terms. The IMs
@@ -1224,7 +1224,7 @@ omitted. \plt{reference your instance models}
   Description & Using the known gravitational field in the Earth frame, and a measured sensor-frame
   acceleration under \aref{a:static}, the orientation, $\prescript{S}{E}{\mathbf{q}}_g$, can be
   computed using \tref{TM:OFV}.
-    
+
   ~\newline
   Since the gravity vector only has one component, this method cannot accurately estimate the
   heading angle, only pitch and role are accurate.
@@ -1265,7 +1265,7 @@ omitted. \plt{reference your instance models}
 \,^E\mathbf{b}, \,^S\mathbf{m})= \begin{bmatrix}f_g( \prescript{S}{E}{\mathbf{q}},
 \prescript{E}{}{\mathbf{g}}_0, \,^S\mathbf{a}) \\ f_b( \prescript{S}{E}{\mathbf{q}}, \,^E\mathbf{b},
 \,^S\mathbf{m})\end{bmatrix}$ \\
-  
+
   \hline
   Description & Combining \iref{i:o_from_min_acc} with the known magnetic field in the Earth frame
   and a measured sensor-frame magnetic field, the orientation, $\prescript{S}{E}{\mathbf{q}}_{g,
@@ -1345,7 +1345,7 @@ Ref.\ By & \rref{r:calculate1}.\\
 \plt{The derivation shows how the IM is derived from the TMs/GDs.  In cases where the derivation
   cannot be described under the Description field, it will be necessary to include this subsection.}
 
-\subsubsection{Input Data Constraints} \label{sec_DataConstraints}    
+\subsubsection{Input Data Constraints} \label{sec_DataConstraints}
 
 Table~\ref{TblInputVar} shows the data constraints on the input output variables.  The column for
 physical constraints gives the physical limitations on the range of values that can be taken by the
@@ -1362,11 +1362,11 @@ The specification parameters in Table~\ref{TblInputVar} are listed in Table~\ref
 \begin{table}[!h]
   \caption{Input Variables} \label{TblInputVar}
   \renewcommand{\arraystretch}{1.2}
-\noindent \begin{longtable*}{l l l l c} 
+\noindent \begin{longtable*}{l l l l c}
 \toprule
 \textbf{Var} & \textbf{Physical Constraints} & \textbf{Software Constraints} & \textbf{Typical
 Value} & \textbf{Uncertainty}\\
-\midrule 
+\midrule
     $\Delta t$ & $\Delta t > 0$ & $\Delta t_{\text{min}} \leq \Delta t \leq \Delta t_{\text{max}}$ &
     10 \si[per-mode=symbol] {\milli\second} & - \\
     $a$ & $-\infty < a < \infty$ & $|a| \leq a_{\text{max}}$ & 9.81 \si[per-mode=symbol]
@@ -1386,10 +1386,10 @@ Value} & \textbf{Uncertainty}\\
 \begin{table}[!h]
 \caption{Specification Parameter Values} \label{TblSpecParams}
 \renewcommand{\arraystretch}{1.2}
-\noindent \begin{longtable*}{l l} 
+\noindent \begin{longtable*}{l l}
 \toprule
 \textbf{Var} & \textbf{Value} \\
-\midrule 
+\midrule
     $\Delta t_\text{min}$ & 1 \si{\milli\second}\\
     $\Delta t_\text{max}$ & 100000 \si{\milli\second}\\
     $a_\text{max}$ & See sensor datasheet [\si{\meter\per\square\second}].\\
@@ -1413,10 +1413,10 @@ usually summarized in tabular form.  A sample table is shown in Table~\ref{TblOu
 \begin{table}[!h]
 \caption{Output Variables} \label{TblOutputVar}
 \renewcommand{\arraystretch}{1.2}
-\noindent \begin{longtable*}{l l} 
+\noindent \begin{longtable*}{l l}
   \toprule
   \textbf{Var} & \textbf{Physical Constraints} \\
-  \midrule 
+  \midrule
   $\mathbf{q}_t$ & $| \mathbf{q}_t | = 1$ \\
   \bottomrule
 \end{longtable*}
@@ -1440,22 +1440,22 @@ exhibit.
     \item[R\refstepcounter{reqnum}\thereqnum \label{r:inputs}:] \plt{Requirements for the inputs
     that are supplied by the user.  This information has to be explicit.} The user shall provide
     system inputs at initialization and every time step as listed below.
-    
+
     \textbf{Initialization}: the sensor sampling time $\Delta t$, the local magnetic field intensity
     vector, the gain parameter $\gamma$, the desired output format, and the initial orientation if
     magnetometer measurements are not present.
 
     \textbf{Each time step}: temporally synchronized (accelerometer, magnetometer, gyroscope)
     measurements or (accelerometer, gyroscope) measurements.
-    
+
     \item[R\refstepcounter{reqnum}\thereqnum \label{r:calculate1}:] \progname{} shall calculate the
     orientation relative to the Earth frame when provided with  accelerometer, gyroscope, and
     magnetometer measurements.
-    
+
     \item[R\refstepcounter{reqnum}\thereqnum \label{r:calculate2}:] \progname{} shall calculate the
     yaw and pitch components of the orientation relative to the Earth frame when provided with
     accelerometer and gyroscope measurements.
-    
+
     \item[R\refstepcounter{reqnum}\thereqnum \label{r:output}:] \plt{Output related requirements.}
     \progname{} shall output the orientation in the user specified format.
 \end{itemize}
@@ -1486,7 +1486,7 @@ exhibit.
         Validation Plan.''  A link to the VnV plan would be a nice extra.} The level of accuracy
         achieved by \progname{} shall be described in the Verification and Validation plan (not yet
         created).
-    
+
     \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{nfr:usability}:] \textbf{Usability}:
       \progname{} shall follow standard coding conventions such that the Application programming
       Interface (API) is clearly understood by a typical user. \plt{Characterize the usability by
@@ -1494,15 +1494,15 @@ exhibit.
       section.  The level of usability achieved by the software shall be described following the
       procedure given in Section~X of the Verification and Validation Plan.  A link to the VnV plan
       would be a nice extra.}
-    
+
     \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{nfr:maintainability}:]
     \textbf{Maintainability}: The effort required to make any of the likely changes listed for
     \progname{} should be less than $\eta$ of the original development time.
-    
+
     \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{nfr:portability}:]
       \textbf{Portability}: \progname{} shall compile (if necessary) and run on Ubuntu 20.04, macOS
       14 Sonoma, and Win 10/11.
-  
+
 \plt{This NFR is easier to write than the others.  The systems that \progname{} should run on should
     be listed here.  When possible the specific versions of the potential operating environments
     should be given.  To make the NFR verifiable a statement could be made that the tests from a
@@ -1595,7 +1595,7 @@ and data constraints on each other.
 \begin{table}[h!]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-\hline        
+\hline
     & \tref{TM:SMM} &\tref{TM:AV}  &\tref{TM:RK}  &\tref{TM:LA}  &\tref{TM:CF}  &\tref{TM:OFV}
     &\dref{gd:q}   &\ddref{dd:acc}&\ddref{dd:gyro}&\ddref{dd:mag}&\iref{i:o_from_gyro}
     &\iref{i:o_from_min_acc}      &\iref{i:o_from_min_acc_mag}  &\iref{i:o_from_comp_acc_gyro}
@@ -1669,11 +1669,11 @@ prioritized list of requirements, or it could should the requirements that will 
 \begin{table}[!h]
 \caption{Table of Constants} \label{t:aux_const}
 \renewcommand{\arraystretch}{1.2}
-\noindent \begin{longtable*}{l l} 
+\noindent \begin{longtable*}{l l}
 \toprule
 \textbf{Var} & \textbf{Value} \\
-\midrule 
-    $\eta$ & $\cfrac{1}{21}$ \vspace{2mm} \\ 
+\midrule
+    $\eta$ & $\cfrac{1}{21}$ \vspace{2mm} \\
     $\mathbf{g}_0$ & $(0, 0, 9.81)^T$ \\
     ${}^E\mathbf{b}$ & $(16676.8, -3050.9, 49916.9)^T$\\
 \bottomrule
