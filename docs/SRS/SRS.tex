@@ -362,7 +362,9 @@ development process. \cite{purpose}
 The scope of this document will only consider operating conditions where all measured values are
 within the range of the sensors, and the system is at or near the surface of the Earth. Furthermore,
 timescale of the system's operation is small compared to time varying changes in the Earth's
-magnetic field.
+magnetic field. Since this program is designed for robotics and drone applications, all speeds are
+much slower than the speed of light, thus relativistic effects are outside the scope of this
+project.
 
 \plt{Modelling the real world requires simplification.  The full complexity of the actual physics,
   chemistry, biology is too much for existing models, and for existing computational solution
@@ -378,9 +380,9 @@ magnetic field.
 
 \subsection{Characteristics of Intended Reader} \label{sec_IntendedReader}
 
-The reader should have a university-level understanding of matrix and vector operations, numerical
-methods, state estimation, and dynamics. The reader should have some familiarity with digital
-sensors.
+The reader should have the following understanding: Linear Algebra Level II, Numerical Methods,
+Newtonian Mechanics and Dynamics Level I, State Estimation and Filtering, Robot Kinematics. The
+reader should have some familiarity with digital sensors.
 
 \plt{This section summarizes the skills and knowledge of the readers of the SRS.  It does NOT have
   the same purpose as the ``User Characteristics'' section (Section~\ref{SecUserCharacteristics}).
@@ -559,7 +561,8 @@ The physical system of \progname{}, as shown in Figure \ref{fig:ref_diag} includ
 elements:
 
 \begin{itemize}
-  \item[\textbf{PS1:}] Problem Domain is $\mathbb{R}^3$. The Cartesian coordinate system used for all mathematical operations.
+  \item[\textbf{PS1:}] Problem Domain is $\mathbb{R}^3$. The Cartesian coordinate system used for
+  all mathematical operations.
 
   \item[\textbf{PS2:}] Coordinate Frames:
   \begin{itemize}
