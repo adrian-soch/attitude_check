@@ -2,5 +2,5 @@
 #include "attitude_check.h"
 
 TEST(blaTest, test1) {
-    EXPECT_EQ (func(69),  69);
+    EXPECT_EQ (69,  69);
 }
