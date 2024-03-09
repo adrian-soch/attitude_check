@@ -21,16 +21,10 @@ VnVP:
 
 VnVR:
 	cd VnVReport && make && cd ../..
-	
+
 DevP:
 	cd DevelopmentPlan && make && cd ../..
-	
-HazA:
-	cd HazardAnalysis && make && cd ../..
-	
-Refl:
-	cd Reflection && make && cd ../..
-	
+
 UGde:
 	cd UserGuide && make && cd ../..
 
@@ -53,15 +47,9 @@ cleanVnVP:
 
 cleanVnVR:
 	cd VnVReport && make clean && cd ..
-	
+
 cleanDevP:
 	cd DevelopmentPlan && make clean && cd ..
-	
-cleanHazA:
-	cd HazardAnalysis && make clean && cd ..
-	
-cleanRefl:
-	cd Reflection && make clean && cd ..
-	
+
 cleanUGde:
 	cd UserGuide && make clean && cd ..
