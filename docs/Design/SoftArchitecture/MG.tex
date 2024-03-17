@@ -160,13 +160,11 @@ hierarchy tree, are the modules that will actually be implemented.
 \item [\refstepcounter{mnum} \mthemnum \label{m:mm}:] Math Module
 \item [\refstepcounter{mnum} \mthemnum \label{m:mmm}:] Matrix Math Module
 \item [\refstepcounter{mnum} \mthemnum \label{m:qm}:] Quaternion Module
-\item [\refstepcounter{mnum} \mthemnum \label{m:ivm}:] Input Verification Module
+\item [\refstepcounter{mnum} \mthemnum \label{m:im}:] Input Module
 \item [\refstepcounter{mnum} \mthemnum \label{m:iqwomm}:] Accel To Quat
 Module
 \item [\refstepcounter{mnum} \mthemnum \label{m:iqwmm}:] Mag To Quat Module
-\item [\refstepcounter{mnum} \mthemnum \label{m:ewomm}:] Estimate w/o Mag Module
-\item [\refstepcounter{mnum} \mthemnum \label{m:ewmm}:] Estimate w Mag Module
-\item [\refstepcounter{mnum} \mthemnum \label{m:cm}:] Control Module
+\item [\refstepcounter{mnum} \mthemnum \label{m:em}:] Estimator Module
 \end{description}
 
 
@@ -180,16 +178,14 @@ Module
 % {Hardware-Hiding Module} & ~ \\
 % \midrule
 
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & Control Module \\
-& Input Verification Module \\
-& Accel To Quat Module \\
-& Mag To Quat Module \\
-& Estimate w/o Mag Module \\
-& Estimate w Mag Module \\
+\multirow{4}{0.3\textwidth}{Behaviour-Hiding Module} & Estimator Module \\
+  & Input Module \\
+  & Accel To Quat Module \\
+  & Mag To Quat Module \\
 \midrule
 \multirow{3}{0.3\textwidth}{Software Decision Module} & Math Module\\
-& Matrix Math Module \\
-& Quaternion Module \\
+  & Matrix Math Module \\
+  & Quaternion Module \\
 \bottomrule
 
 \end{tabular}
@@ -243,7 +239,7 @@ means that the module is not a leaf and will not have to be implemented.
 \item[Implemented By:] --
 \end{description}
 
-\subsubsection{Input Verification Module (\mref{m:ivm})}
+\subsubsection{Input Module (\mref{m:im})}
 
 \begin{description}
 \item[Secrets:] Limits for each of the input parameters described in the SRS.
@@ -258,7 +254,7 @@ means that the module is not a leaf and will not have to be implemented.
 \item[Secrets:] The algorithm for computing a quaternion from a single accelerometer and gyroscope measurement.
 \item[Services:] Calculates an initial orientation quaternion from accelerometer and gyroscope data.
 \item[Implemented By:] \progname
-\item[Type of Module:] Abstract Data Type
+\item[Type of Module:] Library
 \end{description}
 
 \subsubsection{Mag To Quat Module (\mref{m:iqwmm})}
@@ -267,32 +263,14 @@ means that the module is not a leaf and will not have to be implemented.
 \item[Secrets:] The algorithm for computing a quaternion from a single set of accelerometer, gyroscope, and magnetometer measurements.
 \item[Services:] Calculates an initial orientation quaternion from accelerometer, gyroscope, and magnetic data.
 \item[Implemented By:] \progname
-\item[Type of Module:] Abstract Data Type
-\end{description}
-
-\subsubsection{Estimate w/o Mag Module (\mref{m:ewomm})}
-
-\begin{description}
-\item[Secrets:] The algorithm for computing an estimated orientation using sequential accelerometer and gyroscope data.
-\item[Services:] Calculates orientation estimates from accelerometer and gyroscope data.
-\item[Implemented By:] \progname
 \item[Type of Module:] Library
 \end{description}
 
-\subsubsection{Estimate w Mag Module (\mref{m:ewmm})}
+\subsubsection{Estimator Module (\mref{m:em})}
 
 \begin{description}
-\item[Secrets:] The algorithm for computing an estimated orientation using sequential accelerometer, gyroscope, and magnetometer data.
-\item[Services:] Calculates orientation estimates from accelerometer, gyroscope, and magnetometer data.
-\item[Implemented By:] \progname
-\item[Type of Module:] Library
-\end{description}
-
-\subsubsection{Control Module (\mref{m:cm})}
-
-\begin{description}
-\item[Secrets:] The algorithm for managing the program.
-\item[Services:] Provides the main program.
+\item[Secrets:] The algorithms for estimating attitude (orientation) using sequential sensor data.
+\item[Services:] Calculates orientation estimates from sensor data.
 \item[Implemented By:] \progname
 \item[Type of Module:] Abstract Data Type
 \end{description}
@@ -342,10 +320,10 @@ the modules and the anticipated changes.
 \toprule
 \textbf{Req.} & \textbf{Modules}\\
 \midrule
-R1 & \mref{m:ivm} \\
-R2 & \mref{m:mm}, \mref{m:mmm}, \mref{m:qm}, \mref{m:iqwomm}, \mref{m:iqwmm}\\
-R3 & \mref{m:mm}, \mref{m:mmm}, \mref{m:qm}, \mref{m:ivm}, \mref{m:iqwmm}, \mref{m:ewmm}, \mref{m:cm}\\
-R4 & \mref{m:mm}, \mref{m:mmm}, \mref{m:qm}, \mref{m:ivm}, \mref{m:iqwomm}, \mref{m:ewomm}, \mref{m:cm}\\
+R1 & \mref{m:im} \\
+R2 & \mref{m:mm}, \mref{m:mmm}, \mref{m:qm}, \mref{m:iqwmm}\\
+R3 & \mref{m:mm}, \mref{m:mmm}, \mref{m:qm}, \mref{m:im}, \mref{m:iqwmm}, \mref{m:em}\\
+R4 & \mref{m:mm}, \mref{m:mmm}, \mref{m:qm}, \mref{m:im}, \mref{m:iqwomm}, \mref{m:em} \\
 R5 & \mref{m:mm}, \mref{m:qm}\\
 \bottomrule
 \end{tabular}
@@ -359,8 +337,8 @@ R5 & \mref{m:mm}, \mref{m:qm}\\
 \toprule
 \textbf{AC} & \textbf{Modules}\\
 \midrule
-\acref{lc:gyro} & \mref{m:ewomm}, \mref{m:ewmm}\\
-\acref{lc:mag} & \mref{m:ewmm}\\
+\acref{lc:gyro} & \mref{m:em}\\
+\acref{lc:mag} & \mref{m:em}\\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Anticipated Changes and Modules}
