@@ -132,15 +132,14 @@ The following table is taken directly from the Module Guide document for this pr
 % {Hardware-Hiding Module} & ~ \\
 % \midrule
 
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & Control Module \\
-& Input Verification Module \\
-& Accel To Quat Module \\
-& Mag To Quat Module \\
-& Estimate w/o Mag Module \\
-& Estimate w Mag Module \\
+\multirow{4}{0.3\textwidth}{Behaviour-Hiding Module} & Estimator Module \\
+  & Input Module \\
+  & Accel To Quat Module \\
+  & Mag To Quat Module \\
 \midrule
-\multirow{2}{0.3\textwidth}{Software Decision Module} & Matrix Math Module\\
-& Quaternion Module \\
+\multirow{3}{0.3\textwidth}{Software Decision Module} & Math Module\\
+  & Matrix Math Module \\
+  & Quaternion Module \\
 \bottomrule
 
 \end{tabular}
@@ -151,35 +150,33 @@ The following table is taken directly from the Module Guide document for this pr
 \newpage
 ~\newpage
 
-\section{MIS of Control Module} \label{cm}
-
-\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
-
-\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{MIS of Estimator Module} \label{em}
 
 \subsection{Module}
-control
+estimator
 
 \subsection{Uses}
-Input Verification Module \newline
-Accel To Quat Module \newline
-Mag To Quat Module \newline
-Estimate w/o Mag Module \newline
-Estimate w Mag Module \newline
-Quaternion Module \newline
-Math Module \newline
-Matrix Math Module
+Accel To Quat Module (Sec \ref{iqewomm}) \newline
+Mag To Quat Module (Sec \ref{iqewmm}) \newline
+Input Module (Sec \ref{ivm}) \newline
+Quaternion Module (Sec \ref{qm})\newline
+Matrix Math Module (Sec \ref{mmm}) \newline
+Math Module (Sec \ref{mm})
 
 \subsection{Syntax}
 
 \subsubsection{Exported Access Programs}
 
 \begin{center}
-\begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
+\begin{tabular}{p{2.5cm} p{6cm} p{2cm} p{1.5cm}}
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-\wss{accessProg} & - & - & - \\
+update & $q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3, \text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$ & $q_\text{out}:=\mathbf{q}$ & ValueError \\
+update & $q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$ & $q_\text{out}:=\mathbf{q}$ & ValueError \\
+get\_mag\_norm & $q:=\mathbf{q}, $ & $\,^E\mathbf{b}:=\mathbb{R}^3$ & ValueError \\
 \hline
 \end{tabular}
 \end{center}
@@ -187,109 +184,78 @@ Matrix Math Module
 \subsection{Semantics}
 
 \subsubsection{State Variables}
-
-% \subsubsection{Assumptions}
+\begin{itemize}
+  \item[gain] : $\mathbb{R}$
+\end{itemize}
 
 \subsubsection{Access Routine Semantics}
 
-\noindent \wss{accessProg}():
+\noindent update($q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3, \text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$):
 \begin{itemize}
-\item transition: \wss{if appropriate}
-\item output: \wss{if appropriate}
-\item exception: \wss{if appropriate}
+\item transition: None
+\item output: $q_\text{out} =  q + \Big( \dot{q}_{\omega} - \text{gain}\frac{\text{transpose}(J( q, \,^E\mathbf{b}))f_{g,b}( q, \text{acc}, \,^E\mathbf{b}, \text{mag})}{\text{norm}(\text{transpose}(J( q, \,^E\mathbf{b}))f_{g,b}( q, \text{acc}, \,^E\mathbf{b}, \text{mag}))}\Big) \text{dt}$ where
+\begin{align*}
+  \dot{q}_{\omega} =& \frac{1}{2} \text{quat\_prod}(q, \text{create\_quat}(0, \text{gyr})) \\
+  \,^E\mathbf{b} =& \text{get\_mag\_norm}(q, [m_x, m_y, m_z])\\
+  [a_x, a_y, a_z] =& \cfrac{\text{acc}}{|\text{acc}|} \\
+  [m_x, m_y, m_z] =& \cfrac{\text{mag}}{|\text{mag}|} \\
+  % J_b =& \begin{bmatrix}
+  %   -2b_zq_y          & 2b_zq_z         & -4b_xq_y-2b_zq_w & -4b_xq_z+2b_zq_x \\
+  %   -2b_xq_z+2b_zq_x  & 2b_xq_y+2b_zq_w & 2b_xq_x+2b_zq_z  & -2b_xq_w+2b_zq_y \\
+  %   2b_xq_y           & 2b_xq_z-4b_zq_x & 2b_xq_w-4b_zq_y  & 2b_xq_x
+  %   \end{bmatrix}\\
+  f_{g,b} =& \begin{bmatrix}
+    2(q_xq_z-q_wq_y)-a_x \\
+    2(q_wq_x+q_yq_z)-a_y \\
+    2(\frac{1}{2}-q_x^2-q_y^2)-a_z \\
+    2b_x(\frac{1}{2}-q_y^2-q_z^2) + 2b_z(q_xq_z-q_wq_y)-m_x \\
+    2b_x(q_xq_y-q_wq_z) + 2b_z(q_wq_x+q_yq_z)-m_y \\
+    2b_x(q_wq_y+q_xq_z) + 2b_z(\frac{1}{2}-q_x^2-q_y^2)-m_z
+    \end{bmatrix} \\
+    J =& \begin{bmatrix}
+      -2q_y & 2q_z & -2q_w & 2q_x \\
+      2q_x & 2q_w & 2q_z & 2q_y \\
+      0 & -4q_x & -4q_y & 0 \\
+      -2b_zq_y          & 2b_zq_z         & -4b_xq_y-2b_zq_w & -4b_xq_z+2b_zq_x \\
+      -2b_xq_z+2b_zq_x  & 2b_xq_y+2b_zq_w & 2b_xq_x+2b_zq_z  & -2b_xq_w+2b_zq_y \\
+      2b_xq_y           & 2b_xq_z-4b_zq_x & 2b_xq_w-4b_zq_y  & 2b_xq_x
+      \end{bmatrix}\\
+\end{align*}
+\item exception: ValueError
 \end{itemize}
 
-\newpage
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{MIS of Estimate w/o Mag Module} \label{ewomm}
-
-\subsection{Module}
-estimate\_wo\_mag
-
-\subsection{Uses}
-Accel To Quat Module \newline
-Quaternion Module \newline
-Math Module \newline
-Matrix Math Module
-
-\subsection{Syntax}
-
-\subsubsection{Exported Constants}
-
-\subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-\wss{accessProg} & - & - & - \\
-\hline
-\end{tabular}
-\end{center}
-
-\subsection{Semantics}
-
-\subsubsection{State Variables}
-
-\subsubsection{Access Routine Semantics}
-
-\noindent \wss{accessProg}():
+\noindent update($q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$):
 \begin{itemize}
-\item transition: \wss{if appropriate}
-\item output: \wss{if appropriate}
-\item exception: \wss{if appropriate}
+\item transition: None
+\item output: $q_\text{out} = q + \Big( \dot{q}_{\omega} - \text{gain}\frac{\text{transpose}(J(q))f_g( q, \text{acc})}{\text{norm}(\text{transpose}(J(q))f_g( q, \text{acc}))}\Big) \text{dt}$ where
+\begin{align*}
+  \dot{q}_{\omega} =& \frac{1}{2} \text{quat\_prod}(q, \text{create\_quat}(0, \text{gyr})) \\
+  [a_x, a_y, a_z] =& \cfrac{\text{acc}}{|\text{acc}|} \\
+  J =& \begin{bmatrix}
+    -2q_y & 2q_z & -2q_w & 2q_x \\
+    2q_x & 2q_w & 2q_z & 2q_y \\
+    0 & -4q_x & -4q_y & 0
+    \end{bmatrix}\\
+  f_{g} =& \begin{bmatrix}
+    2(q_xq_z-q_wq_y)-a_x \\ 2(q_wq_x+q_yq_z)-a_y \\ 2(\frac{1}{2}-q_x^2-q_y^2)-a_z
+  \end{bmatrix}
+\end{align*}
+\item exception: ValueError
 \end{itemize}
 
-\newpage
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{MIS of Estimate w Mag Module} \label{ewmm}
-
-\subsection{Module}
-estimate\_w\_mag
-
-\subsection{Uses}
-Mag To Quat Module \newline
-Quaternion Module \newline
-Math Module \newline
-Matrix Math Module
-
-\subsection{Syntax}
-
-% \subsubsection{Exported Constants}
-
-\subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-\wss{accessProg} & - & - & - \\
-\hline
-\end{tabular}
-\end{center}
-
-\subsection{Semantics}
-
-\subsubsection{State Variables}
-
-% \subsubsection{Assumptions}
-
-\subsubsection{Access Routine Semantics}
-
-\noindent \wss{accessProg}():
+\noindent get\_mag\_norm($q:=\mathbf{q}, \text{mag}:=\mathbb{R}^3$):
 \begin{itemize}
-\item transition: \wss{if appropriate}
-\item output: \wss{if appropriate}
-\item exception: \wss{if appropriate}
+\item transition: None
+\item output: $\,^E\mathbf{b}:= [b_x, 0, b_z]$ where
+\begin{align*}
+  \text{m\_quat} =& \text{quat\_prod}(\text{create\_quat}(0, m_x, m_y, m_z), \text{quat\_conj}(q)) \\
+  b_x =& \text{norm}([\text{m\_quat}_x, \text{m\_quat}_y]) \\
+  b_z =& \text{m\_quat}_z
+\end{align*}
+\item exception: ValueError
 \end{itemize}
 
-% \subsubsection{Local Functions}
+
 
 \newpage
 
@@ -301,9 +267,9 @@ Matrix Math Module
 acc2quat
 
 \subsection{Uses}
-Quaternion Module \newline
-Math Module \newline
-Matrix Math Module
+Quaternion Module (Sec \ref{qm})\newline
+Matrix Math Module (Sec \ref{mmm}) \newline
+Math Module (Sec \ref{mm})
 
 \subsection{Syntax}
 
@@ -323,7 +289,7 @@ acc\_to\_quat & $\mathbf{a}:=\mathbb{R}^3$ & $q_\text{out} := \mathbf{q}$ & - \\
 
 \subsubsection{Access Routine Semantics}
 
-\noindent mag\_to\_quat($\mathbf{a}:=\mathbb{R}^3$):
+\noindent acc\_to\_quat($\mathbf{a}:=\mathbb{R}^3$):
 \begin{itemize}
 \item output: $q_\text{out}:= \text{euler\_to\_quat}(\theta, \phi, \psi)$ given
 \begin{align*}
@@ -345,9 +311,9 @@ where $[a_x, a_y, a_z] = \cfrac{\mathbf{a}}{|\mathbf{a}|}$
 mag2quat
 
 \subsection{Uses}
-Quaternion Module \newline
-Matrix Math Module \newline
-Math Module
+Quaternion Module (Sec \ref{qm})\newline
+Matrix Math Module (Sec \ref{mmm}) \newline
+Math Module (Sec \ref{mm})
 
 \subsection{Syntax}
 
@@ -383,7 +349,7 @@ where $[a_x, a_y, a_z] = \cfrac{\mathbf{a}}{|\mathbf{a}|}$ and $[m_x, m_y, m_z] 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{MIS of Input Verification Module} \label{ivm}
+\section{MIS of Input Module} \label{ivm}
 
 \subsection{Module}
 input
@@ -400,8 +366,8 @@ None
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-input\_checker & $q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3, \text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$ & y:=$\mathbb{B}$ & ValueError \\
-input\_checker & $q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$ & y:=$\mathbb{B}$ & ValueError \\
+input\_checker & $q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3, \text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}, \text{gain}:= \mathbb{R}$ & y:=$\mathbb{B}$ & ValueError \\
+input\_checker & $q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}, \text{gain}:= \mathbb{R}$ & y:=$\mathbb{B}$ & ValueError \\
 \hline
 \end{tabular}
 \end{center}
@@ -412,13 +378,13 @@ input\_checker & $q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R
 
 \subsubsection{Access Routine Semantics}
 
-\noindent input\_checker($q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3, \text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$ ):
+\noindent input\_checker($q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3, \text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}, \text{gain}:= \mathbb{R}$):
 \begin{itemize}
 \item output: y:= true, if input values are within the bounds specified in Section 4.2.8 Input Data Constraints of the SRS.
 \item exception: ValueError
 \end{itemize}
 
-\noindent input\_checker($q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$):
+\noindent input\_checker($q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}, \text{gain}:= \mathbb{R}$):
 \begin{itemize}
 \item output: y:= true, if input values are within the bounds specified in Section 4.2.8 Input Data Constraints of the SRS.
 \item exception: ValueError
@@ -434,21 +400,22 @@ input\_checker & $q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R
 quaternion
 
 \subsection{Uses}
-Matrix Math Module \newline
-Math Module
+Matrix Math Module (Sec \ref{mmm}) \newline
+Math Module (Sec \ref{mm})
 
 \subsection{Syntax}
 
 \subsubsection{Exported Access Programs}
 
 \begin{center}
-\begin{tabular}{p{2.5cm} p{6cm} p{2cm} p{1.5cm}}
+\begin{tabular}{p{2.5cm} p{5.5cm} p{2cm} p{2cm}}
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
 create\_quat & w:=$\mathbb{R}, x:=\mathbb{R}, y:=\mathbb{R}, z:=\mathbb{R}$ & - & ValueError \\
 quat\_prod & $p:=\mathbf{q},  q:=\mathbf{q}$ & $q_\text{out}:=\mathbf{q}$ & ValueError \\
 normalize & - & - & ValueError \\
+quat\_conj & - & $q_\text{conj}:= \mathbf{q}$ & - \\
 assert\_is\_norm & w:=$\mathbb{R}, x:=\mathbb{R}, y:=\mathbb{R}, z:=\mathbb{R}$ & out$:=\mathbb{B}$
 & ValueError \\
 quat\_to\_euler & - & $\mathbf{e}:=\mathbb{R}^3$ & ValueError \\
@@ -486,6 +453,13 @@ $\text{quat}: \mathbf{q}$
   \end{align*}
 
 \item exception: ValueError
+\end{itemize}
+
+\noindent quat\_conj():
+\begin{itemize}
+% \item transition: \wss{if appropriate}
+\item output: $q_\text{conj} :=  [q_w, -q_x, -q_y, -q_z]$
+\item exception: -
 \end{itemize}
 
 \noindent normalize():
@@ -541,7 +515,7 @@ See \url{https://www.euclideanspace.com/maths/geometry/rotations/conversions/qua
 matrix
 
 \subsection{Uses}
-N/A
+None
 
 \subsection{Syntax}
 
