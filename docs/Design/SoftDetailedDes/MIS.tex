@@ -20,8 +20,7 @@
 \usepackage{caption}
 \usepackage{fullpage}
 
-\hypersetup{
-bookmarks=true,     % show bookmarks bar?
+\hypersetup{ bookmarks=true,     % show bookmarks bar?
 colorlinks=true,       % false: boxed links; true: colored links
 linkcolor=red,          % color of internal links (change box color with linkbordercolor)
 citecolor=blue,      % color of links to bibliography
@@ -50,11 +49,9 @@ urlcolor=cyan          % color of external links
 
 \section{Revision History}
 
-\begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
-\toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
+\begin{tabularx}{\textwidth}{p{3cm}p{2cm}X} \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+\today 1 & 1.0 & Initial document\\
 \bottomrule
 \end{tabularx}
 
@@ -62,7 +59,8 @@ Date 2 & 1.1 & Notes\\
 
 \section{Symbols, Abbreviations and Acronyms}
 
-See SRS Documentation at \wss{give url}
+See SRS Documentation at
+\url{https://github.com/adrian-soch/attitude_check/blob/main/docs/SRS/SRS.pdf}.
 
 \wss{Also add any additional symbols, abbreviations or acronyms}
 
@@ -76,48 +74,48 @@ See SRS Documentation at \wss{give url}
 
 \section{Introduction}
 
-The following document details the Module Interface Specifications for
-\wss{Fill in your project name and description}
+The following document details the Module Interface Specifications for \progname.
 
-Complementary documents include the System Requirement Specifications
-and Module Guide.  The full documentation and implementation can be
-found at \url{...}.  \wss{provide the url for your repo}
+Complementary documents include the System Requirement Specifications and Module Guide.  The full
+documentation and implementation can be found at
+\url{https://github.com/adrian-soch/attitude_check}.  \wss{provide the url for your repo}
 
 \section{Notation}
 
-\wss{You should describe your notation.  You can use what is below as
-  a starting point.}
+\wss{You should describe your notation.  You can use what is below as a starting point.}
 
-The structure of the MIS for modules comes from \citet{HoffmanAndStrooper1995},
-with the addition that template modules have been adapted from
-\cite{GhezziEtAl2003}.  The mathematical notation comes from Chapter 3 of
-\citet{HoffmanAndStrooper1995}.  For instance, the symbol := is used for a
-multiple assignment statement and conditional rules follow the form $(c_1
-\Rightarrow r_1 | c_2 \Rightarrow r_2 | ... | c_n \Rightarrow r_n )$.
+The structure of the MIS for modules comes from \citet{HoffmanAndStrooper1995}, with the addition
+that template modules have been adapted from \cite{GhezziEtAl2003}.  The mathematical notation comes
+from Chapter 3 of \citet{HoffmanAndStrooper1995}.  For instance, the symbol := is used for a
+multiple assignment statement and conditional rules follow the form $(c_1 \Rightarrow r_1 | c_2
+\Rightarrow r_2 | ... | c_n \Rightarrow r_n )$.
 
-The following table summarizes the primitive data types used by \progname. 
+The following table summarizes the primitive data types used by \progname.
 
 \begin{center}
 \renewcommand{\arraystretch}{1.2}
-\noindent 
-\begin{tabular}{l l p{7.5cm}} 
-\toprule 
-\textbf{Data Type} & \textbf{Notation} & \textbf{Description}\\ 
+\noindent
+\begin{tabular}{l l p{7.5cm}}
+\toprule
+\textbf{Data Type} & \textbf{Notation} & \textbf{Description}\\
 \midrule
-character & char & a single symbol or digit\\
-integer & $\mathbb{Z}$ & a number without a fractional component in (-$\infty$, $\infty$) \\
-natural number & $\mathbb{N}$ & a number without a fractional component in [1, $\infty$) \\
+% character & char & a single symbol or digit\\
+% integer & $\mathbb{Z}$ & a number without a fractional component in (-$\infty$, $\infty$) \\
+% natural number & $\mathbb{N}$ & a number without a fractional component in [1, $\infty$) \\
 real & $\mathbb{R}$ & any number in (-$\infty$, $\infty$)\\
+boolean & $\mathbb{B}$ & value in $[\text{false}=0, \text{true}=1]$\\
+matrix & $\mathbb{R}^{m \times n}$ & matrix of any number in (-$\infty$, $\infty$)\\
+vector & $\mathbb{R}^{m}$ & column vector of any number in (-$\infty$, $\infty$)\\
+quaternion & $\mathbf{q}$ & a quaternion $\in \mathbb{R}^4$, see SRS for details\\
 \bottomrule
-\end{tabular} 
+\end{tabular}
 \end{center}
 
 \noindent
-The specification of \progname \ uses some derived data types: sequences, strings, and
-tuples. Sequences are lists filled with elements of the same data type. Strings
-are sequences of characters. Tuples contain a list of values, potentially of
-different types. In addition, \progname \ uses functions, which
-are defined by the data types of their inputs and outputs. Local functions are
+The specification of \progname \ uses some derived data types: sequences, strings, and tuples.
+Sequences are lists filled with elements of the same data type. Strings are sequences of characters.
+Tuples contain a list of values, potentially of different types. In addition, \progname \ uses
+functions, which are defined by the data types of their inputs and outputs. Local functions are
 described by giving their type signature followed by their specification.
 
 \section{Module Decomposition}
@@ -131,21 +129,17 @@ The following table is taken directly from the Module Guide document for this pr
 \textbf{Level 1} & \textbf{Level 2}\\
 \midrule
 
-{Hardware-Hiding} & ~ \\
-\midrule
+% {Hardware-Hiding Module} & ~ \\
+% \midrule
 
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding} & Input Parameters\\
-& Output Format\\
-& Output Verification\\
-& Temperature ODEs\\
-& Energy Equations\\ 
-& Control Module\\
-& Specification Parameters Module\\
+\multirow{4}{0.3\textwidth}{Behaviour-Hiding Module} & Estimator Module \\
+  & Input Module \\
+  & Accel To Quat Module \\
+  & Mag To Quat Module \\
 \midrule
-
-\multirow{3}{0.3\textwidth}{Software Decision} & {Sequence Data Structure}\\
-& ODE Solver\\
-& Plotting\\
+\multirow{3}{0.3\textwidth}{Software Decision Module} & Math Module\\
+  & Matrix Math Module \\
+  & Quaternion Module \\
 \bottomrule
 
 \end{tabular}
@@ -156,23 +150,128 @@ The following table is taken directly from the Module Guide document for this pr
 \newpage
 ~\newpage
 
-\section{MIS of \wss{Module Name}} \label{Module} \wss{Use labels for
-  cross-referencing}
-
-\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
-
-\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{MIS of Estimator Module} \label{em}
 
 \subsection{Module}
-
-\wss{Short name for the module}
+estimator
 
 \subsection{Uses}
-
+Accel To Quat Module (Sec \ref{iqewomm}) \newline
+Mag To Quat Module (Sec \ref{iqewmm}) \newline
+Input Module (Sec \ref{ivm}) \newline
+Quaternion Module (Sec \ref{qm})\newline
+Matrix Math Module (Sec \ref{mmm}) \newline
+Math Module (Sec \ref{mm})
 
 \subsection{Syntax}
 
-\subsubsection{Exported Constants}
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{2.5cm} p{6cm} p{2cm} p{1.5cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+update & $q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3, \text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$ & $q_\text{out}:=\mathbf{q}$ & ValueError \\
+update & $q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$ & $q_\text{out}:=\mathbf{q}$ & ValueError \\
+get\_mag\_norm & $q:=\mathbf{q}, $ & $\,^E\mathbf{b}:=\mathbb{R}^3$ & ValueError \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+\begin{itemize}
+  \item[gain] : $\mathbb{R}$
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent update($q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3, \text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$):
+\begin{itemize}
+\item transition: None
+\item output: $q_\text{out} =  q + \Big( \dot{q}_{\omega} - \text{gain}\frac{\text{transpose}(J( q, \,^E\mathbf{b}))f_{g,b}( q, \text{acc}, \,^E\mathbf{b}, \text{mag})}{\text{norm}(\text{transpose}(J( q, \,^E\mathbf{b}))f_{g,b}( q, \text{acc}, \,^E\mathbf{b}, \text{mag}))}\Big) \text{dt}$ where
+\begin{align*}
+  \dot{q}_{\omega} =& \frac{1}{2} \text{quat\_prod}(q, \text{create\_quat}(0, \text{gyr})) \\
+  \,^E\mathbf{b} =& \text{get\_mag\_norm}(q, [m_x, m_y, m_z])\\
+  [a_x, a_y, a_z] =& \cfrac{\text{acc}}{|\text{acc}|} \\
+  [m_x, m_y, m_z] =& \cfrac{\text{mag}}{|\text{mag}|} \\
+  % J_b =& \begin{bmatrix}
+  %   -2b_zq_y          & 2b_zq_z         & -4b_xq_y-2b_zq_w & -4b_xq_z+2b_zq_x \\
+  %   -2b_xq_z+2b_zq_x  & 2b_xq_y+2b_zq_w & 2b_xq_x+2b_zq_z  & -2b_xq_w+2b_zq_y \\
+  %   2b_xq_y           & 2b_xq_z-4b_zq_x & 2b_xq_w-4b_zq_y  & 2b_xq_x
+  %   \end{bmatrix}\\
+  f_{g,b} =& \begin{bmatrix}
+    2(q_xq_z-q_wq_y)-a_x \\
+    2(q_wq_x+q_yq_z)-a_y \\
+    2(\frac{1}{2}-q_x^2-q_y^2)-a_z \\
+    2b_x(\frac{1}{2}-q_y^2-q_z^2) + 2b_z(q_xq_z-q_wq_y)-m_x \\
+    2b_x(q_xq_y-q_wq_z) + 2b_z(q_wq_x+q_yq_z)-m_y \\
+    2b_x(q_wq_y+q_xq_z) + 2b_z(\frac{1}{2}-q_x^2-q_y^2)-m_z
+    \end{bmatrix} \\
+    J =& \begin{bmatrix}
+      -2q_y & 2q_z & -2q_w & 2q_x \\
+      2q_x & 2q_w & 2q_z & 2q_y \\
+      0 & -4q_x & -4q_y & 0 \\
+      -2b_zq_y          & 2b_zq_z         & -4b_xq_y-2b_zq_w & -4b_xq_z+2b_zq_x \\
+      -2b_xq_z+2b_zq_x  & 2b_xq_y+2b_zq_w & 2b_xq_x+2b_zq_z  & -2b_xq_w+2b_zq_y \\
+      2b_xq_y           & 2b_xq_z-4b_zq_x & 2b_xq_w-4b_zq_y  & 2b_xq_x
+      \end{bmatrix}\\
+\end{align*}
+\item exception: ValueError
+\end{itemize}
+
+\noindent update($q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$):
+\begin{itemize}
+\item transition: None
+\item output: $q_\text{out} = q + \Big( \dot{q}_{\omega} - \text{gain}\frac{\text{transpose}(J(q))f_g( q, \text{acc})}{\text{norm}(\text{transpose}(J(q))f_g( q, \text{acc}))}\Big) \text{dt}$ where
+\begin{align*}
+  \dot{q}_{\omega} =& \frac{1}{2} \text{quat\_prod}(q, \text{create\_quat}(0, \text{gyr})) \\
+  [a_x, a_y, a_z] =& \cfrac{\text{acc}}{|\text{acc}|} \\
+  J =& \begin{bmatrix}
+    -2q_y & 2q_z & -2q_w & 2q_x \\
+    2q_x & 2q_w & 2q_z & 2q_y \\
+    0 & -4q_x & -4q_y & 0
+    \end{bmatrix}\\
+  f_{g} =& \begin{bmatrix}
+    2(q_xq_z-q_wq_y)-a_x \\ 2(q_wq_x+q_yq_z)-a_y \\ 2(\frac{1}{2}-q_x^2-q_y^2)-a_z
+  \end{bmatrix}
+\end{align*}
+\item exception: ValueError
+\end{itemize}
+
+\noindent get\_mag\_norm($q:=\mathbf{q}, \text{mag}:=\mathbb{R}^3$):
+\begin{itemize}
+\item transition: None
+\item output: $\,^E\mathbf{b}:= [b_x, 0, b_z]$ where
+\begin{align*}
+  \text{m\_quat} =& \text{quat\_prod}(\text{create\_quat}(0, m_x, m_y, m_z), \text{quat\_conj}(q)) \\
+  b_x =& \text{norm}([\text{m\_quat}_x, \text{m\_quat}_y]) \\
+  b_z =& \text{m\_quat}_z
+\end{align*}
+\item exception: ValueError
+\end{itemize}
+
+
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{MIS of Accel To Quat Module} \label{iqewomm}
+
+\subsection{Module}
+acc2quat
+
+\subsection{Uses}
+Quaternion Module (Sec \ref{qm})\newline
+Matrix Math Module (Sec \ref{mmm}) \newline
+Math Module (Sec \ref{mm})
+
+\subsection{Syntax}
 
 \subsubsection{Exported Access Programs}
 
@@ -181,7 +280,146 @@ The following table is taken directly from the Module Guide document for this pr
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-\wss{accessProg} & - & - & - \\
+acc\_to\_quat & $\mathbf{a}:=\mathbb{R}^3$ & $q_\text{out} := \mathbf{q}$ & - \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent acc\_to\_quat($\mathbf{a}:=\mathbb{R}^3$):
+\begin{itemize}
+\item output: $q_\text{out}:= \text{euler\_to\_quat}(\theta, \phi, \psi)$ given
+\begin{align*}
+  \theta &= \text{atan2}(a_y, a_z) \\
+  \phi &= \text{atan2}(-a_x, \sqrt{a_y^2+a_z^2}) \\
+  \psi &= 0
+\end{align*}
+where $[a_x, a_y, a_z] = \cfrac{\mathbf{a}}{|\mathbf{a}|}$
+\item exception: none
+\end{itemize}
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{MIS of Mag To Quat Module} \label{iqewmm}
+
+\subsection{Module}
+mag2quat
+
+\subsection{Uses}
+Quaternion Module (Sec \ref{qm})\newline
+Matrix Math Module (Sec \ref{mmm}) \newline
+Math Module (Sec \ref{mm})
+
+\subsection{Syntax}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{3cm} p{4cm} p{3cm} p{2cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+mag\_to\_quat & $\mathbf{m}:=\mathbb{R}^3, \mathbf{a}:=\mathbb{R}^3$ & $q_\text{out} := \mathbf{q}$ & ValueError \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent mag\_to\_quat($\mathbf{m}:=\mathbb{R}^3, \mathbf{a}:=\mathbb{R}^3$):
+\begin{itemize}
+\item output: $q_\text{out}:= \text{euler\_to\_quat}(\theta, \phi, \psi)$ given
+\begin{align*}
+  \theta &= \text{atan2}(a_y, a_z) \\
+  \phi &= \text{atan2}(-a_x, \sqrt{a_y^2+a_z^2}) \\
+  \psi &= \text{atan2}(m_z\sin\phi - m_y\cos\phi, m_x\cos\theta + \sin\theta(m_y\sin\phi + m_z\cos\phi))
+\end{align*}
+where $[a_x, a_y, a_z] = \cfrac{\mathbf{a}}{|\mathbf{a}|}$ and $[m_x, m_y, m_z] = \cfrac{\mathbf{m}}{|\mathbf{m}|}$
+\item exception: ValueError
+\end{itemize}
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{MIS of Input Module} \label{ivm}
+
+\subsection{Module}
+input
+
+\subsection{Uses}
+None
+
+\subsection{Syntax}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{3cm} p{8cm} p{1cm} p{2cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+input\_checker & $q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3, \text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}, \text{gain}:= \mathbb{R}$ & y:=$\mathbb{B}$ & ValueError \\
+input\_checker & $q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}, \text{gain}:= \mathbb{R}$ & y:=$\mathbb{B}$ & ValueError \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+% \subsubsection{State Variables}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent input\_checker($q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3, \text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}, \text{gain}:= \mathbb{R}$):
+\begin{itemize}
+\item output: y:= true, if input values are within the bounds specified in Section 4.2.8 Input Data Constraints of the SRS.
+\item exception: ValueError
+\end{itemize}
+
+\noindent input\_checker($q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}, \text{gain}:= \mathbb{R}$):
+\begin{itemize}
+\item output: y:= true, if input values are within the bounds specified in Section 4.2.8 Input Data Constraints of the SRS.
+\item exception: ValueError
+\end{itemize}
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{MIS of Quaternion Module} \label{qm}
+
+\subsection{Module}
+quaternion
+
+\subsection{Uses}
+Matrix Math Module (Sec \ref{mmm}) \newline
+Math Module (Sec \ref{mm})
+
+\subsection{Syntax}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{2.5cm} p{5.5cm} p{2cm} p{2cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+create\_quat & w:=$\mathbb{R}, x:=\mathbb{R}, y:=\mathbb{R}, z:=\mathbb{R}$ & - & ValueError \\
+quat\_prod & $p:=\mathbf{q},  q:=\mathbf{q}$ & $q_\text{out}:=\mathbf{q}$ & ValueError \\
+normalize & - & - & ValueError \\
+quat\_conj & - & $q_\text{conj}:= \mathbf{q}$ & - \\
+assert\_is\_norm & w:=$\mathbb{R}, x:=\mathbb{R}, y:=\mathbb{R}, z:=\mathbb{R}$ & out$:=\mathbb{B}$
+& ValueError \\
+quat\_to\_euler & - & $\mathbf{e}:=\mathbb{R}^3$ & ValueError \\
+quat\_to\_rot & - & $\mathbf{R} := \mathbb{R}^{3 \times 3}$ & ValueError \\
 \hline
 \end{tabular}
 \end{center}
@@ -190,67 +428,254 @@ The following table is taken directly from the Module Guide document for this pr
 
 \subsubsection{State Variables}
 
-\wss{Not all modules will have state variables.  State variables give the module
-  a memory.}
-
-\subsubsection{Environment Variables}
-
-\wss{This section is not necessary for all modules.  Its purpose is to capture
-  when the module has external interaction with the environment, such as for a
-  device driver, screen interface, keyboard, file, etc.}
-
-\subsubsection{Assumptions}
-
-\wss{Try to minimize assumptions and anticipate programmer errors via
-  exceptions, but for practical purposes assumptions are sometimes appropriate.}
+$\text{quat}: \mathbf{q}$
 
 \subsubsection{Access Routine Semantics}
 
-\noindent \wss{accessProg}():
+\noindent create\_quat($w, x, y, z$):
 \begin{itemize}
-\item transition: \wss{if appropriate} 
-\item output: \wss{if appropriate} 
-\item exception: \wss{if appropriate} 
+\item transition: quat $:= \mathbf{q}$ where $\mathbf{q} = [w, x, y, z]$
+% \item output: $\t\mathbf{q}$
+\item exception: ValueError when  $|\text{quat}| \neq 1$
 \end{itemize}
 
-\wss{A module without environment variables or state variables is unlikely to
-  have a state transition.  In this case a state transition can only occur if
-  the module is changing the state of another module.}
+\noindent quat\_prod($p, q$):
+\begin{itemize}
+% \item transition: \wss{if appropriate}
+\item output:
+  \begin{align*}
+    q_\text{out} :=  \begin{bmatrix}
+      p_w q_w - p_x q_x - p_y q_y - p_z q_z \\
+      p_w q_x + p_x q_w + p_y q_z - p_z q_y \\
+      p_w q_y - p_x q_z + p_y q_w + p_z q_x \\
+      p_w q_z + p_x q_y - p_y q_x + p_z q_w
+  \end{bmatrix}
+  \end{align*}
 
-\wss{Modules rarely have both a transition and an output.  In most cases you
-  will have one or the other.}
+\item exception: ValueError
+\end{itemize}
 
-\subsubsection{Local Functions}
+\noindent quat\_conj():
+\begin{itemize}
+% \item transition: \wss{if appropriate}
+\item output: $q_\text{conj} :=  [q_w, -q_x, -q_y, -q_z]$
+\item exception: -
+\end{itemize}
 
-\wss{As appropriate} \wss{These functions are for the purpose of specification.
-  They are not necessarily something that is going to be implemented
-  explicitly.  Even if they are implemented, they are not exported; they only
-  have local scope.}
+\noindent normalize():
+\begin{itemize}
+\item transition: quat $:= \left[ \cfrac{\text{quat}_w}{d}, \cfrac{\text{quat}_x}{d},
+\cfrac{\text{quat}_y}{d}, \cfrac{\text{quat}_z}{d} \right]$ where $d = \sqrt{\text{quat}_w^2 +
+\text{quat}_x^2 + \text{quat}_y^2 + \text{quat}_z^2}$
+% \item output: $\mathbf{q}$
+\item exception: ValueError
+\end{itemize}
+
+\noindent assert\_is\_norm():
+\begin{itemize}
+\item output: out$:= (1 == \sqrt{w^2 + x^2 + y^2 + z^2})$
+\item exception: ValueError
+\end{itemize}
+
+\noindent quat\_to\_euler():
+\begin{itemize}
+\item output: \begin{align*}
+  \mathbf{e} :=& \begin{bmatrix}
+    \text{yaw} \\ \text{pitch} \\ \text{roll}
+  \end{bmatrix} =
+  \begin{bmatrix}
+    \text{atan2}(2 q_y q_w - 2 q_x q_z, 1 - 2 q_y^2 - 2 q_z ^ 2) \\
+    \text{asin}(2 q_x q_y + 2 q_z q_w) \\
+    \text{atan2}(2 q_x q_w - 2 q_y q_z, 1 - 2 q_x^2 - 2 q_z ^2)
+  \end{bmatrix}
+\end{align*}
+See \url{https://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/index.htm} for 2 special cases.
+\item exception: ValueError
+\end{itemize}
+
+\noindent quat\_to\_rot():
+\begin{itemize}
+\item output: \begin{align*}
+  \mathbf{R}:= & \begin{bmatrix}
+    1- 2 q_y^2 - 2 q_z^2 & 2 q_x q_y - 2 q_z q_w & 2 q_x q_z + 2 q_y q_w \\
+    2 q_x q_y + 2 q_z q_w & 1 -2 q_x^2 - 2 q_z^2 & 2 q_y q_z - 2 q_x q_w \\
+    2 q_x q_z - 2 q_y q_w & 2 q_y q_z + 2 q_x q_w & 1 -2 q_x^2 - 2 q_y ^2
+  \end{bmatrix}
+\end{align*}
+\item exception: ValueError
+\end{itemize}
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{MIS of Matrix Math Module} \label{mmm}
+
+\subsection{Module}
+matrix
+
+\subsection{Uses}
+None
+
+\subsection{Syntax}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{2cm} p{3cm} p{2.5cm} p{4.5cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+* & $\mathbb{R}^{m \times n} \times \mathbb{R}^{n \times m}$ & $m:=\mathbb{R}^{n \times n}$ &
+ValueError \\
+* & $\mathbb{R}^{m \times n} \times \mathbb{R}$ & $m:=\mathbb{R}^{m \times n}$ &
+ValueError \\
++ & $\mathbb{R}^{m \times n} \times \mathbb{R}^{m \times n}$ & $m:=\mathbb{R}^{m \times n}$ &
+ValueError \\
+% - & $\mathbb{R}^{m \times n} \times \mathbb{R}^{m \times n}$ & $\mathbb{R}^{m \times n}$ &
+%   ValueError \\
+transpose & $\mathbb{R}^{m \times n}$ & $m:=\mathbb{R}^{n \times m}$ & ValueError
+\\
+norm & $\mathbf{x}:=\mathbb{R}^n$ & $\mathbf{y}:=\mathbb{R}^n$ & ValueError\\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+% \subsubsection{State Variables}
+
+% None.
+
+\subsubsection{Access Routine Semantics}
+
+\noindent transpose($\mathbb{R}^{m \times n}$):
+\begin{itemize}
+% \item transition: \wss{if appropriate}
+\item output: $m:=\mathbb{R}^{m \times n}$
+\item exception: ValueError
+\end{itemize}
+
+$[\mathbf{A}^T]_{i,j} = [\mathbf{A}]_{j,i}$
+\newline
+
+\noindent $\mathbb{R}^{m \times n} * \mathbb{R}^{n \times m}$:
+\begin{itemize}
+\item output: $m:=\mathbb{R}^{n \times n}$
+\item exception: ValueError
+\end{itemize}
+
+Let $\mathbf{A} = [a_{i,j}]_{m\times n}$ and $\mathbf{B} = [b_{i,j}]_{n\times m}$. Then $\mathbf{C}
+= \mathbf{A} * \mathbf{B}$ with $c_{i,j} = a_{i,0} b_{0,j} + a_{i,1} b_{1,j} ...  a_{i,n}b_{n,j}$.
+\newline
+
+\noindent $\mathbb{R}^{m \times n} * \mathbb{R}$:
+\begin{itemize}
+\item output: $m:=\mathbb{R}^{m \times n}$
+\item exception: ValueError
+\end{itemize}
+
+Let $\mathbf{A} = [a_{i,j}]_{m\times n}$ and $k = \mathbb{R}$. Then $\mathbf{C} = \mathbf{A} * k$
+with $c_{i,j} = k a_{i,j}$.
+\newline
+
+\noindent $\mathbb{R}^{m \times n} + \mathbb{R}^{m \times n}$:
+\begin{itemize}
+\item output: $m:=\mathbb{R}^{m \times n}$
+\item exception: ValueError
+\end{itemize}
+
+Let $\mathbf{A} = [a_{i,j}]_{m \times n}$ and $\mathbf{B} = [b_{i,j}]_{m \times n}$. Then
+$\mathbf{A} + \mathbf{B} = [a_{i,j} + b_{i,j}]_{m \times n}$.
+\newline
+
+\noindent norm(x:=$\mathbb{R}^{n}$):
+\begin{itemize}
+\item output: $y:=\mathbb{R}^{n}$ where $y = \cfrac{\mathbf{x}}{|\mathbf{x}|}$
+\item exception: ValueError
+\end{itemize}
+
+\newpage
+
+\section{MIS of Math Module} \label{mm}
+
+\subsection{Module}
+math
+
+\subsection{Uses}
+None
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+\begin{itemize}
+  \item[PI] := 3.141592654
+  \item[RAD2DEG] := $\cfrac{180}{\text{PI}}$
+  \item[DEG2RAD] := $\cfrac{\text{PI}}{180}$
+\end{itemize}
+
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+sin & x:=$\mathbb{R}$ & out:=$\mathbb{R}$ & ValueError \\
+cos & x:=$\mathbb{R}$ & out:=$\mathbb{R}$ & ValueError \\
+asin & x:=$\mathbb{R}$ & out:=$\mathbb{R}$ & ValueError \\
+atan2 & x:=$\mathbb{R}$, y:=$\mathbb{R}$ & out:=$\mathbb{R}$ & ValueError \\
+euler\_to\_quat & $\mathbf{e}:=\mathbb{R}^3$& $y:=\mathbf{q}$ & ValueError \\
+rot\_to\_quat & $\mathbf{R} := \mathbb{R}^{3 \times 3}$ & $y:=\mathbf{q}$ & ValueError \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent sin(x:=$\mathbb{R}$):
+\begin{itemize}
+\item output: $y = \sin(x)$
+\item exception: ValueError
+\end{itemize}
+
+\noindent cos(x:=$\mathbb{R}$):
+\begin{itemize}
+\item output: $y = \cos(x)$
+\item exception: ValueError
+\end{itemize}
+
+\noindent asin(x:=$\mathbb{R}$):
+\begin{itemize}
+\item output: $y = \sin(x)$
+\item exception: ValueError
+\end{itemize}
+
+\noindent atan2(y:=$\mathbb{R}$, x:=$\mathbb{R}$):
+\begin{itemize}
+\item output: See \url{https://en.wikipedia.org/wiki/Atan2#Definition_and_computation}
+\item exception: ValueError if $x =0, y =0$
+\end{itemize}
+
+\noindent euler\_to\_quat($\mathbf{e}:=\mathbb{R}^3$):
+\begin{itemize}
+\item output: See \url{https://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm}
+\item exception: ValueError
+\end{itemize}
+
+\noindent rot\_to\_quat($\mathbf{R} := \mathbb{R}^{3 \times 3}$):
+\begin{itemize}
+\item output: See \url{https://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/}
+\item exception: ValueError
+\end{itemize}
 
 \newpage
 
 \bibliographystyle {plainnat}
 \bibliography {../../../refs/References}
 
-\newpage
-
-\section{Appendix} \label{Appendix}
-
-\wss{Extra information if required}
-
-\section{Reflection}
-
-The information in this section will be used to evaluate the team members on the
-graduate attribute of Problem Analysis and Design.  Please answer the following questions:
-
-\begin{enumerate}
-  \item What are the limitations of your solution?  Put another way, given
-  unlimited resources, what could you do to make the project better? (LO\_ProbSolutions)
-  \item Give a brief overview of other design solutions you considered.  What
-  are the benefits and tradeoffs of those other designs compared with the chosen
-  design?  From all the potential options, why did you select the documented design?
-  (LO\_Explores)
-\end{enumerate}
-
-
+% \newpage \section{Appendix} \label{Appendix}
 \end{document}
