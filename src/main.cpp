@@ -1,7 +1,15 @@
+#include "attitude_check.hpp"
+#include "quaternion.hpp"
 #include <iostream>
-#include "attitude_check.h"
 
-int main() {
-    std::cout << "Hello from Attitude Check. In:" << func(2) << std::endl;
+int main()
+{
+    quaternion::Quaternion q(1.0f, 2.0f, 3.0f, 4.0f);
+    quaternion::Quaternion qC = q.conjugate();
+
+    quaternion::Quaternion res = q * qC;
+
+    std::cout << res.x() << std::endl;
+
     return 0;
 }
