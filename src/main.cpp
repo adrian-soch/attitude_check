@@ -1,15 +1,15 @@
 #include "attitude_check.hpp"
+#include "quaternion.hpp"
 #include <iostream>
 
 int main()
 {
-    float dt{ 100.0 };
-    float gain{ 0.5 };
-    float q0[] = { 1.0, 0.0, 0.0, 0.0 };
+    quaternion::Quaternion q(1.0f, 2.0f, 3.0f, 4.0f);
+    quaternion::Quaternion qC = q.conjugate();
 
-    AttitudeCheck ac(dt, gain, q0);
+    quaternion::Quaternion res = q * qC;
 
-    std::cout << "Hello from Attitude Check" << std::endl;
+    std::cout << res.x() << std::endl;
 
     return 0;
 }

@@ -19,12 +19,12 @@ add_executable(
     ${BINARY}
     main.cpp
     attitude_check_test.cpp
+    quaternion_test.cpp
 )
 
 target_link_libraries(
     ${BINARY}
-    PUBLIC ${CMAKE_PROJECT_NAME}_lib 
-    # gtest pthread
+    PUBLIC ${CMAKE_PROJECT_NAME}_lib
     GTest::gtest_main
 )
 
