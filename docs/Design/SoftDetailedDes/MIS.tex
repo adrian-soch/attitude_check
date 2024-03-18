@@ -177,6 +177,8 @@ Math Module (Sec \ref{mm})
 update & $q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3, \text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$ & $q_\text{out}:=\mathbf{q}$ & ValueError \\
 update & $q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$ & $q_\text{out}:=\mathbf{q}$ & ValueError \\
 get\_mag\_norm & $q:=\mathbf{q}, $ & $\,^E\mathbf{b}:=\mathbb{R}^3$ & ValueError \\
+set\_gain & gain:=$\mathbb{R}$ & - ValueError \\
+get\_gain & - & gain:=$\mathbb{R}$ - \\
 \hline
 \end{tabular}
 \end{center}
@@ -252,6 +254,20 @@ get\_mag\_norm & $q:=\mathbf{q}, $ & $\,^E\mathbf{b}:=\mathbb{R}^3$ & ValueError
   b_x =& \text{norm}([\text{m\_quat}_x, \text{m\_quat}_y]) \\
   b_z =& \text{m\_quat}_z
 \end{align*}
+\item exception: ValueError
+\end{itemize}
+
+\noindent get\_gain():
+\begin{itemize}
+% \item transition:
+\item output: gain:=$\mathbb{R}$
+\item exception: none
+\end{itemize}
+
+\noindent set\_gain(gain:=$\mathbb{R}$):
+\begin{itemize}
+\item transition: gain is updated
+% \item output:
 \item exception: ValueError
 \end{itemize}
 
@@ -374,7 +390,6 @@ input\_checker & $q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R
 
 \subsection{Semantics}
 
-% \subsubsection{State Variables}
 
 \subsubsection{Access Routine Semantics}
 
@@ -420,6 +435,10 @@ assert\_is\_norm & w:=$\mathbb{R}, x:=\mathbb{R}, y:=\mathbb{R}, z:=\mathbb{R}$ 
 & ValueError \\
 quat\_to\_euler & - & $\mathbf{e}:=\mathbb{R}^3$ & ValueError \\
 quat\_to\_rot & - & $\mathbf{R} := \mathbb{R}^{3 \times 3}$ & ValueError \\
+get\_w & - & y:=$\mathbb{R}$ & - \\
+get\_x & - & y:=$\mathbb{R}$ & - \\
+get\_y & - & y:=$\mathbb{R}$ & - \\
+get\_z & - & y:=$\mathbb{R}$ & - \\
 \hline
 \end{tabular}
 \end{center}
@@ -434,9 +453,9 @@ $\text{quat}: \mathbf{q}$
 
 \noindent create\_quat($w, x, y, z$):
 \begin{itemize}
-\item transition: quat $:= \mathbf{q}$ where $\mathbf{q} = [w, x, y, z]$
+\item transition: quat $:= \mathbf{q}$ where $[q_w = w, q_x = x, q_y = y, q_z = z]$
 % \item output: $\t\mathbf{q}$
-\item exception: ValueError when  $|\text{quat}| \neq 1$
+\item exception: ValueError when $|\text{quat}| = 0$
 \end{itemize}
 
 \noindent quat\_prod($p, q$):
@@ -505,6 +524,30 @@ See \url{https://www.euclideanspace.com/maths/geometry/rotations/conversions/qua
 \item exception: ValueError
 \end{itemize}
 
+\noindent get\_w():
+\begin{itemize}
+\item output: y:=$q_w$
+\item exception: none
+\end{itemize}
+
+\noindent get\_x():
+\begin{itemize}
+\item output: y:=$q_x$
+\item exception: none
+\end{itemize}
+
+\noindent get\_y():
+\begin{itemize}
+\item output: y:=$q_y$
+\item exception: none
+\end{itemize}
+
+\noindent get\_z():
+\begin{itemize}
+\item output: y:=$q_z$
+\item exception: none
+\end{itemize}
+
 \newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -542,10 +585,6 @@ norm & $\mathbf{x}:=\mathbb{R}^n$ & $\mathbf{y}:=\mathbb{R}^n$ & ValueError\\
 \end{center}
 
 \subsection{Semantics}
-
-% \subsubsection{State Variables}
-
-% None.
 
 \subsubsection{Access Routine Semantics}
 
