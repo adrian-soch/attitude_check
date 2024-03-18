@@ -1,4 +1,4 @@
-#include "attitude_check.h"
+#include "attitude_check.hpp"
 #include <iostream>
 
 int main()

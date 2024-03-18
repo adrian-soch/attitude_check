@@ -1,6 +1,6 @@
 #include <cassert>
 
-#include "attitude_check.h"
+#include "attitude_check.hpp"
 
 AttitudeCheck::AttitudeCheck(float dt, float gain, float q0[4])
 {
