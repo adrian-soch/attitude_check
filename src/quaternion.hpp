@@ -1,6 +1,6 @@
 /**
  * @file quaternion.hpp
- * @brief
+ * @brief Quaternion Module provides the quaternion functionality and common operations.
  *
  * @copyright Copyright (c) 2024
  *
@@ -60,31 +60,38 @@ public:
         return Quaternion(w(), -x(), -y(), -z());
     }
 
+    /**
+     * @brief Overload the * (multiplication operator) to perform
+     *  quaternion multiplication (hamiltonian product)
+     *
+     * @param b
+     * @return Quaternion
+     */
     Quaternion operator * (Quaternion const& b) const
     {
-        return Quaternion ( (m_q[0] * b.w() - m_q[1] * b.x() - m_q[2] * b.y() - m_q[3] * b.z()),
+        return Quaternion( (m_q[0] * b.w() - m_q[1] * b.x() - m_q[2] * b.y() - m_q[3] * b.z()),
                  (m_q[0] * b.x() + m_q[1] * b.w() + m_q[2] * b.z() - m_q[3] * b.y()),
                  (m_q[0] * b.y() + m_q[2] * b.w() + m_q[3] * b.x() - m_q[1] * b.z()),
                  (m_q[0] * b.z() + m_q[3] * b.w() + m_q[1] * b.y() - m_q[2] * b.x()));
     }
 
+    /**
+     * @brief Normalize the quaternion such that it becomes a unit quaternion. L2 norm = 1.
+     *
+     */
+    void normalize()
+    {
+        T euclid_dist = std::sqrt(
+            std::pow(m_q[0], 2.0) + std::pow(m_q[1], 2.0)
+            + std::pow(m_q[2], 2.0) + std::pow(m_q[3], 2.0));
+
+        m_q[0] /= euclid_dist;
+        m_q[1] /= euclid_dist;
+        m_q[2] /= euclid_dist;
+        m_q[3] /= euclid_dist;
+    }
+
 private:
     std::array<T, 4> m_q;
 };
-
-// /**
-//  * @brief Compute Hamiltonian product between two Quaternions
-//  *
-//  * @param a
-//  * @param b
-//  * @return Quaternion c = hamilton_product(a, b)
-//  */
-// Quaternion quat_prod(const Quaternion& a, const Quaternion& b)
-// {
-//     return Quaternion prod(a.w() * b.w() - a.x() * b.x() - a.y() * b.y() - a.z() * b.z()
-//              a.w() * b.x() + a.x() * b.w() + a.y() * b.z() - a.z() * b.y(),
-//              a.w() * b.y() + a.y() * b.w() + a.z() * b.x() - a.x() * b.z(),
-//              a.w() * b.z() + a.z() * b.w() + a.x() * b.y() - a.y() * b.x());
-// }
-
 } // End namespace quaternion
