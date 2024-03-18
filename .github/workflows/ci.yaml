@@ -2,12 +2,8 @@ name: C/C++ CI # The name of the workflow
 
 on: # The trigger for the workflow
   push: # When you push to any branch
-    paths-ignore:
-      - 'docs/**'
     branches: [ main ] # Only for the main branch
   pull_request: # When you create or update a pull request
-    paths-ignore:
-      - 'docs/**'
     branches: [ main ] # Only for the main branch
 
 jobs: # The jobs for the workflow
