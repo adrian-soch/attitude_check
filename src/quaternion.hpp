@@ -67,7 +67,7 @@ public:
      * @param b
      * @return Quaternion
      */
-    Quaternion operator * (Quaternion const& b) const
+    inline Quaternion operator * (Quaternion const& b) const
     {
         return Quaternion( (m_q[0] * b.w() - m_q[1] * b.x() - m_q[2] * b.y() - m_q[3] * b.z()),
                  (m_q[0] * b.x() + m_q[1] * b.w() + m_q[2] * b.z() - m_q[3] * b.y()),
@@ -79,7 +79,7 @@ public:
      * @brief Normalize the quaternion such that it becomes a unit quaternion. L2 norm = 1.
      *
      */
-    void normalize()
+    inline void normalize()
     {
         T euclid_dist = std::sqrt(
             std::pow(m_q[0], 2.0) + std::pow(m_q[1], 2.0)
