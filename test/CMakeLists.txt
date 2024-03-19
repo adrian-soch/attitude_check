@@ -20,6 +20,7 @@ add_executable(
     main.cpp
     attitude_check_test.cpp
     quaternion_test.cpp
+    utilities_test.cpp
 )
 
 target_link_libraries(
