@@ -1,8 +1,8 @@
 #pragma once
 
+#include "quaternion.hpp"
 #include <cmath>
 #include <eigen3/Eigen/Dense>
-#include "quaternion.hpp"
 
 namespace utils {
 /**
@@ -27,7 +27,7 @@ quaternion::Quaternion<T> euler_to_quat(const T& roll, const T& pitch, const T& 
     T c1c2 = c1 * c2;
     T s1s2 = s1 * s2;
 
-    return quaternion::Quaternion(1.0 + c1c2 * c3 - s1s2 * c3,
+    return quaternion::Quaternion(static_cast<T>(1.0) + c1c2 * c3 - s1s2 * c3,
              c1c2 * s3 + s1s2 * c3,
              s1 * c2 * c3 + c1 * s2 * s3,
              c1 * s2 * c3 - s1 * c2 * s3);
@@ -39,10 +39,12 @@ using Matrix3T = Eigen::Matrix<T, 3, 3>;
 template<typename T>
 quaternion::Quaternion<T> rotm_to_quat(const Matrix3T<T>& R)
 {
-    T w = std::sqrt(1.0 + R(0, 0) + R(1, 1) + R(2, 2)) / 2.0;
-    T x = (R(2, 1) - R(1, 2)) / (4.0 * w);
-    T y = (R(0, 2) - R(2, 0)) / (4.0 * w);
-    T z = (R(1, 0) - R(0, 1)) / (4.0 * w);
+    T w = std::sqrt(static_cast<T>(1.0) + R(0, 0) + R(1, 1) + R(2, 2)) / 2.0;
+
+    const T FOUR_W { w * static_cast<T>(4.0) };
+    T x = (R(2, 1) - R(1, 2)) / FOUR_W;
+    T y = (R(0, 2) - R(2, 0)) / FOUR_W;
+    T z = (R(1, 0) - R(0, 1)) / FOUR_W;
 
     return quaternion::Quaternion(w, x, y, z);
 }
