@@ -6,7 +6,8 @@
 
 namespace utils {
 /**
- * @brief Convert Roll/Pitch/Yaw to a Quaternion
+ * @brief Convert Euler angles to a Quaternion
+ *  This follows the ZYX, or Yall*Pitch*Roll convention
  *
  * @tparam T
  * @param roll
@@ -17,25 +18,37 @@ namespace utils {
 template<typename T>
 quaternion::Quaternion<T> euler_to_quat(const T& roll, const T& pitch, const T& yaw)
 {
-    T c1 = std::cos(yaw / 2.0);
-    T c2 = std::cos(pitch / 2.0);
-    T c3 = std::cos(roll / 2.0);
-    T s1 = std::sin(yaw / 2.0);
-    T s2 = std::sin(pitch / 2.0);
-    T s3 = std::sin(yaw / 2.0);
+    T c_pitch = cos(pitch * 0.5);
+    T c_roll  = cos(roll * 0.5);
+    T s_pitch = sin(pitch * 0.5);
+    T s_roll  = sin(roll * 0.5);
 
-    T c1c2 = c1 * c2;
-    T s1s2 = s1 * s2;
+    if(std::abs(yaw) <= 0.0000001) {
+        return quaternion::Quaternion(c_roll * c_pitch, s_roll * c_pitch, c_roll * s_pitch, -s_roll * s_pitch);
+    }
 
-    return quaternion::Quaternion(static_cast<T>(1.0) + c1c2 * c3 - s1s2 * c3,
-             c1c2 * s3 + s1s2 * c3,
-             s1 * c2 * c3 + c1 * s2 * s3,
-             c1 * s2 * c3 - s1 * c2 * s3);
+    T c_yaw = cos(yaw * 0.5);
+    T s_yaw = sin(yaw * 0.5);
+
+    T c_yaw_c_pitch = c_yaw * c_pitch;
+    T s_yaw_s_pitch = s_yaw * s_pitch;
+
+    return quaternion::Quaternion(c_yaw_c_pitch * c_roll + s_yaw_s_pitch * s_roll,
+             c_yaw_c_pitch * s_roll - s_yaw_s_pitch * c_roll,
+             s_yaw * c_pitch * s_roll + c_yaw * s_pitch * c_roll,
+             s_yaw * c_pitch * c_roll - c_yaw * s_pitch * c_roll);
 }
 
 template<typename T>
 using Matrix3T = Eigen::Matrix<T, 3, 3>;
 
+/**
+ * @brief Convert Rotation matrix to Quaternion
+ *
+ * @tparam T
+ * @param R rotation matrix
+ * @return quaternion::Quaternion<T>
+ */
 template<typename T>
 quaternion::Quaternion<T> rotm_to_quat(const Matrix3T<T>& R)
 {
