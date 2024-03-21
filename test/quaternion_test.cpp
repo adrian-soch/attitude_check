@@ -13,6 +13,18 @@ TEST(quat_test_suite, invalid_init){
             throw;
         }
     }, std::invalid_argument);
+
+    EXPECT_THROW({
+        try
+        {
+            quaternion::Quaternion a(0.00000001, 0.0, 0.0, 0.0);
+        }
+        catch(const std::invalid_argument& e)
+        {
+            EXPECT_STREQ("Magnitude of quaternion cannot be zero.", e.what() );
+            throw;
+        }
+    }, std::invalid_argument);
 }
 
 TEST(quat_test_suite, conjugate_f){
@@ -46,9 +58,8 @@ TEST(quat_test_suite, product){
     EXPECT_DOUBLE_EQ(0.0, c.z());
 }
 
-TEST(quat_test_suite, norm){
+TEST(quat_test_suite, norm_d){
     quaternion::Quaternion a(-19.0, -2.1, 3.3, 6.9);
-
     a.normalize();
 
     auto norm = std::sqrt(
@@ -56,9 +67,23 @@ TEST(quat_test_suite, norm){
             std::pow(a.y(), 2.0) + std::pow(a.z(), 2.0));
 
     EXPECT_DOUBLE_EQ(1.0, norm);
-    // EXPECT_DOUBLE_EQ(-0.92281951, a.w());
-    // EXPECT_DOUBLE_EQ(-0.1019958, a.x());
-    // EXPECT_DOUBLE_EQ(0.16027, a.y());
-    // EXPECT_DOUBLE_EQ(0.3351, a.z());
+    EXPECT_DOUBLE_EQ(-0.92281951518771288, a.w());
+    EXPECT_DOUBLE_EQ(-0.10199584115232617, a.x());
+    EXPECT_DOUBLE_EQ(0.16027917895365537, a.y());
+    EXPECT_DOUBLE_EQ(0.3351291923576431, a.z());
+}
 
+TEST(quat_test_suite, norm_f){
+    quaternion::Quaternion a(-19.0f, -2.1f, 3.3f, 6.9f);
+    a.normalize();
+
+    auto norm = std::sqrt(
+            std::pow(a.w(), 2.0f) + std::pow(a.x(), 2.0f) +
+            std::pow(a.y(), 2.0f) + std::pow(a.z(), 2.0f));
+
+    EXPECT_FLOAT_EQ(1.0f, norm);
+    EXPECT_FLOAT_EQ(-0.92281951f, a.w());
+    EXPECT_FLOAT_EQ(-0.1019958f, a.x());
+    EXPECT_FLOAT_EQ(0.16027917f, a.y());
+    EXPECT_FLOAT_EQ(0.3351292f, a.z());
 }

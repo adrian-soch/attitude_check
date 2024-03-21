@@ -17,7 +17,7 @@ class Quaternion {
 public:
     Quaternion(T w, T x, T y, T z) : m_q{w, x, y, z}
     {
-        if(std::sqrt(w * w + x * x + y * y + z * z) == 0.0f) {
+        if((std::abs(w) + std::abs(x) + std::abs(y) + std::abs(z)) <= EPS) {
             throw std::invalid_argument("Magnitude of quaternion cannot be zero.");
         }
     }
@@ -64,7 +64,7 @@ public:
      * @brief Overload the * (multiplication operator) to perform
      *  quaternion multiplication (hamiltonian product)
      *
-     * @param b
+     * @param b Quaternion
      * @return Quaternion
      */
     inline Quaternion operator * (Quaternion const& b) const
@@ -92,6 +92,48 @@ public:
     }
 
 private:
+    const T EPS {0.0000001};
     std::array<T, 4> m_q;
 };
+
+// float fast_inv_sqrt(float x) {
+//     float halfx = 0.5f * x;
+//     float y = x;
+//     long i = *(long*)&y;
+//     i = 0x5f3759df - (i>>1);
+//     y = *(float*)&i;
+//     y = y * (1.5f - (halfx * y * y));
+//     y = y * (1.5f - (halfx * y * y));
+//     return y;
+// }
+
+// float fast_inv_sqrt(float x) {
+//     union {
+//         int i;
+//         float y;
+//         long z;
+//     } data;
+
+//     // float data;
+
+//     float halfx = 0.5f * x;
+//     data.y = x;
+//     long i = *(long*)&data.y;
+//     i = 0x5f3759df - (i>>1);
+//     data.y = *(float*)&i;
+//     data.y = data.y * (1.5f - (halfx * data.y * data.y));
+//     data.y = data.y * (1.5f - (halfx * data.y * data.y));
+//     return data.y;
+// }
+
+// template <>
+// void Quaternion<float>::normalize() {
+//     float i_sqrr = fast_inv_sqrt(std::pow(m_q[0], 2.0) + std::pow(m_q[1], 2.0)
+//             + std::pow(m_q[2], 2.0) + std::pow(m_q[3], 2.0));
+
+//     m_q[0] *= i_sqrr;
+//     m_q[1] *= i_sqrr;
+//     m_q[2] *= i_sqrr;
+//     m_q[3] *= i_sqrr;
+// }
 } // End namespace quaternion
