@@ -18,7 +18,7 @@ using Vector3T = Eigen::Matrix<T, 3, 1>;
 template<typename T>
 quaternion::Quaternion<T> acc_to_quat(const Vector3T<T>& acc)
 {
-    T roll  = std::atan2(acc[1], acc[acc[2]]);
+    T roll  = std::atan2(acc[1], acc[2]);
     T pitch = std::atan2(-acc[0],
         std::sqrt(std::pow(acc[1], 2.0) + std::pow(acc[2], 2.0)));
 
@@ -36,13 +36,12 @@ quaternion::Quaternion<T> acc_to_quat(const Vector3T<T>& acc)
 template<typename T>
 quaternion::Quaternion<T> mag_to_quat(const Vector3T<T>& acc, const Vector3T<T>& mag)
 {
-    T roll  = std::atan2(acc[1], acc[acc[2]]);
-    T pitch = std::atan2(-acc[0],
-        std::sqrt(std::pow(acc[1], 2.0) + std::pow(acc[2], 2.0)));
+    T roll  = std::atan2(acc[1], acc[2]);
+    T pitch = std::atan(-acc[0]/std::sqrt(std::pow(acc[1], 2.0) + std::pow(acc[2], 2.0)));
 
-    T s_pitch = std::sin(pitch), c_pitch = std::cos(pitch);
-    T yaw = std::atan2(mag[2] * s_pitch - mag[1] * c_pitch, mag[0] * std::cos(
-            roll) * (mag[1] * s_pitch + mag[2] * c_pitch));
+    T s_roll = std::sin(roll), c_roll = std::cos(roll);
+    T yaw = std::atan2(mag[2] * s_roll - mag[1] * c_roll,
+        mag[0] * std::cos(pitch) + std::sin(pitch)*(mag[1] * s_roll + mag[2] * c_roll));
 
     return quaternion::Quaternion(utils::euler_to_quat(roll, pitch, yaw));
 }
