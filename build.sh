@@ -1,8 +1,11 @@
 #!/bin/bash
 # Usage: ./build.sh [test|clean|debug]
 
+ROOT="$PWD"
+BUILD="$ROOT/build"
+
 # Create a build directory if it does not exist
-mkdir -p build && cd build
+mkdir -p $BUILD && cd $BUILD
 
 # Check the first argument
 case $1 in
@@ -10,21 +13,21 @@ case $1 in
     # Build the project with tests enabled
     cmake -DBUILD_TESTS=ON ..
     make
-    cd ./test
+    cd "$BUILD/test"
     # Run the tests
     ctest --rerun-failed --output-on-failure
 
     # Generate the coverage report using gcov and lcov
-    cd ./CMakeFiles/attitude_check_test.dir
+    cd "$BUILD/test/CMakeFiles/attitude_check_test.dir"
 
     lcov --capture --rc lcov_branch_coverage=1 --directory . --output-file coverage.info
     lcov --remove coverage.info '/usr/*' '*/test*' --output-file coverage.info
     lcov --list coverage.info
-    genhtml coverage.info --output-directory ../../out
+    genhtml coverage.info --output-directory $BUILD/test/lcov_out
     ;;
   clean)
     # Remove the build directory
-    cd .. && rm -rf build
+    cd "$ROOT" && rm -rf build
     ;;
   debug)
     # Build the project with debug mode enabled
