@@ -9,7 +9,7 @@
 
 #include "quaternion.hpp"
 #include <cmath>
-#include <eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 
 namespace utils {
 /**

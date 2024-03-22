@@ -10,7 +10,7 @@
 
 #include "quaternion.hpp"
 #include "utilities.hpp"
-#include <eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 
 namespace init {
 template<typename T>
