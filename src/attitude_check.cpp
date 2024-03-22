@@ -23,11 +23,18 @@ AttitudeCheck::AttitudeCheck(float imu_gain, float marg_gain, float q0_w, float 
     {
         throw std::invalid_argument("Gain must be within [0.0, 1.0].");
     }
-    m_q.set(q0_w, q0_x, q0_y, q0_z);
+
+    try {
+        m_q.set(q0_w, q0_x, q0_y, q0_z);
+    } catch (const std::invalid_argument& e) {
+        throw std::invalid_argument("Initial quaternion must have a norm > 0.");
+    }
 }
 
-Quat AttitudeCheck::update(Vec3f acc, Vec3f gyr, Vec3f mag, float dt)
+Quat AttitudeCheck::update(Vec3f& acc, Vec3f& gyr, Vec3f& mag, float dt)
 {
+    dt = static_cast<float>(dt);
+
     if(gyr.norm() <= 0.0f) {
         return m_q;
     } else if(mag.norm() <= 0.0f) {
@@ -35,8 +42,10 @@ Quat AttitudeCheck::update(Vec3f acc, Vec3f gyr, Vec3f mag, float dt)
     }
 
     Quat q_dot = (m_q * Quat(0.0f, gyr[0], gyr[1], gyr[2])) * 0.5f;
-    if(acc.norm() <= 0.0) {
-        return m_q + (q_dot * dt);
+    if(acc.norm() <= 0.0f) {
+        Quat q_out = m_q + (q_dot * dt);
+        q_out.normalize();
+        return q_out;
     }
 
     acc.normalize();
@@ -80,8 +89,10 @@ Quat AttitudeCheck::update(Vec3f acc, Vec3f gyr, Vec3f mag, float dt)
     return q_next;
 } // AttitudeCheck::update
 
-Quat AttitudeCheck::update(Vec3f acc, Vec3f gyr, float dt)
+Quat AttitudeCheck::update(Vec3f& acc, Vec3f& gyr, float dt)
 {
+    dt = static_cast<float>(dt);
+
     if(gyr.norm() <= 0.0f) {
         return m_q;
     }

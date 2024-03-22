@@ -49,9 +49,21 @@ TEST_F(Attitude_Check_Test_Suite, invalid_init){
             throw;
         }
     }, std::invalid_argument);
+
+    EXPECT_THROW({
+        try
+        {
+            ac::AttitudeCheck ac(0.2f, 0.2f, 0.0f, 0.0f, 0.0f, 0.0f);
+        }
+        catch(const std::invalid_argument& e)
+        {
+            EXPECT_STREQ("Initial quaternion must have a norm > 0.", e.what() );
+            throw;
+        }
+    }, std::invalid_argument);
 }
 
-TEST_F(Attitude_Check_Test_Suite, zero_gyro){
+TEST_F(Attitude_Check_Test_Suite, marg_zero_gyro){
     gyr.setZero();
 
     ac::AttitudeCheck ac(0.5f, 0.5f, -69.0f, -69.0f, -69.0f, -69.0f);
@@ -63,7 +75,7 @@ TEST_F(Attitude_Check_Test_Suite, zero_gyro){
     EXPECT_NEAR(out.z(), -69.0f, MAX_ABS_ERROR);
 }
 
-TEST_F(Attitude_Check_Test_Suite, zero_mag){
+TEST_F(Attitude_Check_Test_Suite, marg_zero_mag){
     mag.setZero();
     acc.setZero();
 
@@ -79,4 +91,65 @@ TEST_F(Attitude_Check_Test_Suite, zero_mag){
     EXPECT_NEAR(out.x(), expected.x(), MAX_ABS_ERROR);
     EXPECT_NEAR(out.y(), expected.y(), MAX_ABS_ERROR);
     EXPECT_NEAR(out.z(), expected.z(), MAX_ABS_ERROR);
+}
+
+TEST_F(Attitude_Check_Test_Suite, marg_zero_acc){
+    acc.setZero();
+
+    quaternion::Quaternion<float> expected(-69.0f, -69.0f, -69.0f, -69.0f);
+    expected = expected * (quaternion::Quaternion<float>(0.0f, gyr[0], gyr[1], gyr[2]) * 0.5);
+    expected = quaternion::Quaternion<float>(-69.0f, -69.0f, -69.0f, -69.0f) + (expected * dt);
+    expected.normalize();
+
+    ac::AttitudeCheck ac(0.5f, 0.5f, -69.0f, -69.0f, -69.0f, -69.0f);
+    quaternion::Quaternion<float> out = ac.update(acc, gyr, mag, dt);
+
+    EXPECT_NEAR(out.w(), expected.w(), MAX_ABS_ERROR);
+    EXPECT_NEAR(out.x(), expected.x(), MAX_ABS_ERROR);
+    EXPECT_NEAR(out.y(), expected.y(), MAX_ABS_ERROR);
+    EXPECT_NEAR(out.z(), expected.z(), MAX_ABS_ERROR);
+}
+
+TEST_F(Attitude_Check_Test_Suite, imu_zero_gyro){
+    gyr.setZero();
+
+    ac::AttitudeCheck ac(0.5f, 0.5f, -69.0f, -69.0f, -69.0f, -69.0f);
+    quaternion::Quaternion<float> out = ac.update(acc, gyr, dt);
+
+    EXPECT_NEAR(out.w(), -69.0f, MAX_ABS_ERROR);
+    EXPECT_NEAR(out.x(), -69.0f, MAX_ABS_ERROR);
+    EXPECT_NEAR(out.y(), -69.0f, MAX_ABS_ERROR);
+    EXPECT_NEAR(out.z(), -69.0f, MAX_ABS_ERROR);
+}
+
+
+TEST_F(Attitude_Check_Test_Suite, imu_zero_acc){
+    acc.setZero();
+
+    quaternion::Quaternion<float> expected(-69.3333f, -69.0f, -69.0f, -69.0f);
+    expected = expected * (quaternion::Quaternion<float>(0.0f, gyr[0], gyr[1], gyr[2]) * 0.5);
+    expected = quaternion::Quaternion<float>(-69.3333f, -69.0f, -69.0f, -69.0f) + (expected * dt);
+    expected.normalize();
+
+    ac::AttitudeCheck ac(0.5f, 0.5f, -69.3333f, -69.0f, -69.0f, -69.0f);
+    quaternion::Quaternion<float> out = ac.update(acc, gyr, mag, dt);
+
+    EXPECT_NEAR(out.w(), expected.w(), MAX_ABS_ERROR);
+    EXPECT_NEAR(out.x(), expected.x(), MAX_ABS_ERROR);
+    EXPECT_NEAR(out.y(), expected.y(), MAX_ABS_ERROR);
+    EXPECT_NEAR(out.z(), expected.z(), MAX_ABS_ERROR);
+}
+
+TEST_F(Attitude_Check_Test_Suite, reset) {
+
+    ac::AttitudeCheck ac(0.5f, 0.5f, -69.0f, -69.0f, -69.0f, -69.0f);
+    ac.reset(1.0f, 0.0f, 0.0f, 0.0f);
+    gyr.setZero();
+
+    quaternion::Quaternion<float> out = ac.update(acc, gyr, mag, dt);
+
+    EXPECT_NEAR(out.w(), 1.0f, MAX_ABS_ERROR);
+    EXPECT_NEAR(out.x(), 0.0f, MAX_ABS_ERROR);
+    EXPECT_NEAR(out.y(), 0.0f, MAX_ABS_ERROR);
+    EXPECT_NEAR(out.z(), 0.0f, MAX_ABS_ERROR);
 }

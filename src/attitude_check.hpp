@@ -11,9 +11,9 @@ public:
 
     AttitudeCheck(float imu_gain, float marg_gain, float q0_w, float q0_x, float q0_y, float q0_z);
 
-    quaternion::Quaternion<float> update(Eigen::Vector3f acc, Eigen::Vector3f gyr, Eigen::Vector3f mag, float dt);
+    quaternion::Quaternion<float> update(Eigen::Vector3f& acc, Eigen::Vector3f& gyr, Eigen::Vector3f& mag, float dt);
 
-    quaternion::Quaternion<float> update(Eigen::Vector3f acc, Eigen::Vector3f gyr, float dt);
+    quaternion::Quaternion<float> update(Eigen::Vector3f& acc, Eigen::Vector3f& gyr, float dt);
 
     void reset(float q_w, float q_x, float q_y, float q_z);
 
