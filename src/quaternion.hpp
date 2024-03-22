@@ -15,11 +15,56 @@ namespace quaternion {
 template<typename T>
 class Quaternion {
 public:
+    Quaternion() : m_q{static_cast<T>(1.0), static_cast<T>(0.0),
+          static_cast<T>(0.0), static_cast<T>(0.0)}{ };
+
     Quaternion(T w, T x, T y, T z) : m_q{w, x, y, z}
     {
         if((std::abs(w) + std::abs(x) + std::abs(y) + std::abs(z)) <= EPS) {
             throw std::invalid_argument("Magnitude of quaternion cannot be zero.");
         }
+    }
+
+    Quaternion(const Quaternion& b)
+    {
+        m_q[0] = b.w();
+        m_q[1] = b.x();
+        m_q[2] = b.y();
+        m_q[3] = b.z();
+    }
+
+    /**
+     * @brief Overload the assigment operator for this class
+     *
+     * @param other
+     * @return Quaternion&
+     */
+    Quaternion& operator=(const Quaternion& b) {
+        if (this != &b) {
+            m_q[0] = b.w();
+            m_q[1] = b.x();
+            m_q[2] = b.y();
+            m_q[3] = b.z();
+        }
+        return *this;
+    }
+
+    /**
+     * @brief Set quaternion values
+     *
+     * @param w float/double
+     * @param x float/double
+     * @param y float/double
+     * @param z float/double
+     */
+    inline void set(const T w, const T x, const T y, const T z) {
+        if((std::abs(w) + std::abs(x) + std::abs(y) + std::abs(z)) <= EPS) {
+            throw std::invalid_argument("Magnitude of quaternion cannot be zero.");
+        }
+        m_q[0] = w;
+        m_q[1] = x;
+        m_q[2] = y;
+        m_q[3] = z;
     }
 
     /**
@@ -76,6 +121,54 @@ public:
     }
 
     /**
+     * @brief Overload the * (multiplication operator) to perform
+     *  scalar multiplication (scalar must be on the right)
+     *
+     * @param k float/double
+     * @return Quaternion
+     */
+    inline Quaternion operator * (T const& k) const
+    {
+        return Quaternion(k * m_q[0], k * m_q[1], k * m_q[2], k * m_q[3]);
+    }
+
+    /**
+     * @brief Overload the + operator to add 2 Quaternions.
+     *
+     * @param b Quaternion
+     * @return Quaternion
+     */
+    inline Quaternion operator + (Quaternion const& b) const
+    {
+        return Quaternion(m_q[0] + b.w(), m_q[1] + b.x(), m_q[2] + b.y(), m_q[3] + b.z());
+    }
+
+    /**
+     * @brief Overload the - operator to subtract 2 Quaternions.
+     *
+     * @param b Quaternion
+     * @return Quaternion
+     */
+    inline Quaternion operator - (Quaternion const& b) const
+    {
+        return Quaternion(m_q[0] - b.w(), m_q[1] - b.x(), m_q[2] - b.y(), m_q[3] - b.z());
+    }
+
+    /**
+     * @brief Overload the -= operator to subtract 2 Quaternions.
+     *
+     * @param b Quaternion
+     * @return Quaternion
+     */
+    inline void operator -= (Quaternion const& b)
+    {
+        m_q[0] -= b.w();
+        m_q[1] -= b.x();
+        m_q[2] -= b.y();
+        m_q[3] -= b.z();
+    }
+
+    /**
      * @brief Normalize the quaternion such that it becomes a unit quaternion. L2 norm = 1.
      *
      */
@@ -92,7 +185,7 @@ public:
     }
 
 private:
-    const T EPS {0.0000001};
+    const T EPS { 0.0000001 };
     std::array<T, 4> m_q;
 };
 

@@ -60,11 +60,12 @@ TEST(quat_test_suite, product){
 
 TEST(quat_test_suite, norm_d){
     quaternion::Quaternion a(-19.0, -2.1, 3.3, 6.9);
+
     a.normalize();
 
     auto norm = std::sqrt(
-            std::pow(a.w(), 2.0) + std::pow(a.x(), 2.0) +
-            std::pow(a.y(), 2.0) + std::pow(a.z(), 2.0));
+        std::pow(a.w(), 2.0) + std::pow(a.x(), 2.0)
+        + std::pow(a.y(), 2.0) + std::pow(a.z(), 2.0));
 
     EXPECT_DOUBLE_EQ(1.0, norm);
     EXPECT_DOUBLE_EQ(-0.92281951518771288, a.w());
@@ -75,15 +76,70 @@ TEST(quat_test_suite, norm_d){
 
 TEST(quat_test_suite, norm_f){
     quaternion::Quaternion a(-19.0f, -2.1f, 3.3f, 6.9f);
+
     a.normalize();
 
     auto norm = std::sqrt(
-            std::pow(a.w(), 2.0f) + std::pow(a.x(), 2.0f) +
-            std::pow(a.y(), 2.0f) + std::pow(a.z(), 2.0f));
+        std::pow(a.w(), 2.0f) + std::pow(a.x(), 2.0f)
+        + std::pow(a.y(), 2.0f) + std::pow(a.z(), 2.0f));
 
     EXPECT_FLOAT_EQ(1.0f, norm);
     EXPECT_FLOAT_EQ(-0.92281951f, a.w());
     EXPECT_FLOAT_EQ(-0.1019958f, a.x());
     EXPECT_FLOAT_EQ(0.16027917f, a.y());
     EXPECT_FLOAT_EQ(0.3351292f, a.z());
+}
+
+TEST(quat_test_suite, scalar_f){
+    quaternion::Quaternion<float> a(2.0f, -2.0f, 3.0f, 6.0f);
+
+    a = a * 0.5;
+
+    EXPECT_FLOAT_EQ(1.0f, a.w());
+    EXPECT_FLOAT_EQ(-1.0f, a.x());
+    EXPECT_FLOAT_EQ(1.5f, a.y());
+    EXPECT_FLOAT_EQ(3.0f, a.z());
+}
+
+TEST(quat_test_suite, add_f){
+    quaternion::Quaternion<float> a(2.0f, -2.0f, 3.0f, 6.0f);
+
+    a = a + a;
+
+    EXPECT_FLOAT_EQ(4.0f, a.w());
+    EXPECT_FLOAT_EQ(-4.0f, a.x());
+    EXPECT_FLOAT_EQ(6.0f, a.y());
+    EXPECT_FLOAT_EQ(12.0f, a.z());
+}
+
+TEST(quat_test_suite, subtract_f){
+    quaternion::Quaternion<float> a(2.0f, -2.0f, 3.0f, 6.0f);
+
+    a = a - a*0.5;
+
+    EXPECT_FLOAT_EQ(1.0f, a.w());
+    EXPECT_FLOAT_EQ(-1.0f, a.x());
+    EXPECT_FLOAT_EQ(1.5f, a.y());
+    EXPECT_FLOAT_EQ(3.0f, a.z());
+}
+
+TEST(quat_test_suite, subtract_equals_f){
+    quaternion::Quaternion<float> a(2.0f, -2.0f, 3.0f, 6.0f);
+
+    a -= a*0.5;
+
+    EXPECT_FLOAT_EQ(1.0f, a.w());
+    EXPECT_FLOAT_EQ(-1.0f, a.x());
+    EXPECT_FLOAT_EQ(1.5f, a.y());
+    EXPECT_FLOAT_EQ(3.0f, a.z());
+}
+
+TEST(quat_test_suite, set_f){
+    quaternion::Quaternion<float> a(2.0f, -2.0f, 3.0f, 6.0f);
+    a.set(-100.0f, -101.0f, -102.0f, -103.0f);
+
+    EXPECT_FLOAT_EQ(-100.0f, a.w());
+    EXPECT_FLOAT_EQ(-101.0f, a.x());
+    EXPECT_FLOAT_EQ(-102.0f, a.y());
+    EXPECT_FLOAT_EQ(-103.0f, a.z());
 }
