@@ -22,7 +22,7 @@ jobs: # The jobs for the workflow
       - name: Install dependencies # The name of the step
         run: sudo apt-get install -y cmake lcov cppcheck # The command to run for the step
       - name: Install Eigen3
-        run: sudo apt-get install -y libeigen3-dev
+        run: sudo apt-get install -y libeigen3-dev && sudo ln -s /usr/include/eigen3/Eigen /usr/local/include/Eigen
       - name: Install gtest
         run: sudo apt-get install libgtest-dev && cd /usr/src/gtest && sudo cmake CMakeLists.txt
       - name: Run custom build script
