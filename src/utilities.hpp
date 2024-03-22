@@ -1,3 +1,10 @@
+/**
+ * @file utilities.hpp
+ * @brief Utilities for converting other rotation fromats into quaternions
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #pragma once
 
 #include "quaternion.hpp"
