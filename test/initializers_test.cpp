@@ -21,7 +21,7 @@ TEST(initializers_test_suite, acc_d){
 }
 
 TEST(initializers_test_suite, acc1_f){
-    Eigen::Vector3d acc { 0.090941f, -0.031273f, 9.759028f };
+    Eigen::Vector3f acc { 0.090941f, -0.031273f, 9.759028f };
     acc.normalize();
 
     quaternion::Quaternion out = init::acc_to_quat(acc);
@@ -34,7 +34,7 @@ TEST(initializers_test_suite, acc1_f){
 }
 
 TEST(initializers_test_suite, acc2_f){
-    Eigen::Vector3d acc { -9.81f, 0.0f, 0.0f };
+    Eigen::Vector3f acc { -9.81f, 0.0f, 0.0f };
     acc.normalize();
 
     quaternion::Quaternion out = init::acc_to_quat(acc);
