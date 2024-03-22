@@ -8,19 +8,19 @@ mkdir -p build && cd build
 case $1 in
   test)
     # Build the project with tests enabled
-    cmake -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-fprofile-arcs -ftest-coverage" ..
+    cmake -DBUILD_TESTS=ON ..
     make
     cd ./test
     # Run the tests
-    ctest
+    ctest --rerun-failed --output-on-failure
 
     # Generate the coverage report using gcov and lcov
-    cd ../build/test/CMakeFiles/attitude_check_test.dir
+    cd ./CMakeFiles/attitude_check_test.dir
 
-    lcov --capture --directory . --output-file coverage.info
+    lcov --capture --rc lcov_branch_coverage=1 --directory . --output-file coverage.info
     lcov --remove coverage.info '/usr/*' '*/test*' --output-file coverage.info
     lcov --list coverage.info
-    genhtml coverage.info --output-directory out
+    genhtml coverage.info --output-directory ../../out
     ;;
   clean)
     # Remove the build directory

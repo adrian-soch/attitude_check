@@ -15,6 +15,8 @@ find_package(GTest REQUIRED)
 
 enable_testing()
 
+set(CMAKE_CXX_FLAGS "-g -O0 -Wall -fprofile-arcs -ftest-coverage")
+
 add_executable(
     ${BINARY}
     main.cpp
