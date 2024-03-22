@@ -21,6 +21,10 @@ jobs: # The jobs for the workflow
             test
       - name: Install dependencies # The name of the step
         run: sudo apt-get install -y cmake lcov cppcheck # The command to run for the step
+      - name: Install Eigen3
+        uses: kupns-aka-kupa/setup-eigen3@v1
+        with:
+          version: 3.4.0
       - name: Install gtest
         run: sudo apt-get install libgtest-dev && cd /usr/src/gtest && sudo cmake CMakeLists.txt
       - name: Run custom build script
