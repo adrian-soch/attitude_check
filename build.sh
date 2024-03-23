@@ -12,7 +12,7 @@ case $1 in
   test)
     # Build the project with tests enabled
     cmake -DBUILD_TESTS=ON ..
-    make
+    make || { echo "Build failed, stopping script."; exit 1; }
     cd "$BUILD/test"
     # Run the tests
     ctest --rerun-failed --output-on-failure
@@ -31,7 +31,7 @@ case $1 in
     ;;
   debug)
     # Build the project with debug mode enabled
-    cmake -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Debug ..
+    cmake -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
     make
     ;;
   *)

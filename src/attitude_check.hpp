@@ -15,22 +15,44 @@ public:
 
     quaternion::Quaternion<float> update(Eigen::Vector3f& acc, Eigen::Vector3f& gyr, float dt);
 
-    void reset(float q_w, float q_x, float q_y, float q_z);
+    /**
+     * @brief Manually set the quaternion component. Useful when a new initial quaternion
+     *  for subsequent calcualtion is desired. For example, after determining absolute
+     *  orientation through another source, the quaternion can be reset such that the orientation
+     *  is relative to the new known orientation.
+     *
+     * @param q_w
+     * @param q_x
+     * @param q_y
+     * @param q_z
+     */
+    void set_quaternion(float q_w, float q_x, float q_y, float q_z);
+
+    /**
+     * @brief Set the filter gain values.
+     *
+     * @param imu_gain Gain when only Accel and Gyro are used.
+     * @param marg_gain Gain when Accel, Gyro, and Mag are used.
+     */
+    void
+    set_gain(float imu_gain, float marg_gain);
+
+    /**
+     * @brief Get the gains via tuple.
+     *  Example:  `auto [imu_gain, marg_gain] = a.get_gain();`
+     *
+     * @return std::tuple<float, float>
+     */
+    std::tuple<float, float> get_gain();
 
 private:
-    const float RATE_MIN_HZ { 10000.0 };
-    const float DT_MIN_SEC { 1 / RATE_MIN_HZ };
+    const float RATE_MAX_HZ { 10000.0 };
+    const float DT_MIN_SEC { 1 / RATE_MAX_HZ };
     const float GAIN_MIN { 0.0 }, GAIN_MAX { 1.0 };
 
     quaternion::Quaternion<float> m_q;
 
     float m_dt { 100.0 };
     float m_imu_gain { 0.5 }, m_marg_gain { 0.5 };
-
-    void
-    input_handler(float dt, float gain);
-
-    void
-    set_gain(float imu_gain, float marg_gain);
 };
 } // End namespace attitude_check
