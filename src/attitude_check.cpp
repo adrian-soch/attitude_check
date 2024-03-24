@@ -7,6 +7,8 @@ typedef Eigen::Vector3f Vec3f;
 typedef q::Quaternion<float> Quat;
 
 namespace attitude_check {
+AttitudeCheck::AttitudeCheck(){ };
+
 AttitudeCheck::AttitudeCheck(float imu_gain, float marg_gain)
 {
     set_gain(imu_gain, marg_gain);
@@ -29,7 +31,7 @@ Quat AttitudeCheck::update(Vec3f& acc, Vec3f& gyr, Vec3f& mag, float dt)
 
     if(gyr.norm() <= 0.0f) {
         return m_q;
-    } else if(mag.norm() <= 0.0f)   {
+    } else if(mag.norm() <= 0.0f) {
         return update(acc, gyr, dt);
     }
 
