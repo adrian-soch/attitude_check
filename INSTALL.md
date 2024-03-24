@@ -4,7 +4,7 @@
 
 1. Clone the repo.
 2. `cd` into the repo.
-3. Run `./setup.sh` to automatically install the dependencies and the pre-commit hooks
+3. Run `<REPO_ROOT>/scripts/setup.sh` to automatically install the dependencies and the pre-commit hooks
 
 ## MacOS
 
