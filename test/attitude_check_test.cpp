@@ -3,7 +3,6 @@
 #include "gtest/gtest.h"
 
 #include "attitude_check.cpp"
-// #include "attitude_check.hpp"
 
 const float MAX_ABS_ERROR { 0.002 }; // About 0.115 of a degree
 

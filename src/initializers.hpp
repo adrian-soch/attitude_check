@@ -26,6 +26,8 @@ using Vector3T = Eigen::Matrix<T, 3, 1>;
 template<typename T>
 inline quaternion::Quaternion<T> acc_to_quat(const Vector3T<T>& acc)
 {
+    acc.normalize();
+
     T roll  = std::atan2(acc[1], acc[2]);
     T pitch = std::atan2(-acc[0],
         std::sqrt(std::pow(acc[1], 2.0) + std::pow(acc[2], 2.0)));
@@ -44,6 +46,9 @@ inline quaternion::Quaternion<T> acc_to_quat(const Vector3T<T>& acc)
 template<typename T>
 inline quaternion::Quaternion<T> mag_to_quat(const Vector3T<T>& acc, const Vector3T<T>& mag)
 {
+    acc.normalize();
+    mag.normalize();
+
     T roll  = std::atan2(acc[1], acc[2]);
     T pitch = std::atan(-acc[0]/std::sqrt(std::pow(acc[1], 2.0) + std::pow(acc[2], 2.0)));
 
