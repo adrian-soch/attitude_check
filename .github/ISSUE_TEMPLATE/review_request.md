@@ -3,7 +3,6 @@ name: Review Request
 about: Review documentation to help us improve
 title: ''
 labels: ''
-assignees: adrian-soch
 
 ---
 

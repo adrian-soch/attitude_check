@@ -15,11 +15,15 @@ find_package(GTest REQUIRED)
 
 enable_testing()
 
+set(CMAKE_CXX_FLAGS "-fprofile-arcs -ftest-coverage")
+
 add_executable(
     ${BINARY}
     main.cpp
     attitude_check_test.cpp
     quaternion_test.cpp
+    utilities_test.cpp
+    initializers_test.cpp
 )
 
 target_link_libraries(
