@@ -1,13 +1,11 @@
-#include <stdexcept>
-
 #include "attitude_check.hpp"
+#include "error_handling.hpp"
 
-namespace q = quaternion;
 typedef Eigen::Vector3f Vec3f;
-typedef q::Quaternion<float> Quat;
+typedef quaternion::Quaternion<float> Quat;
 
 namespace attitude_check {
-AttitudeCheck::AttitudeCheck(){ };
+AttitudeCheck::AttitudeCheck(){ }
 
 AttitudeCheck::AttitudeCheck(float imu_gain, float marg_gain)
 {
@@ -20,17 +18,17 @@ AttitudeCheck::AttitudeCheck(float imu_gain, float marg_gain, float q0_w, float 
     set_quaternion(q0_w, q0_x, q0_y, q0_z);
 }
 
-Quat AttitudeCheck::update(Vec3f& acc, Vec3f& gyr, Vec3f& mag, float dt)
+std::array<float, 4> AttitudeCheck::update(Vec3f& acc, Vec3f& gyr, Vec3f& mag, float dt)
 {
     m_q.normalize();
 
     dt = static_cast<float>(dt);
     if(dt < DT_MIN_SEC) {
-        throw std::invalid_argument("Dt is too small.");
+        attitude_check::error_handler("Dt is too small.");
     }
 
     if(gyr.norm() <= 0.0f) {
-        return m_q;
+        return m_q.to_array();
     } else if(mag.norm() <= 0.0f) {
         return update(acc, gyr, dt);
     }
@@ -39,7 +37,7 @@ Quat AttitudeCheck::update(Vec3f& acc, Vec3f& gyr, Vec3f& mag, float dt)
     if(acc.norm() <= 0.0f) {
         m_q = m_q + (q_dot * dt);
         m_q.normalize();
-        return m_q;
+        return m_q.to_array();
     }
 
     acc.normalize();
@@ -75,23 +73,23 @@ Quat AttitudeCheck::update(Vec3f& acc, Vec3f& gyr, Vec3f& mag, float dt)
     m_q = m_q + (q_dot * dt);
     m_q.normalize();
 
-    return m_q;
+    return m_q.to_array();
 } // AttitudeCheck::update
 
-Quat AttitudeCheck::update(Vec3f& acc, Vec3f& gyr, float dt)
+std::array<float, 4> AttitudeCheck::update(Vec3f& acc, Vec3f& gyr, float dt)
 {
     m_q.normalize();
     dt = static_cast<float>(dt);
 
     if(gyr.norm() <= 0.0f) {
-        return m_q;
+        return m_q.to_array();
     }
 
     Quat q_dot = (m_q * Quat(0.0f, gyr[0], gyr[1], gyr[2])) * 0.5;
     if(acc.norm() <= 0.0f) {
         m_q = m_q + (q_dot * dt);
         m_q.normalize();
-        return m_q;
+        return m_q.to_array();
     }
 
     acc.normalize();
@@ -114,17 +112,12 @@ Quat AttitudeCheck::update(Vec3f& acc, Vec3f& gyr, float dt)
     m_q = m_q + (q_dot * dt);
     m_q.normalize();
 
-    return m_q;
+    return m_q.to_array();
 } // AttitudeCheck::update
 
 inline void AttitudeCheck::set_quaternion(float q_w, float q_x, float q_y, float q_z)
 {
-    try {
-        m_q.set(q_w, q_x, q_y, q_z);
-    } catch(const std::invalid_argument& e) {
-        throw std::invalid_argument("Initial quaternion must have a norm > 0.");
-    }
-
+    m_q.set(q_w, q_x, q_y, q_z);
     m_q.normalize();
 }
 
@@ -133,7 +126,7 @@ inline void AttitudeCheck::set_gain(const float imu_gain, const float marg_gain)
     if((imu_gain < GAIN_MIN || imu_gain > GAIN_MAX) ||
       (marg_gain < GAIN_MIN || marg_gain > GAIN_MAX))
     {
-        throw std::invalid_argument("Gain must be within [0.0, 1.0].");
+        attitude_check::error_handler("Gain must be within [0.0, 1.0].");
     }
 
     m_imu_gain  = imu_gain;

@@ -46,7 +46,7 @@ public:
      * @param dt Time since last call to `update()` in seconds.
      * @return quaternion::Quaternion<float>
      */
-    quaternion::Quaternion<float>
+    std::array<float, 4>
     update(Eigen::Vector3f& acc, Eigen::Vector3f& gyr, Eigen::Vector3f& mag, float dt);
 
     /**
@@ -57,7 +57,7 @@ public:
      * @param dt Time since last call to `update()` in seconds.
      * @return quaternion::Quaternion<float>
      */
-    quaternion::Quaternion<float>
+    std::array<float, 4>
     update(Eigen::Vector3f& acc, Eigen::Vector3f& gyr, float dt);
 
     /**

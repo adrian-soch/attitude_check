@@ -9,9 +9,17 @@
 
 #include <array>
 #include <cmath>
-#include <stdexcept>
+
+#include "error_handling.hpp"
 
 namespace quaternion {
+enum Axis {
+    W = 0,
+    X,
+    Y,
+    Z
+};
+
 template<typename T>
 class Quaternion {
 public:
@@ -21,16 +29,16 @@ public:
     Quaternion(T w, T x, T y, T z) : m_q{w, x, y, z}
     {
         if((std::abs(w) + std::abs(x) + std::abs(y) + std::abs(z)) <= EPS) {
-            throw std::invalid_argument("Magnitude of quaternion cannot be zero.");
+            attitude_check::error_handler("Cannot create quaternion: Magnitude of quaternion cannot be zero.");
         }
     }
 
     Quaternion(const Quaternion& b)
     {
-        m_q[0] = b.w();
-        m_q[1] = b.x();
-        m_q[2] = b.y();
-        m_q[3] = b.z();
+        m_q[W] = b.w();
+        m_q[X] = b.x();
+        m_q[Y] = b.y();
+        m_q[Z] = b.z();
     }
 
     /**
@@ -39,12 +47,13 @@ public:
      * @param other
      * @return Quaternion&
      */
-    Quaternion& operator=(const Quaternion& b) {
-        if (this != &b) {
-            m_q[0] = b.w();
-            m_q[1] = b.x();
-            m_q[2] = b.y();
-            m_q[3] = b.z();
+    Quaternion& operator = (const Quaternion& b)
+    {
+        if(this != &b) {
+            m_q[W] = b.w();
+            m_q[X] = b.x();
+            m_q[Y] = b.y();
+            m_q[Z] = b.z();
         }
         return *this;
     }
@@ -57,14 +66,15 @@ public:
      * @param y float/double
      * @param z float/double
      */
-    inline void set(const T w, const T x, const T y, const T z) {
+    inline void set(const T w, const T x, const T y, const T z)
+    {
         if((std::abs(w) + std::abs(x) + std::abs(y) + std::abs(z)) <= EPS) {
-            throw std::invalid_argument("Magnitude of quaternion cannot be zero.");
+            attitude_check::error_handler("Cannot set quaternion: Magnitude of quaternion cannot be zero.");
         }
-        m_q[0] = w;
-        m_q[1] = x;
-        m_q[2] = y;
-        m_q[3] = z;
+        m_q[W] = w;
+        m_q[X] = x;
+        m_q[Y] = y;
+        m_q[Z] = z;
     }
 
     /**
@@ -72,28 +82,28 @@ public:
      *
      * @return const T&: w
      */
-    inline const T& w() const { return m_q[0]; }
+    inline const T& w() const { return m_q[W]; }
 
     /**
      * @brief Getter for the x component.
      *
      * @return const T& : x
      */
-    inline const T& x() const { return m_q[1]; }
+    inline const T& x() const { return m_q[X]; }
 
     /**
      * @brief Getter for the y component.
      *
      * @return const T& : y
      */
-    inline const T& y() const { return m_q[2]; }
+    inline const T& y() const { return m_q[Y]; }
 
     /**
      * @brief Getter for the z component.
      *
      * @return const T& : z
      */
-    inline const T& z() const { return m_q[3]; }
+    inline const T& z() const { return m_q[Z]; }
 
     /**
      * @brief Compute the conjugate of the Quaternion object.
@@ -114,10 +124,10 @@ public:
      */
     inline Quaternion operator * (Quaternion const& b) const
     {
-        return Quaternion( (m_q[0] * b.w() - m_q[1] * b.x() - m_q[2] * b.y() - m_q[3] * b.z()),
-                 (m_q[0] * b.x() + m_q[1] * b.w() + m_q[2] * b.z() - m_q[3] * b.y()),
-                 (m_q[0] * b.y() + m_q[2] * b.w() + m_q[3] * b.x() - m_q[1] * b.z()),
-                 (m_q[0] * b.z() + m_q[3] * b.w() + m_q[1] * b.y() - m_q[2] * b.x()));
+        return Quaternion( (m_q[W] * b.w() - m_q[X] * b.x() - m_q[Y] * b.y() - m_q[Z] * b.z()),
+                 (m_q[W] * b.x() + m_q[X] * b.w() + m_q[Y] * b.z() - m_q[Z] * b.y()),
+                 (m_q[W] * b.y() + m_q[Y] * b.w() + m_q[Z] * b.x() - m_q[X] * b.z()),
+                 (m_q[W] * b.z() + m_q[Z] * b.w() + m_q[X] * b.y() - m_q[Y] * b.x()));
     }
 
     /**
@@ -129,7 +139,7 @@ public:
      */
     inline Quaternion operator * (T const& k) const
     {
-        return Quaternion(k * m_q[0], k * m_q[1], k * m_q[2], k * m_q[3]);
+        return Quaternion(k * m_q[W], k * m_q[X], k * m_q[Y], k * m_q[Z]);
     }
 
     /**
@@ -140,7 +150,7 @@ public:
      */
     inline Quaternion operator + (Quaternion const& b) const
     {
-        return Quaternion(m_q[0] + b.w(), m_q[1] + b.x(), m_q[2] + b.y(), m_q[3] + b.z());
+        return Quaternion(m_q[W] + b.w(), m_q[X] + b.x(), m_q[Y] + b.y(), m_q[Z] + b.z());
     }
 
     /**
@@ -151,7 +161,7 @@ public:
      */
     inline Quaternion operator - (Quaternion const& b) const
     {
-        return Quaternion(m_q[0] - b.w(), m_q[1] - b.x(), m_q[2] - b.y(), m_q[3] - b.z());
+        return Quaternion(m_q[W] - b.w(), m_q[X] - b.x(), m_q[Y] - b.y(), m_q[Z] - b.z());
     }
 
     /**
@@ -162,10 +172,10 @@ public:
      */
     inline void operator -= (Quaternion const& b)
     {
-        m_q[0] -= b.w();
-        m_q[1] -= b.x();
-        m_q[2] -= b.y();
-        m_q[3] -= b.z();
+        m_q[W] -= b.w();
+        m_q[X] -= b.x();
+        m_q[Y] -= b.y();
+        m_q[Z] -= b.z();
     }
 
     /**
@@ -174,14 +184,22 @@ public:
      */
     inline void normalize()
     {
-        T euclid_dist = std::sqrt(
-            std::pow(m_q[0], 2.0) + std::pow(m_q[1], 2.0)
-            + std::pow(m_q[2], 2.0) + std::pow(m_q[3], 2.0));
+        T euclid_dist = std::sqrt(m_q[W] * m_q[W] + m_q[X] * m_q[X] + m_q[Y] * m_q[Y] + m_q[Z] * m_q[Z]);
 
-        m_q[0] /= euclid_dist;
-        m_q[1] /= euclid_dist;
-        m_q[2] /= euclid_dist;
-        m_q[3] /= euclid_dist;
+        m_q[W] /= euclid_dist;
+        m_q[X] /= euclid_dist;
+        m_q[Y] /= euclid_dist;
+        m_q[Z] /= euclid_dist;
+    }
+
+    /**
+     * @brief Return quaternion as an array
+     *
+     * @return std::array<float, 4>
+     */
+    inline std::array<float, 4> to_array() const
+    {
+        return std::array<float, 4> { m_q[W], m_q[X], m_q[Y], m_q[Z] };
     }
 
 private:
@@ -222,11 +240,11 @@ private:
 // template <>
 // void Quaternion<float>::normalize() {
 //     float i_sqrr = fast_inv_sqrt(std::pow(m_q[0], 2.0) + std::pow(m_q[1], 2.0)
-//             + std::pow(m_q[2], 2.0) + std::pow(m_q[3], 2.0));
+//             + std::pow(m_q[Y], 2.0) + std::pow(m_q[Z], 2.0));
 
-//     m_q[0] *= i_sqrr;
-//     m_q[1] *= i_sqrr;
-//     m_q[2] *= i_sqrr;
-//     m_q[3] *= i_sqrr;
+//     m_q[W] *= i_sqrr;
+//     m_q[X] *= i_sqrr;
+//     m_q[Y] *= i_sqrr;
+//     m_q[Z] *= i_sqrr;
 // }
 } // End namespace quaternion
