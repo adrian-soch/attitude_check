@@ -77,20 +77,3 @@ TEST(initializers_test_suite, mag1_f){
     EXPECT_NEAR(out.y(), 0.0f, MAX_ABS_ERROR);
     EXPECT_NEAR(out.z(), 0.09034758f, MAX_ABS_ERROR);
 }
-
-// TEST(initializers_test_suite, mag2_f){
-//     Eigen::Vector3f acc { -6.382152f, -7.969839f, 0.099505f };
-//     acc.normalize();
-
-//     Eigen::Vector3f mag { 36.700461f, 22.613240f, 8.881961f };
-//     mag.normalize();
-
-//     quaternion::Quaternion out = init::mag_to_quat(acc, mag);
-//     out.normalize();
-
-//     EXPECT_NEAR(out.w(), 0.70953f, MAX_ABS_ERROR);
-//     EXPECT_NEAR(out.x(), -0.57186f, MAX_ABS_ERROR);
-//     EXPECT_NEAR(out.y(), 0.409993f, MAX_ABS_ERROR);
-//     EXPECT_NEAR(out.z(), 0.037796f, MAX_ABS_ERROR);
-
-// }
