@@ -18,12 +18,14 @@
 using namespace attitude_check;
 
 MPU9250_DMP imu; // create IMU object to get the data
-AttitudeCheck ac(); // create the attitude estimator object
+AttitudeCheck
+ac(); // create the attitude estimator object
 
-const float DEG2RAD {0.017453292519943f};
+const float DEG2RAD { 0.017453292519943f };
 
-void blink_trap(const unsigned long period) {
-    while (1) {
+void blink_trap(const unsigned long period)
+{
+    while(1) {
         digitalWrite(LED_BUILTIN, HIGH);
         delay(period);
         digitalWrite(LED_BUILTIN, LOW);
@@ -31,12 +33,13 @@ void blink_trap(const unsigned long period) {
     }
 }
 
-void get_intial_orientation() {
-    if ( imu.dataReady() ) {
+void get_intial_orientation()
+{
+    if(imu.dataReady() ) {
         imu.update(UPDATE_ACCEL | UPDATE_COMPASS);
 
-        Eigen::Vector3f acc = {imu.calcAccel(imu.ax), imu.calcAccel(imu.ay), imu.calcAccel(imu.az)};
-        Eigen::Vector3f mag = { imu.calcMag(imu.mx), imu.calcMag(imu.my), imu.calcMag(imu.mz)};
+        Eigen::Vector3f acc = { imu.calcAccel(imu.ax), imu.calcAccel(imu.ay), imu.calcAccel(imu.az) };
+        Eigen::Vector3f mag = { imu.calcMag(imu.mx), imu.calcMag(imu.my), imu.calcMag(imu.mz) };
         mag *= -1.0f;
 
         auto q0 = initializers::mag_to_quat(acc, mag);
@@ -44,11 +47,12 @@ void get_intial_orientation() {
     }
 }
 
-void setup() {
+void setup()
+{
     SerialUSB.begin(115200);
     pinMode(LED_BUILTIN, OUTPUT);
 
-    if (imu.begin() != INV_SUCCESS) {
+    if(imu.begin() != INV_SUCCESS) {
         blink_trap(1000);
     }
 
@@ -57,25 +61,28 @@ void setup() {
     imu.setSensors(INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS);
     imu.setGyroFSR(1000); // Set gyro to 2000 dps
     imu.setAccelFSR(8);
-    imu.setLPF(10);        // Set LPF corner frequency to 5Hz
+    imu.setLPF(10);         // Set LPF corner frequency to 5Hz
     imu.setSampleRate(100); // Set sample rate to 100Hz
     imu.setCompassSampleRate(100);
 
     get_intial_orientation();
 }
 
-void loop() {
-    if ( imu.dataReady() ) {
+void loop()
+{
+    if(imu.dataReady() ) {
         imu.update(UPDATE_ACCEL | UPDATE_GYRO | UPDATE_COMPASS);
 
-        Eigen::Vector3f acc = {imu.calcAccel(imu.ax), imu.calcAccel(imu.ay), imu.calcAccel(imu.az)};
-        Eigen::Vector3f gyr = {imu.calcGyro(imu.gx), imu.calcGyro(imu.gy), imu.calcGyro(imu.gz)};
+        Eigen::Vector3f acc = { imu.calcAccel(imu.ax), imu.calcAccel(imu.ay), imu.calcAccel(imu.az) };
+        Eigen::Vector3f gyr = { imu.calcGyro(imu.gx), imu.calcGyro(imu.gy), imu.calcGyro(imu.gz) };
         gyr = gyr * DEG2RAD;
-        gyr = gyr - Eigen::Vector3f{-0.03, 0.016, -0.01}; // Subtract gyro readings when not moving
-        Eigen::Vector3f mag = { imu.calcMag(imu.mx), imu.calcMag(imu.my), imu.calcMag(imu.mz)};
+        gyr = gyr - Eigen::Vector3f{ -0.03, 0.016, -0.01 }; // Subtract gyro readings when not moving
+        Eigen::Vector3f mag = { imu.calcMag(imu.mx), imu.calcMag(imu.my), imu.calcMag(imu.mz) };
         mag *= -1.0f;
 
         auto q = ac.update(acc, gyr, 0.01f);
-        SerialUSB.println("Quaternion: " + String(q[0], 4)  + ", " +  String(q[1], 4) + ", " +  String(q[2], 4) + ", " +  String(q[3], 4));
+        SerialUSB.println("Quaternion: " + String(q[0], 4) + ", " + String(q[1], 4) + ", " + String(q[2],
+          4) + ", "
+          + String(q[3], 4));
     }
 }
