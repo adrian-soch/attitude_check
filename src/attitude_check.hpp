@@ -1,6 +1,17 @@
+/**
+ * @file attitude_check.hpp
+ * @brief Interface for the Attitude Check Orientation Estimator
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #pragma once
 
+#ifdef ARDUINO
+#include <ArduinoEigenDense.h>
+#else
 #include <Eigen/Dense>
+#endif
 
 #include "quaternion.hpp"
 
@@ -71,8 +82,7 @@ public:
      * @param q_y float
      * @param q_z float
      */
-    void
-    set_quaternion(float q_w, float q_x, float q_y, float q_z);
+    void set_quaternion(float q_w, float q_x, float q_y, float q_z);
 
     /**
      * @brief Set the filter gain values.

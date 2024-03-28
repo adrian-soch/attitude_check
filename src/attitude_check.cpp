@@ -43,7 +43,7 @@ std::array<float, 4> AttitudeCheck::update(Vec3f& acc, Vec3f& gyr, Vec3f& mag, f
     acc.normalize();
     mag.normalize();
 
-    Quat h   = m_q * (Quat(0.0f, mag[0], mag[1], mag[2]) * m_q.conjugate());
+    Quat h   = m_q * Quat(0.0f, mag[0], mag[1], mag[2]) * m_q.conjugate();
     float bx = std::sqrt(h.x() * h.x() + h.y() * h.y());
     float bz = h.z();
 
@@ -115,13 +115,13 @@ std::array<float, 4> AttitudeCheck::update(Vec3f& acc, Vec3f& gyr, float dt)
     return m_q.to_array();
 } // AttitudeCheck::update
 
-inline void AttitudeCheck::set_quaternion(float q_w, float q_x, float q_y, float q_z)
+void AttitudeCheck::set_quaternion(float q_w, float q_x, float q_y, float q_z)
 {
     m_q.set(q_w, q_x, q_y, q_z);
     m_q.normalize();
 }
 
-inline void AttitudeCheck::set_gain(const float imu_gain, const float marg_gain)
+void AttitudeCheck::set_gain(const float imu_gain, const float marg_gain)
 {
     if((imu_gain < GAIN_MIN || imu_gain > GAIN_MAX) ||
       (marg_gain < GAIN_MIN || marg_gain > GAIN_MAX))
@@ -133,7 +133,7 @@ inline void AttitudeCheck::set_gain(const float imu_gain, const float marg_gain)
     m_marg_gain = marg_gain;
 }
 
-inline std::tuple<float, float> AttitudeCheck::get_gain()
+std::tuple<float, float> AttitudeCheck::get_gain()
 {
     return std::tuple<float, float>(m_imu_gain, m_marg_gain);
 }

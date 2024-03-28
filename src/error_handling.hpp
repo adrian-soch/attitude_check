@@ -7,10 +7,12 @@ enum ErrorCodes {
 
 #ifdef ARDUINO
 
-# include <DebugLog.h>
+#define LOG_OUTPUT SerialUSB
+
+#include <EasyLogger.h>
 inline void error_handler(const std::string& msg)
 {
-    LOG_ERROR(msg);
+    LOG_ERROR("", msg.c_str());
 }
 
 #else

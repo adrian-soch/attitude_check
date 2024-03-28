@@ -10,9 +10,14 @@
 
 #include "quaternion.hpp"
 #include "utilities.hpp"
-#include <Eigen/Dense>
 
-namespace init {
+#ifdef ARDUINO
+#include <ArduinoEigenDense.h>
+#else
+#include <Eigen/Dense>
+#endif
+
+namespace initializers {
 template<typename T>
 using Vector3T = Eigen::Matrix<T, 3, 1>;
 
@@ -32,7 +37,7 @@ inline quaternion::Quaternion<T> acc_to_quat(const Vector3T<T>& acc)
     T pitch = std::atan2(-acc_norm[0],
         std::sqrt(std::pow(acc_norm[1], 2.0) + std::pow(acc_norm[2], 2.0)));
 
-    return quaternion::Quaternion(utils::euler_to_quat(roll, pitch, static_cast<T>(0.0)));
+    return quaternion::Quaternion<T>(utils::euler_to_quat(roll, pitch, static_cast<T>(0.0)));
 }
 
 /**
@@ -56,6 +61,6 @@ inline quaternion::Quaternion<T> mag_to_quat(const Vector3T<T>& acc, const Vecto
     T yaw = std::atan2(mag_norm[2] * s_roll - mag_norm[1] * c_roll,
         mag_norm[0] * std::cos(pitch) + std::sin(pitch)*(mag_norm[1] * s_roll + mag_norm[2] * c_roll));
 
-    return quaternion::Quaternion(utils::euler_to_quat(roll, pitch, yaw));
+    return quaternion::Quaternion<T>(utils::euler_to_quat(roll, pitch, yaw));
 }
 } // End namespace init

@@ -218,25 +218,6 @@ private:
 //     return y;
 // }
 
-// float fast_inv_sqrt(float x) {
-//     union {
-//         int i;
-//         float y;
-//         long z;
-//     } data;
-
-//     // float data;
-
-//     float halfx = 0.5f * x;
-//     data.y = x;
-//     long i = *(long*)&data.y;
-//     i = 0x5f3759df - (i>>1);
-//     data.y = *(float*)&i;
-//     data.y = data.y * (1.5f - (halfx * data.y * data.y));
-//     data.y = data.y * (1.5f - (halfx * data.y * data.y));
-//     return data.y;
-// }
-
 // template <>
 // void Quaternion<float>::normalize() {
 //     float i_sqrr = fast_inv_sqrt(std::pow(m_q[0], 2.0) + std::pow(m_q[1], 2.0)
