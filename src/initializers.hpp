@@ -6,36 +6,35 @@
  * @copyright Copyright (c) 2024
  *
  */
-#pragma once
+#ifndef INITIALIZERS_HPP
+#define INITIALIZERS_HPP
+
+#include <cmath>
 
 #include "quaternion.hpp"
 #include "utilities.hpp"
 
-#ifdef ARDUINO
-#include <ArduinoEigenDense.h>
-#else
-#include <Eigen/Dense>
-#endif
-
 namespace initializers {
-template<typename T>
-using Vector3T = Eigen::Matrix<T, 3, 1>;
-
 /**
  * @brief Computes a quaternion from a single accerleration measurement.
  *
- * @tparam T float or double
- * @param acc 3x1 accerleration vector
+ * @tparam T
+ * @param ax
+ * @param ay
+ * @param az
  * @return quaternion::Quaternion<T>
  */
 template<typename T>
-inline quaternion::Quaternion<T> acc_to_quat(const Vector3T<T>& acc)
+inline quaternion::Quaternion<T> acc_to_quat(T ax, T ay, T az)
 {
-    auto acc_norm = acc.normalized();
+    T norm = utils::norm(ax, ay, az);
+    ax /= norm;
+    ay /= norm;
+    az /= norm;
 
-    T roll  = std::atan2(acc_norm[1], acc_norm[2]);
-    T pitch = std::atan2(-acc_norm[0],
-        std::sqrt(std::pow(acc_norm[1], 2.0) + std::pow(acc_norm[2], 2.0)));
+    T roll  = std::atan2(ay, az);
+    T pitch = std::atan2(-ax,
+        std::sqrt(ay*ay + az*az));
 
     return quaternion::Quaternion<T>(utils::euler_to_quat(roll, pitch, static_cast<T>(0.0)));
 }
@@ -43,24 +42,37 @@ inline quaternion::Quaternion<T> acc_to_quat(const Vector3T<T>& acc)
 /**
  * @brief Computes a quaternion from accelerometer and magnetometer data.
  *
- * @tparam T float or double
- * @param acc 3x1 accerleration vector
- * @param mag 3x1 magnetometer vector
+ * @tparam T
+ * @param ax
+ * @param ay
+ * @param az
+ * @param mx
+ * @param my
+ * @param mz
  * @return quaternion::Quaternion<T>
  */
 template<typename T>
-inline quaternion::Quaternion<T> mag_to_quat(const Vector3T<T>& acc, const Vector3T<T>& mag)
+inline quaternion::Quaternion<T> mag_to_quat(T ax, T ay, T az, T mx, T my, T mz)
 {
-    auto acc_norm = acc.normalized();
-    auto mag_norm = mag.normalized();
+    T a_norm = utils::norm(ax, ay, az);
+    ax /= a_norm;
+    ay /= a_norm;
+    az /= a_norm;
 
-    T roll  = std::atan2(acc_norm[1], acc_norm[2]);
-    T pitch = std::atan(-acc_norm[0]/std::sqrt(std::pow(acc_norm[1], 2.0) + std::pow(acc_norm[2], 2.0)));
+    T m_norm = utils::norm(mx, my, mz);
+    mx /= m_norm;
+    my /= m_norm;
+    mz /= m_norm;
+
+    T roll  = std::atan2(ay, az);
+    T pitch = std::atan2(-ax, std::sqrt(ay*ay + az*az));
 
     T s_roll = std::sin(roll), c_roll = std::cos(roll);
-    T yaw = std::atan2(mag_norm[2] * s_roll - mag_norm[1] * c_roll,
-        mag_norm[0] * std::cos(pitch) + std::sin(pitch)*(mag_norm[1] * s_roll + mag_norm[2] * c_roll));
+    T yaw = std::atan2(mz * s_roll - my * c_roll,
+        mx * std::cos(pitch) + std::sin(pitch)*(my * s_roll + mz * c_roll));
 
     return quaternion::Quaternion<T>(utils::euler_to_quat(roll, pitch, yaw));
 }
 } // End namespace init
+
+#endif
