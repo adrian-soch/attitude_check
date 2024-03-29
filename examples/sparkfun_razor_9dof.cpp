@@ -17,9 +17,8 @@
 
 using namespace attitude_check;
 
-MPU9250_DMP imu; // create IMU object to get the data
-AttitudeCheck
-ac(); // create the attitude estimator object
+MPU9250_DMP imu;  // create IMU object to get the data
+AttitudeCheck ac; // create the attitude estimator object
 
 const float DEG2RAD { 0.017453292519943f };
 
@@ -38,11 +37,8 @@ void get_intial_orientation()
     if(imu.dataReady() ) {
         imu.update(UPDATE_ACCEL | UPDATE_COMPASS);
 
-        Eigen::Vector3f acc = { imu.calcAccel(imu.ax), imu.calcAccel(imu.ay), imu.calcAccel(imu.az) };
-        Eigen::Vector3f mag = { imu.calcMag(imu.mx), imu.calcMag(imu.my), imu.calcMag(imu.mz) };
-        mag *= -1.0f;
-
-        auto q0 = initializers::mag_to_quat(acc, mag);
+        auto q0 = initializers::mag_to_quat(imu.calcAccel(imu.ax), imu.calcAccel(imu.ay), imu.calcAccel(imu.az),
+            -1.0f * imu.calcMag(imu.mx), -1.0f * imu.calcMag(imu.my), -1.0f * imu.calcMag(imu.mz));
         ac.set_quaternion(q0.w(), q0.x(), q0.y(), q0.z());
     }
 }
@@ -59,10 +55,10 @@ void setup()
     delay(1200);
 
     imu.setSensors(INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS);
-    imu.setGyroFSR(1000); // Set gyro to 2000 dps
+    imu.setGyroFSR(2000);
     imu.setAccelFSR(8);
-    imu.setLPF(10);         // Set LPF corner frequency to 5Hz
-    imu.setSampleRate(100); // Set sample rate to 100Hz
+    imu.setLPF(5);
+    imu.setSampleRate(100);
     imu.setCompassSampleRate(100);
 
     get_intial_orientation();
@@ -76,13 +72,18 @@ void loop()
         Eigen::Vector3f acc = { imu.calcAccel(imu.ax), imu.calcAccel(imu.ay), imu.calcAccel(imu.az) };
         Eigen::Vector3f gyr = { imu.calcGyro(imu.gx), imu.calcGyro(imu.gy), imu.calcGyro(imu.gz) };
         gyr = gyr * DEG2RAD;
-        gyr = gyr - Eigen::Vector3f{ -0.03, 0.016, -0.01 }; // Subtract gyro readings when not moving
+        gyr = gyr - Eigen::Vector3f{ -0.03f, 0.016f, -0.01f }; // Subtract gyro readings when not moving
         Eigen::Vector3f mag = { imu.calcMag(imu.mx), imu.calcMag(imu.my), imu.calcMag(imu.mz) };
         mag *= -1.0f;
 
-        auto q = ac.update(acc, gyr, 0.01f);
+        long int t1 = micros();
+
+        auto q = ac.update(acc, gyr, mag, 0.01f);
+
+        long int t2 = micros();
+        SerialUSB.print("Time: "); SerialUSB.print(t2-t1); SerialUSB.println(" us.");
+
         SerialUSB.println("Quaternion: " + String(q[0], 4) + ", " + String(q[1], 4) + ", " + String(q[2],
-          4) + ", "
-          + String(q[3], 4));
+          4) + ", " + String(q[3], 4));
     }
 }
