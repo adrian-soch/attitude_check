@@ -1,6 +1,8 @@
 #include "gtest/gtest.h"
 #include "quaternion.hpp"
 
+#include <cmath>
+
 TEST(quat_test_suite, invalid_init){
     EXPECT_THROW({
         try
