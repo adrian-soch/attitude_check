@@ -5,8 +5,8 @@
  * @copyright Copyright (c) 2024
  *
  */
-#pragma once
-
+#ifndef UTILITIES_HPP
+#define UTILITIES_HPP
 
 #include <array>
 #include <cmath>
@@ -17,6 +17,19 @@ template<typename T>
 using Quat = quaternion::Quaternion<T>;
 
 namespace utils {
+template<typename T>
+/**
+ * @brief Return the norm of 3 vector components
+ *
+ * @param x T
+ * @param y T
+ * @param z T
+ * @return T
+ */
+inline T norm(const T& x, const T& y, const T& z)
+{
+    return std::sqrt(x*x + y*y + z*z);
+}
 /**
  * @brief Convert Euler angles to a Quaternion
  *  This follows the ZYX, or Yall*Pitch*Roll convention
@@ -30,17 +43,17 @@ namespace utils {
 template<typename T>
 Quat<T> euler_to_quat(const T& roll, const T& pitch, const T& yaw)
 {
-    T c_pitch = cos(pitch * 0.5);
-    T c_roll  = cos(roll * 0.5);
-    T s_pitch = sin(pitch * 0.5);
-    T s_roll  = sin(roll * 0.5);
+    T c_pitch = std::cos(pitch * 0.5);
+    T c_roll  = std::cos(roll * 0.5);
+    T s_pitch = std::sin(pitch * 0.5);
+    T s_roll  = std::sin(roll * 0.5);
 
     if(std::abs(yaw) <= 0.0000001) {
         return Quat<T>(c_roll * c_pitch, s_roll * c_pitch, c_roll * s_pitch, -s_roll * s_pitch);
     }
 
-    T c_yaw = cos(yaw * 0.5);
-    T s_yaw = sin(yaw * 0.5);
+    T c_yaw = std::cos(yaw * 0.5);
+    T s_yaw = std::sin(yaw * 0.5);
 
     T c_yaw_c_pitch = c_yaw * c_pitch;
     T s_yaw_s_pitch = s_yaw * s_pitch;
@@ -58,7 +71,7 @@ using Matrix3T = std::array<std::array<T, 3>, 3>;
  * @brief Convert Rotation matrix to Quaternion
  *
  * @tparam T
- * @param R rotation matrix
+ * @param R rotation matrix `std::array<std::array<T, 3>, 3>`
  * @return quaternion::Quaternion<T>
  */
 template<typename T>
@@ -74,3 +87,5 @@ Quat<T> rotm_to_quat(const Matrix3T<T>& R)
     return Quat<T>(w, x, y, z);
 }
 } // End namespace utils
+
+#endif
