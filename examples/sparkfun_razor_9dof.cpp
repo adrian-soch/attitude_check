@@ -17,9 +17,8 @@
 
 using namespace attitude_check;
 
-MPU9250_DMP imu; // create IMU object to get the data
-AttitudeCheck
-ac(); // create the attitude estimator object
+MPU9250_DMP imu;  // create IMU object to get the data
+AttitudeCheck ac; // create the attitude estimator object
 
 const float DEG2RAD { 0.017453292519943f };
 
@@ -59,9 +58,9 @@ void setup()
     delay(1200);
 
     imu.setSensors(INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS);
-    imu.setGyroFSR(1000); // Set gyro to 2000 dps
+    imu.setGyroFSR(2000); // Set gyro to 2000 dps
     imu.setAccelFSR(8);
-    imu.setLPF(10);         // Set LPF corner frequency to 5Hz
+    imu.setLPF(5);          // Set LPF corner frequency to 5Hz
     imu.setSampleRate(100); // Set sample rate to 100Hz
     imu.setCompassSampleRate(100);
 
@@ -80,9 +79,8 @@ void loop()
         Eigen::Vector3f mag = { imu.calcMag(imu.mx), imu.calcMag(imu.my), imu.calcMag(imu.mz) };
         mag *= -1.0f;
 
-        auto q = ac.update(acc, gyr, 0.01f);
-        SerialUSB.println("Quaternion: " + String(q[0], 4) + ", " + String(q[1], 4) + ", " + String(q[2],
-          4) + ", "
-          + String(q[3], 4));
+        auto q = ac.update(acc, gyr, mag, 0.01f);
+        SerialUSB.println("Quaternion: " + String(q[0], 4) + ", " + String(q[1], 4) + ", " + String(q[2], 4)
+          + ", " + String(q[3], 4));
     }
 }

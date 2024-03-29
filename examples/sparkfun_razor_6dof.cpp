@@ -54,9 +54,9 @@ void setup()
     delay(1200);
 
     imu.setSensors(INV_XYZ_GYRO | INV_XYZ_ACCEL);
-    imu.setGyroFSR(1000); // Set gyro to 2000 dps
+    imu.setGyroFSR(2000); // Set gyro to 2000 dps
     imu.setAccelFSR(8);
-    imu.setLPF(10);         // Set LPF corner frequency to 5Hz
+    imu.setLPF(5);         // Set LPF corner frequency to 5Hz
     imu.setSampleRate(100); // Set sample rate to 100Hz
 
     get_intial_orientation();
