@@ -5,8 +5,9 @@
  * @copyright Copyright (c) 2024
  *
  */
-#ifndef QUATERNION_HPP
-#define QUATERNION_HPP
+#pragma once
+// #ifndef QUATERNION_HPP
+// #define QUATERNION_HPP
 
 #include <array>
 #include <cmath>
@@ -29,7 +30,7 @@ public:
 
     Quaternion(T w, T x, T y, T z) : m_q{w, x, y, z}
     {
-        if((std::abs(w) + std::abs(x) + std::abs(y) + std::abs(z)) <= EPS) {
+        if((std::fabs(w) + std::fabs(x) + std::fabs(y) + std::fabs(z)) <= EPS) {
             attitude_check::error_handler("Cannot create quaternion: Magnitude of quaternion cannot be zero.");
         }
     }
@@ -69,7 +70,7 @@ public:
      */
     inline void set(const T w, const T x, const T y, const T z)
     {
-        if((std::abs(w) + std::abs(x) + std::abs(y) + std::abs(z)) <= EPS) {
+        if((std::fabs(w) + std::fabs(x) + std::fabs(y) + std::fabs(z)) <= EPS) {
             attitude_check::error_handler("Cannot set quaternion: Magnitude of quaternion cannot be zero.");
         }
         m_q[W] = w;
@@ -233,4 +234,4 @@ private:
 // }
 } // End namespace quaternion
 
-#endif
+// #endif

@@ -62,7 +62,7 @@ def get_acc_to_quat_cases():
     generate_acc2q_tests([-9.81, 0, 0])
 
 
-def get_marg_estimate_cases():
+def get_marg_estimate_cases(freq):
 
     q0 = [0.49666186227,0.034292027603,-0.0510015643620,0.86576549471]
 
@@ -83,10 +83,10 @@ def get_marg_estimate_cases():
            [11.084734479270914, -6.77198980959856, -44.35222010806493],
            [10.19482545174241, -6.923879422543039, -43.97779333322085],
            [9.30491642421391, -7.075769035487526, -43.60336655837678]], dtype=np.float32)
-    est = Madgwick(gyr=gyr, acc=acc, mag=mag, frequency=285.71428571, q0=q0, gain_imu=0.033, gain_marg=0.041)
+    est = Madgwick(gyr=gyr, acc=acc, mag=mag, frequency=freq, q0=q0, gain_imu=0.033, gain_marg=0.041)
     print(est.Q)
 
-def get_imu_estimate_cases():
+def get_imu_estimate_cases(freq):
 
     q0 = [0.49666186227,0.034292027603,-0.0510015643620,0.86576549471]
 
@@ -103,15 +103,15 @@ def get_imu_estimate_cases():
            [0.3783742880038359, 0.5534032122654374, 8.264965125378161],
            [0.27340728800383585, 0.05015021226543746, 8.015791125378161],
            [0.3067612880038358, -0.2853517877345626, 8.159017125378163]], dtype=np.float32)
-    est = Madgwick(gyr=gyr, acc=acc, frequency=285.71428571, q0=q0, gain_imu=0.033, gain_marg=0.041)
+    est = Madgwick(gyr=gyr, acc=acc, frequency=freq, q0=q0, gain_imu=0.033, gain_marg=0.041)
     print(est.Q)
 
 
 def main():
     # get_acc_to_quat_cases()
     # get_mag_to_quat_cases()
-    get_marg_estimate_cases()
-    get_imu_estimate_cases()
+    get_marg_estimate_cases(freq=5)
+    get_imu_estimate_cases(freq=5)
 
 
 if __name__ == "__main__":

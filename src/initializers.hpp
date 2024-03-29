@@ -6,8 +6,9 @@
  * @copyright Copyright (c) 2024
  *
  */
-#ifndef INITIALIZERS_HPP
-#define INITIALIZERS_HPP
+#pragma once
+// #ifndef INITIALIZERS_HPP
+// #define INITIALIZERS_HPP
 
 #include <cmath>
 
@@ -27,7 +28,7 @@ namespace initializers {
 template<typename T>
 inline quaternion::Quaternion<T> acc_to_quat(T ax, T ay, T az)
 {
-    T norm = utils::norm(ax, ay, az);
+    T norm = utils::get_norm(ax, ay, az);
     ax /= norm;
     ay /= norm;
     az /= norm;
@@ -54,12 +55,12 @@ inline quaternion::Quaternion<T> acc_to_quat(T ax, T ay, T az)
 template<typename T>
 inline quaternion::Quaternion<T> mag_to_quat(T ax, T ay, T az, T mx, T my, T mz)
 {
-    T a_norm = utils::norm(ax, ay, az);
+    T a_norm = utils::get_norm(ax, ay, az);
     ax /= a_norm;
     ay /= a_norm;
     az /= a_norm;
 
-    T m_norm = utils::norm(mx, my, mz);
+    T m_norm = utils::get_norm(mx, my, mz);
     mx /= m_norm;
     my /= m_norm;
     mz /= m_norm;
@@ -75,4 +76,4 @@ inline quaternion::Quaternion<T> mag_to_quat(T ax, T ay, T az, T mx, T my, T mz)
 }
 } // End namespace init
 
-#endif
+// #endif

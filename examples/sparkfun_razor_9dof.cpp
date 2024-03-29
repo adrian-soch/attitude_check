@@ -8,17 +8,19 @@
  * @copyright Copyright (c) 2024
  *
  */
+#include <ArxContainer.h>
+#include <ArxTypeTraits.h>
+
 #include <Arduino.h>
-#include <ArduinoEigenDense.h>
 #include <SparkFunMPU9250-DMP.h>
 
 #include "attitude_check.hpp"
 #include "initializers.hpp"
 
-using namespace attitude_check;
+// using namespace attitude_check;
 
 MPU9250_DMP imu;  // create IMU object to get the data
-AttitudeCheck ac; // create the attitude estimator object
+attitude_check::AttitudeCheck ac; // create the attitude estimator object
 
 const float DEG2RAD { 0.017453292519943f };
 
@@ -69,12 +71,12 @@ void loop()
     if(imu.dataReady() ) {
         imu.update(UPDATE_ACCEL | UPDATE_GYRO | UPDATE_COMPASS);
 
-        Eigen::Vector3f acc = { imu.calcAccel(imu.ax), imu.calcAccel(imu.ay), imu.calcAccel(imu.az) };
-        Eigen::Vector3f gyr = { imu.calcGyro(imu.gx), imu.calcGyro(imu.gy), imu.calcGyro(imu.gz) };
-        gyr = gyr * DEG2RAD;
-        gyr = gyr - Eigen::Vector3f{ -0.03f, 0.016f, -0.01f }; // Subtract gyro readings when not moving
-        Eigen::Vector3f mag = { imu.calcMag(imu.mx), imu.calcMag(imu.my), imu.calcMag(imu.mz) };
-        mag *= -1.0f;
+        Vec3f acc = { imu.calcAccel(imu.ax), imu.calcAccel(imu.ay), imu.calcAccel(imu.az) };
+        Vec3f gyr = { imu.calcGyro(imu.gx)* DEG2RAD, imu.calcGyro(imu.gy)* DEG2RAD, imu.calcGyro(imu.gz)* DEG2RAD };
+        // gyr = gyr * DEG2RAD;
+        // gyr = gyr - Eigen::Vector3f{ -0.03f, 0.016f, -0.01f }; // Subtract gyro readings when not moving
+        gyr[0] -= -0.03f; gyr[1] -= -0.016f; gyr[2] -= -0.01f;
+        Vec3f mag = { -1.0f * imu.calcMag(imu.mx), -1.0f * imu.calcMag(imu.my), -1.0f * imu.calcMag(imu.mz) };
 
         long int t1 = micros();
 
