@@ -3,6 +3,8 @@
  * @brief Show how to use attitude check. Reads data from csv file and
  *  writes quaternion result into a csv file
  *
+ * @note You can create a csv file by using the `scripts/create_sensor_csv.py`
+ *
  * @copyright Copyright (c) 2024
  *
  */
@@ -16,30 +18,37 @@
 // Include for using attitude check library
 #include "attitude_check.hpp"
 
-const std::string csvFilename = "your_csv_file.csv"; // Replace with your CSV file path
-const std::string txtFilename = "row_count.txt";     // Output text file
+using Vec3f = Eigen::Vector3f;
 
-// Function to read CSV file into a 2D vector of floats
-std::vector<std::vector<float> > readCSV(const std::string& filename)
-{
+std::vector<std::vector<float>> readCsv(const std::string& filename) {
     std::ifstream file(filename);
-    std::vector<std::vector<float> > data;
+    std::vector<std::vector<float>> data;
 
-    if(!file.is_open()) {
+    if (!file.is_open()) {
         std::cerr << "Error opening file: " << filename << std::endl;
-        return data;
+        return data; // Early return on failure to open the file
     }
 
-    std::string line;
-    while(std::getline(file, line)) {
-        std::vector<float> row;
-        std::istringstream iss(line);
-        float value;
+    // Get headers before processing numbers
+    std::string headers;
+    std::getline(file, headers);
 
-        while(iss >> value) {
-            row.push_back(value);
-            if(iss.peek() == ',')
-                iss.ignore();
+    std::string line;
+    while (std::getline(file, line)) {
+        std::vector<float> row;
+        std::stringstream iss(line);
+        std::string value;
+
+        // Split the line by commas
+        while (std::getline(iss, value, ',')) {
+            try {
+                // Convert string to float and add to the row
+                row.push_back(std::stof(value));
+            } catch (const std::invalid_argument& e) {
+                // Handle the case where the conversion fails
+                std::cerr << "Invalid number: " << value << std::endl;
+                continue;
+            }
         }
 
         data.push_back(row);
@@ -49,29 +58,62 @@ std::vector<std::vector<float> > readCSV(const std::string& filename)
     return data;
 }
 
-int main()
-{
-    attitude_check::AttitudeCheck ac;
 
-    auto [g1, g2] = ac.get_gain();
-    std::cout << g1 << std::endl;
+void writeToCSV(const std::string& filePath, const std::vector<std::array<float, 4>>& data) {
+    std::ofstream file(filePath);
 
-
-    // Read CSV data
-    std::vector<std::vector<float> > csvData = readCSV(csvFilename);
-
-    // Get the number of rows
-    size_t numRows = csvData.size();
-
-    // Write row count to a text file
-    std::ofstream txtFile(txtFilename);
-    if(txtFile.is_open()) {
-        txtFile << "Number of rows in CSV: " << numRows << std::endl;
-        txtFile.close();
-        std::cout << "Row count written to " << txtFilename << std::endl;
-    } else {
-        std::cerr << "Error writing to file: " << txtFilename << std::endl;
+    if (!file.is_open()) {
+        throw std::runtime_error("Could not open file");
     }
 
+    for (const auto& arr : data) {
+        file << arr[0] << ',' << arr[1] << ',' << arr[2] << ',' << arr[3] << '\n';
+    }
+    file.close();
+}
+
+std::vector<std::array<float, 4> > simulate(std::vector<std::vector<float>>& data, float dt, attitude_check::AttitudeCheck* filter)
+{
+    filter->set_gain(0.033, 0.041);
+
+    std::vector<std::array<float, 4> > output;
+    output.reserve(data.size());
+
+    // Uncomment if you dont want to use default 1,0,0,0 quaternion
+    // auto measurement = data.front();
+    // data.erase(data.begin());
+    // Vec3f a0 = Eigen::Map<Eigen::Vector3f>(&measurement[0]);
+    // Vec3f m0 = Eigen::Map<Eigen::Vector3f>(&measurement[6]);
+    // filter->get_initial_orientation(a0, m0);
+
+    for (auto sense : data) {
+        Vec3f acc = Eigen::Map<Eigen::Vector3f>(&sense[0]);
+        Vec3f gyr = Eigen::Map<Eigen::Vector3f>(&sense[3]);
+        Vec3f mag = Eigen::Map<Eigen::Vector3f>(&sense[6]);
+
+        auto q = filter->update(acc, gyr, mag, dt);
+
+        output.push_back(q);
+    }
+
+    return output;
+}
+
+int main()
+{
+    const float RATE {285.7142857142857f};
+    const std::string csvFilename = "/home/adrian/dev/attitude_check/docs/sample_sensor_data_hz_285.7142857142857.csv";
+    const std::string outFilename = "/home/adrian/dev/attitude_check/docs/attitude_check_marg_results.csv";
+
+    // Read CSV data
+    std::vector<std::vector<float> > csvData = readCsv(csvFilename);
+
+    // Create filter object
+    attitude_check::AttitudeCheck ac;
+
+    // Get quaternion results
+    auto results = simulate(csvData, 1.0/RATE, &ac);
+
+    writeToCSV(outFilename, results);
     return 0;
 }
