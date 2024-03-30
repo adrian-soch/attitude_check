@@ -26,10 +26,10 @@
 
 \begin{document}
 
-\title{Project Title: System Verification and Validation Plan for \progname{}} 
+\title{Project Title: System Verification and Validation Plan for \progname{}}
 \author{\authname}
 \date{\today}
-	
+
 \maketitle
 
 \pagenumbering{roman}
@@ -72,7 +72,7 @@ all sections filled in.}
 For symbols and units see the Section 1 of the SRS \citep{SRS}. Table \ref{tab:abb} defines the
 abbreviations and acronyms used in this document.
 
-% \renewcommand{\arraystretch}{1.2} \begin{tabular}{l l} \toprule        
+% \renewcommand{\arraystretch}{1.2} \begin{tabular}{l l} \toprule
 %   \textbf{symbol} & \textbf{description}\\
 %   \midrule T & Test\\
 %   \bottomrule \end{tabular}\\
@@ -81,10 +81,10 @@ abbreviations and acronyms used in this document.
   \centering
   \caption{Table of Abbreviations and Acronyms}
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{l l} 
+\begin{tabular}{l l}
     \toprule
     \textbf{symbol} & \textbf{description}\\
-    \midrule 
+    \midrule
     % TM & Theoretical Model\\
     accel & Accelerometer \\
     gyro & Gyroscope \\
@@ -313,7 +313,7 @@ The derivation of RMSE can be found in the Section \ref{sec:cal}.
 \wss{This section might reference back to the SRS verification section.}
 
 \section{System Test Description} \label{sec:system_test}
-	
+
 \subsection{Tests for Functional Requirements}
 
 \wss{Subsets of the tests may be in related, so this section is divided into different areas.  If
@@ -329,7 +329,7 @@ requirements for \progname{}. For input constraints see Section 4.2.8 of the SRS
 \wss{It would be nice to have a blurb here to explain why the subsections below cover the
   requirements.  References to the SRS would be good here.  If a section covers tests for input
   constraints, you should reference the data constraints table in the SRS.}
-		
+
 % \paragraph{Title for Test}
 
 \begin{enumerate}
@@ -338,9 +338,9 @@ requirements for \progname{}. For input constraints see Section 4.2.8 of the SRS
 
 
     \textbf{Control:} Automatic
-                
+
     \textbf{Initial State:} Uninitialized
-                
+
     \begin{table}[H]
     \centering
     \begin{tabular}{|l|l|l|}
@@ -386,7 +386,7 @@ requirements for \progname{}. For input constraints see Section 4.2.8 of the SRS
     \end{table}
 
     \textbf{Test Case Derivation:} N/A
-                
+
     \textbf{How test will be performed:} At each step, apply the inputs and assert the output.
 
 \end{enumerate}
@@ -408,7 +408,7 @@ Often computing separate errors for the heading and inclination components provi
 First the difference between the estimate and the ground truth mus tbe expressed in the Earth frame (\ref{eqn:diff_quat2}). The equation for the heading only error is defined in (\ref{eqn:heading_err}) and the inclination only error is defined by (\ref{eqn:inc_error}):
 
 \begin{align}
-    {}^E \mathbf{q}_{e,t} =& {}^S_E\mathbf{q}_{est, t} {}^S_E\mathbf{q}^{*}_{gt, t} = [q_w, q_x, q_y, q_z]^T \label{eqn:diff_quat2} \\ 
+    {}^E \mathbf{q}_{e,t} =& {}^S_E\mathbf{q}_{est, t} {}^S_E\mathbf{q}^{*}_{gt, t} = [q_w, q_x, q_y, q_z]^T \label{eqn:diff_quat2} \\
     e_{h} =& 2 \arctan(|\cfrac{q_z}{q_w}|) \label{eqn:heading_err} \\
     e_{i} =&  2 \arccos(\sqrt{q_w^2 + q_z^2}) \label{eqn:inc_error}
 \end{align}
@@ -419,11 +419,11 @@ First the difference between the estimate and the ground truth mus tbe expressed
 
 \item[\refstepcounter{testnum} \Tthetestnum \label{t:sys_calc_mag}:] \textbf{Orientation with
 Magnetometer} \\
-   
+
     \textbf{Control:} Automatic
-            
+
     \textbf{Initial State:} Uninitialized
-    
+
     \begin{table}[H]
         \centering
         \begin{tabular}{|l|l|l|}
@@ -439,19 +439,19 @@ Magnetometer} \\
             error is within\\ the tolerance.\end{tabular} \\ \hline
         \end{tabular}
         \end{table}
-  
+
     \textbf{Test Case Derivation:} Benchmark dataset with labelled ground truth orientation for each
     set of sensor measurements.
-    
+
     \textbf{How test will be performed:} At each step, apply the inputs and assert the output.
 
 \item[\refstepcounter{testnum} \Tthetestnum \label{t:sys_calc_no_mag}:] \textbf{Orientation without
 Magnetometer}\\
 
     \textbf{Control:} Automatic
-            
+
     \textbf{Initial State:} Uninitialized
-    
+
     \begin{table}[H]
         \centering
         \begin{tabular}{|l|l|l|}
@@ -469,14 +469,14 @@ Magnetometer}\\
             error is within\\ the tolerance.\end{tabular} \\ \hline
         \end{tabular}
         \end{table}
-  
+
     \textbf{Test Case Derivation:} Benchmark dataset with labelled ground truth orientation for each
     set of sensor measurements.
-    
+
     \textbf{How test will be performed:} At each step, apply the inputs and assert the output.
-    
+
     \textbf{Note:} Only Pitch and Roll components are evaluated.
-  
+
 \end{enumerate}
 
 
@@ -493,7 +493,7 @@ Magnetometer}\\
 given below.}
 
 \subsubsection{Accuracy}
-		
+
 % \paragraph{Title for Test}
 
 \begin{enumerate}
@@ -501,7 +501,7 @@ given below.}
 \item[\refstepcounter{testnum} \Tthetestnum \label{t:a1}:] \textbf{test-a1} \\
 
     Type: Automatic
-            
+
     This test refers to Section \ref{sec:calc}.
 \end{enumerate}
 
@@ -512,14 +512,14 @@ given below.}
 \item[\refstepcounter{testnum} \Tthetestnum \label{t:u1}:] \textbf{test-u1} \\
 
     Type: Manual
-            
+
     Initial State: N/A
-            
+
     Input/Condition: N/A
-            
+
     Output/Result: Successful integration of \progname{} into a project. This represents how typical
     users interact with the software.
-            
+
     How test will be performed: A manual inspection of the code, specifically the header file. Is
     each input documented/commented? This test passes if this is true.
 \end{enumerate}
@@ -531,14 +531,14 @@ given below.}
 \item[\refstepcounter{testnum} \Tthetestnum \label{t:m1}:] \textbf{test-m1} \\
 
     Type: Manual
-            
+
     Initial State: N/A
-            
+
     Input/Condition: N/A
-            
+
     Output/Result: Successful addition of a likely change within the threshold defined in NFR3 of
-    the SRS. 
-            
+    the SRS.
+
     How test will be performed: If a likely change needs to be added, measure the development time
     and compare it to the total development time. If it is less than the threshold specified in the
     SRS, this test passes.
@@ -551,13 +551,13 @@ given below.}
 \item[\refstepcounter{testnum} \Tthetestnum \label{t:p1}:] \textbf{test-p1} \\
 
     Type: Manual
-            
+
     Initial State: N/A
-            
+
     Input/Condition: One set of initialization inputs, 1 set of measurements
-            
+
     Output/Result: Result of compilation and execution.
-            
+
     How test will be performed: Build the project, initialize and input 1 set of measurements. Test
     is successful if the build has no errors and if the code produces the same result on Windows 11,
     macOS, and Ubuntu.
@@ -590,9 +590,9 @@ given below.}
   completed.}
 
 \wss{Reference your MIS (detailed design document) and explain your overall philosophy for test case
-selection.}  
+selection.}
 
-\wss{To save space and time, it may be an option to provide less detail in this section.  
+\wss{To save space and time, it may be an option to provide less detail in this section.
 For the unit tests you can potentially layout your testing strategy here.  That is, you can explain
 how tests will be selected for each module.  For instance, your test building approach could be test
 cases for each access program, including one test for normal behaviour and as many tests as needed
@@ -626,65 +626,65 @@ This will be updated when the MG and MIS are complete.
 \begin{enumerate}
 
 \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Inputs: Invalid time} \\
-                
+
     \textbf{Initial State:} ...
-                
+
     \textbf{Input:} ...
-            
+
     \textbf{Output:} ...
 
     \textbf{Test Case Derivation:} ...
-            
+
     \textbf{How test will be performed:} ...
 
 \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Inputs: Invalid mag ref} \\
-                
+
     \textbf{Initial State:} ...
-                
+
     \textbf{Input:} ...
-            
+
     \textbf{Output:} ...
 
     \textbf{Test Case Derivation:} ...
-            
+
     \textbf{How test will be performed:} ...
 
 \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Inputs: Invalid gamma} \\
-                
+
     \textbf{Initial State:} ...
-                
+
     \textbf{Input:} ...
-            
+
     \textbf{Output:} ...
 
     \textbf{Test Case Derivation:} ...
-            
+
     \textbf{How test will be performed:} ...
 
 \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Inputs: Invalid output type} \\
-                
+
     \textbf{Initial State:} ...
-                
+
     \textbf{Input:} ...
-            
+
     \textbf{Output:} ...
 
     \textbf{Test Case Derivation:} ...
-            
+
     \textbf{How test will be performed:} ...
 
 \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Inputs: Valid} \\
-                
+
     \textbf{Initial State:} ...
-                
+
     \textbf{Input:} ...
-            
+
     \textbf{Output:} ...
 
     \textbf{Test Case Derivation:} ...
-            
+
     \textbf{How test will be performed:} ...
-        
+
 \end{enumerate}
 
 \subsection{Tests for Nonfunctional Requirements}
@@ -699,21 +699,21 @@ This will be updated when the MG and MIS are complete.
 This will be updated when the MG and MIS are complete.
 
 \subsubsection{Module TBD}
-		
+
 \begin{enumerate}
 
 \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{test-id1} \\
 
 Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will be automatic}
-					
-Initial State: 
-					
-Input/Condition: 
-					
-Output/Result: 
-					
-How test will be performed: 
-					
+
+Initial State:
+
+Input/Condition:
+
+Output/Result:
+
+How test will be performed:
+
 \end{enumerate}
 
 
@@ -722,11 +722,11 @@ How test will be performed:
 This will be updated when the MG and MIS are complete.
 
 \wss{Provide evidence that all of the modules have been considered.}
-				
+
 \newpage
 \bibliographystyle{plainnat}
 
-\bibliography{../../refs/References, ../../refs/bib}
+\bibliography{../refs/References, ../refs/bib}
 
 \newpage
 

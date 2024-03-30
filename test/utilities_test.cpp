@@ -5,6 +5,7 @@ const float MAX_ABS_ERROR { 0.002 }; // About 0.115 of a degree
 
 TEST(utilities_test_suite, euler_d){
     quaternion::Quaternion out = utils::euler_to_quat(0.0, 0.0, 0.0);
+
     out.normalize();
 
     EXPECT_DOUBLE_EQ(out.w(), 1.0);
@@ -15,6 +16,7 @@ TEST(utilities_test_suite, euler_d){
 
 TEST(utilities_test_suite, euler_f){
     quaternion::Quaternion out = utils::euler_to_quat(0.0f, 0.0f, 0.0f);
+
     out.normalize();
 
     EXPECT_FLOAT_EQ(out.w(), 1.0f);
@@ -25,6 +27,7 @@ TEST(utilities_test_suite, euler_f){
 
 TEST(utilities_test_suite, euler1_f){
     quaternion::Quaternion out = utils::euler_to_quat(1.55f, 0.06f, -2.59f);
+
     out.normalize();
 
     EXPECT_NEAR(out.w(), 0.1742636f, MAX_ABS_ERROR);
@@ -35,6 +38,7 @@ TEST(utilities_test_suite, euler1_f){
 
 TEST(utilities_test_suite, euler2_f){
     quaternion::Quaternion out = utils::euler_to_quat(-20.0f, -0.005f, 3.140f);
+
     out.normalize();
 
     EXPECT_NEAR(out.w(), -0.0020282f, MAX_ABS_ERROR);
@@ -44,12 +48,14 @@ TEST(utilities_test_suite, euler2_f){
 }
 
 TEST(utilities_test_suite, rotm_d){
-    Eigen::Matrix3d in;
-    in << 1.0, 0.0, 0.0,
-          0.0, 1.0, 0.0,
-          0.0, 0.0, 1.0;
+    std::array<std::array<double, 3>, 3> in { {
+        { { 1.0, 0.0, 0.0 } },
+        { { 0.0, 1.0, 0.0 } },
+        { { 0.0, 0.0, 1.0 } }
+    } };
 
     quaternion::Quaternion out = utils::rotm_to_quat(in);
+
     out.normalize();
 
     EXPECT_DOUBLE_EQ(out.w(), 1.0);
@@ -59,12 +65,14 @@ TEST(utilities_test_suite, rotm_d){
 }
 
 TEST(utilities_test_suite, rotm_f){
-    Eigen::Matrix3f in;
-    in << 1.0, 0.0, 0.0,
-          0.0, 1.0, 0.0,
-          0.0, 0.0, 1.0;
+    std::array<std::array<double, 3>, 3> in { {
+        { { 1.0, 0.0, 0.0 } },
+        { { 0.0, 1.0, 0.0 } },
+        { { 0.0, 0.0, 1.0 } }
+    } };
 
     quaternion::Quaternion out = utils::rotm_to_quat(in);
+
     out.normalize();
 
     EXPECT_FLOAT_EQ(out.w(), 1.0f);

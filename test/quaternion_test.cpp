@@ -9,7 +9,7 @@ TEST(quat_test_suite, invalid_init){
         }
         catch(const std::invalid_argument& e)
         {
-            EXPECT_STREQ("Magnitude of quaternion cannot be zero.", e.what() );
+            EXPECT_STREQ("Cannot create quaternion: Magnitude of quaternion cannot be zero.", e.what() );
             throw;
         }
     }, std::invalid_argument);
@@ -21,7 +21,7 @@ TEST(quat_test_suite, invalid_init){
         }
         catch(const std::invalid_argument& e)
         {
-            EXPECT_STREQ("Magnitude of quaternion cannot be zero.", e.what() );
+            EXPECT_STREQ("Cannot create quaternion: Magnitude of quaternion cannot be zero.", e.what() );
             throw;
         }
     }, std::invalid_argument);
@@ -85,7 +85,7 @@ TEST(quat_test_suite, norm_f){
 
     EXPECT_FLOAT_EQ(1.0f, norm);
     EXPECT_FLOAT_EQ(-0.92281951f, a.w());
-    EXPECT_FLOAT_EQ(-0.1019958f, a.x());
+    EXPECT_FLOAT_EQ(-0.10199585f, a.x());
     EXPECT_FLOAT_EQ(0.16027917f, a.y());
     EXPECT_FLOAT_EQ(0.3351292f, a.z());
 }
@@ -142,4 +142,14 @@ TEST(quat_test_suite, set_f){
     EXPECT_FLOAT_EQ(-101.0f, a.x());
     EXPECT_FLOAT_EQ(-102.0f, a.y());
     EXPECT_FLOAT_EQ(-103.0f, a.z());
+}
+
+TEST(quat_test_suite, to_array){
+    quaternion::Quaternion<float> a(2.0f, -2.0f, 3.0f, 6.0f);
+    auto out = a.to_array();
+
+    EXPECT_FLOAT_EQ(out[0], a.w());
+    EXPECT_FLOAT_EQ(out[1], a.x());
+    EXPECT_FLOAT_EQ(out[2], a.y());
+    EXPECT_FLOAT_EQ(out[3], a.z());
 }

@@ -1,12 +1,13 @@
-#include <stdexcept>
-
 #include "attitude_check.hpp"
-
-namespace q = quaternion;
-typedef Eigen::Vector3f Vec3f;
-typedef q::Quaternion<float> Quat;
+#include "error_handling.hpp"
+#include "initializers.hpp"
 
 namespace attitude_check {
+typedef Eigen::Vector3f Vec3f;
+typedef quaternion::Quaternion<float> Quat;
+
+AttitudeCheck::AttitudeCheck(){ }
+
 AttitudeCheck::AttitudeCheck(float imu_gain, float marg_gain)
 {
     set_gain(imu_gain, marg_gain);
@@ -18,18 +19,18 @@ AttitudeCheck::AttitudeCheck(float imu_gain, float marg_gain, float q0_w, float 
     set_quaternion(q0_w, q0_x, q0_y, q0_z);
 }
 
-Quat AttitudeCheck::update(Vec3f& acc, Vec3f& gyr, Vec3f& mag, float dt)
+std::array<float, 4> AttitudeCheck::update(Vec3f& acc, Vec3f& gyr, Vec3f& mag, float dt)
 {
     m_q.normalize();
 
     dt = static_cast<float>(dt);
     if(dt < DT_MIN_SEC) {
-        throw std::invalid_argument("Dt is too small.");
+        attitude_check::error_handler("Dt is too small.");
     }
 
     if(gyr.norm() <= 0.0f) {
-        return m_q;
-    } else if(mag.norm() <= 0.0f)   {
+        return m_q.to_array();
+    } else if(mag.norm() <= 0.0f) {
         return update(acc, gyr, dt);
     }
 
@@ -37,13 +38,13 @@ Quat AttitudeCheck::update(Vec3f& acc, Vec3f& gyr, Vec3f& mag, float dt)
     if(acc.norm() <= 0.0f) {
         m_q = m_q + (q_dot * dt);
         m_q.normalize();
-        return m_q;
+        return m_q.to_array();
     }
 
     acc.normalize();
     mag.normalize();
 
-    Quat h   = m_q * (Quat(0.0f, mag[0], mag[1], mag[2]) * m_q.conjugate());
+    Quat h   = m_q * Quat(0.0f, mag[0], mag[1], mag[2]) * m_q.conjugate();
     float bx = std::sqrt(h.x() * h.x() + h.y() * h.y());
     float bz = h.z();
 
@@ -73,23 +74,23 @@ Quat AttitudeCheck::update(Vec3f& acc, Vec3f& gyr, Vec3f& mag, float dt)
     m_q = m_q + (q_dot * dt);
     m_q.normalize();
 
-    return m_q;
+    return m_q.to_array();
 } // AttitudeCheck::update
 
-Quat AttitudeCheck::update(Vec3f& acc, Vec3f& gyr, float dt)
+std::array<float, 4> AttitudeCheck::update(Vec3f& acc, Vec3f& gyr, float dt)
 {
     m_q.normalize();
     dt = static_cast<float>(dt);
 
     if(gyr.norm() <= 0.0f) {
-        return m_q;
+        return m_q.to_array();
     }
 
     Quat q_dot = (m_q * Quat(0.0f, gyr[0], gyr[1], gyr[2])) * 0.5;
     if(acc.norm() <= 0.0f) {
         m_q = m_q + (q_dot * dt);
         m_q.normalize();
-        return m_q;
+        return m_q.to_array();
     }
 
     acc.normalize();
@@ -112,33 +113,42 @@ Quat AttitudeCheck::update(Vec3f& acc, Vec3f& gyr, float dt)
     m_q = m_q + (q_dot * dt);
     m_q.normalize();
 
-    return m_q;
+    return m_q.to_array();
 } // AttitudeCheck::update
 
-inline void AttitudeCheck::set_quaternion(float q_w, float q_x, float q_y, float q_z)
+void AttitudeCheck::get_initial_orientation(const Vec3f& acc, const Vec3f& mag)
 {
-    try {
-        m_q.set(q_w, q_x, q_y, q_z);
-    } catch(const std::invalid_argument& e) {
-        throw std::invalid_argument("Initial quaternion must have a norm > 0.");
-    }
+    auto q0 = initializers::mag_to_quat(acc, mag);
 
+    set_quaternion(q0.w(), q0.x(), q0.y(), q0.z());
+}
+
+void AttitudeCheck::get_initial_orientation(const Vec3f& acc)
+{
+    auto q0 = initializers::acc_to_quat(acc);
+
+    set_quaternion(q0.w(), q0.x(), q0.y(), q0.z());
+}
+
+void AttitudeCheck::set_quaternion(float q_w, float q_x, float q_y, float q_z)
+{
+    m_q.set(q_w, q_x, q_y, q_z);
     m_q.normalize();
 }
 
-inline void AttitudeCheck::set_gain(const float imu_gain, const float marg_gain)
+void AttitudeCheck::set_gain(const float imu_gain, const float marg_gain)
 {
     if((imu_gain < GAIN_MIN || imu_gain > GAIN_MAX) ||
       (marg_gain < GAIN_MIN || marg_gain > GAIN_MAX))
     {
-        throw std::invalid_argument("Gain must be within [0.0, 1.0].");
+        attitude_check::error_handler("Gain must be within [0.0, 1.0].");
     }
 
     m_imu_gain  = imu_gain;
     m_marg_gain = marg_gain;
 }
 
-inline std::tuple<float, float> AttitudeCheck::get_gain()
+std::tuple<float, float> AttitudeCheck::get_gain()
 {
     return std::tuple<float, float>(m_imu_gain, m_marg_gain);
 }

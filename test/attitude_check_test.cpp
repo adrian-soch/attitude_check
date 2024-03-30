@@ -3,7 +3,6 @@
 #include "gtest/gtest.h"
 
 #include "attitude_check.cpp"
-// #include "attitude_check.hpp"
 
 const float MAX_ABS_ERROR { 0.002 }; // About 0.115 of a degree
 
@@ -57,7 +56,7 @@ TEST_F(ACheck_Test_Fixture, invalid_init){
         }
         catch(const std::invalid_argument& e)
         {
-            EXPECT_STREQ("Initial quaternion must have a norm > 0.", e.what() );
+            EXPECT_STREQ("Cannot set quaternion: Magnitude of quaternion cannot be zero.", e.what() );
             throw;
         }
     }, std::invalid_argument);
@@ -84,12 +83,12 @@ TEST_F(ACheck_Test_Fixture, marg_zero_gyro){
     gyr.setZero();
 
     ac::AttitudeCheck ac(0.5f, 0.5f, -69.0f, -69.0f, -69.0f, -69.0f);
-    quaternion::Quaternion<float> out = ac.update(acc, gyr, mag, dt);
+    auto out = ac.update(acc, gyr, mag, dt);
 
-    EXPECT_NEAR(out.w(), -0.5f, MAX_ABS_ERROR);
-    EXPECT_NEAR(out.x(), -0.5f, MAX_ABS_ERROR);
-    EXPECT_NEAR(out.y(), -0.5f, MAX_ABS_ERROR);
-    EXPECT_NEAR(out.z(), -0.5f, MAX_ABS_ERROR);
+    EXPECT_NEAR(out[0], -0.5f, MAX_ABS_ERROR);
+    EXPECT_NEAR(out[1], -0.5f, MAX_ABS_ERROR);
+    EXPECT_NEAR(out[2], -0.5f, MAX_ABS_ERROR);
+    EXPECT_NEAR(out[3], -0.5f, MAX_ABS_ERROR);
 }
 
 TEST_F(ACheck_Test_Fixture, marg_zero_mag){
@@ -102,12 +101,12 @@ TEST_F(ACheck_Test_Fixture, marg_zero_mag){
     expected.normalize();
 
     ac::AttitudeCheck ac(0.5f, 0.5f, -69.0f, -69.0f, -69.0f, -69.0f);
-    quaternion::Quaternion<float> out = ac.update(acc, gyr, mag, dt);
+    auto out = ac.update(acc, gyr, mag, dt);
 
-    EXPECT_NEAR(out.w(), expected.w(), MAX_ABS_ERROR);
-    EXPECT_NEAR(out.x(), expected.x(), MAX_ABS_ERROR);
-    EXPECT_NEAR(out.y(), expected.y(), MAX_ABS_ERROR);
-    EXPECT_NEAR(out.z(), expected.z(), MAX_ABS_ERROR);
+    EXPECT_NEAR(out[0], expected.w(), MAX_ABS_ERROR);
+    EXPECT_NEAR(out[1], expected.x(), MAX_ABS_ERROR);
+    EXPECT_NEAR(out[2], expected.y(), MAX_ABS_ERROR);
+    EXPECT_NEAR(out[3], expected.z(), MAX_ABS_ERROR);
 }
 
 TEST_F(ACheck_Test_Fixture, marg_zero_acc){
@@ -119,24 +118,24 @@ TEST_F(ACheck_Test_Fixture, marg_zero_acc){
     expected.normalize();
 
     ac::AttitudeCheck ac(0.5f, 0.5f, -69.0f, -69.0f, -69.0f, -69.0f);
-    quaternion::Quaternion<float> out = ac.update(acc, gyr, mag, dt);
+    auto out = ac.update(acc, gyr, mag, dt);
 
-    EXPECT_NEAR(out.w(), expected.w(), MAX_ABS_ERROR);
-    EXPECT_NEAR(out.x(), expected.x(), MAX_ABS_ERROR);
-    EXPECT_NEAR(out.y(), expected.y(), MAX_ABS_ERROR);
-    EXPECT_NEAR(out.z(), expected.z(), MAX_ABS_ERROR);
+    EXPECT_NEAR(out[0], expected.w(), MAX_ABS_ERROR);
+    EXPECT_NEAR(out[1], expected.x(), MAX_ABS_ERROR);
+    EXPECT_NEAR(out[2], expected.y(), MAX_ABS_ERROR);
+    EXPECT_NEAR(out[3], expected.z(), MAX_ABS_ERROR);
 }
 
 TEST_F(ACheck_Test_Fixture, imu_zero_gyro){
     gyr.setZero();
 
     ac::AttitudeCheck ac(0.5f, 0.5f, -69.0f, -69.0f, -69.0f, -69.0f);
-    quaternion::Quaternion<float> out = ac.update(acc, gyr, dt);
+    auto out = ac.update(acc, gyr, dt);
 
-    EXPECT_NEAR(out.w(), -0.5f, MAX_ABS_ERROR);
-    EXPECT_NEAR(out.x(), -0.5f, MAX_ABS_ERROR);
-    EXPECT_NEAR(out.y(), -0.5f, MAX_ABS_ERROR);
-    EXPECT_NEAR(out.z(), -0.5f, MAX_ABS_ERROR);
+    EXPECT_NEAR(out[0], -0.5f, MAX_ABS_ERROR);
+    EXPECT_NEAR(out[1], -0.5f, MAX_ABS_ERROR);
+    EXPECT_NEAR(out[2], -0.5f, MAX_ABS_ERROR);
+    EXPECT_NEAR(out[3], -0.5f, MAX_ABS_ERROR);
 }
 
 
@@ -149,12 +148,12 @@ TEST_F(ACheck_Test_Fixture, imu_zero_acc){
     expected.normalize();
 
     ac::AttitudeCheck ac(0.5f, 0.5f, -69.3333f, -69.0f, -69.0f, -69.0f);
-    quaternion::Quaternion<float> out = ac.update(acc, gyr, mag, dt);
+    auto out = ac.update(acc, gyr, mag, dt);
 
-    EXPECT_NEAR(out.w(), expected.w(), MAX_ABS_ERROR);
-    EXPECT_NEAR(out.x(), expected.x(), MAX_ABS_ERROR);
-    EXPECT_NEAR(out.y(), expected.y(), MAX_ABS_ERROR);
-    EXPECT_NEAR(out.z(), expected.z(), MAX_ABS_ERROR);
+    EXPECT_NEAR(out[0], expected.w(), MAX_ABS_ERROR);
+    EXPECT_NEAR(out[1], expected.x(), MAX_ABS_ERROR);
+    EXPECT_NEAR(out[2], expected.y(), MAX_ABS_ERROR);
+    EXPECT_NEAR(out[3], expected.z(), MAX_ABS_ERROR);
 }
 
 TEST_F(ACheck_Test_Fixture, set_quaternion){
@@ -163,12 +162,12 @@ TEST_F(ACheck_Test_Fixture, set_quaternion){
     ac.set_quaternion(1.0f, 0.0f, 0.0f, 0.0f);
     gyr.setZero();
 
-    quaternion::Quaternion<float> out = ac.update(acc, gyr, mag, dt);
+    auto out = ac.update(acc, gyr, mag, dt);
 
-    EXPECT_NEAR(out.w(), 1.0f, MAX_ABS_ERROR);
-    EXPECT_NEAR(out.x(), 0.0f, MAX_ABS_ERROR);
-    EXPECT_NEAR(out.y(), 0.0f, MAX_ABS_ERROR);
-    EXPECT_NEAR(out.z(), 0.0f, MAX_ABS_ERROR);
+    EXPECT_NEAR(out[0], 1.0f, MAX_ABS_ERROR);
+    EXPECT_NEAR(out[1], 0.0f, MAX_ABS_ERROR);
+    EXPECT_NEAR(out[2], 0.0f, MAX_ABS_ERROR);
+    EXPECT_NEAR(out[3], 0.0f, MAX_ABS_ERROR);
 }
 
 TEST_F(ACheck_Test_Fixture, set_get_gain){
@@ -181,6 +180,49 @@ TEST_F(ACheck_Test_Fixture, set_get_gain){
 
     ASSERT_FLOAT_EQ(in1, imu);
     ASSERT_FLOAT_EQ(in2, marg);
+}
+
+TEST_F(ACheck_Test_Fixture, get_initial_orientation_imu){
+    ac::AttitudeCheck ac;
+
+    gyr.setZero();
+    auto q = ac.update(acc, gyr, dt);
+
+    ASSERT_FLOAT_EQ(1.0, q[0]);
+    ASSERT_FLOAT_EQ(0.0, q[1]);
+    ASSERT_FLOAT_EQ(0.0, q[2]);
+    ASSERT_FLOAT_EQ(0.0, q[3]);
+
+    ac.get_initial_orientation(Eigen::Vector3f(-9.81f, 0.0f, 0.0f));
+
+    gyr.setZero();
+    q = ac.update(acc, gyr, dt);
+
+    // Check someting changed, but we dont care if its right
+    ASSERT_FALSE(std::abs(1.0 - q[0]) < MAX_ABS_ERROR);
+    ASSERT_FALSE(std::abs(0.0 - q[2]) < MAX_ABS_ERROR);
+}
+
+TEST_F(ACheck_Test_Fixture, get_initial_orientation_marg){
+    ac::AttitudeCheck ac;
+
+    gyr.setZero();
+    auto q = ac.update(acc, gyr, dt);
+
+    ASSERT_FLOAT_EQ(1.0, q[0]);
+    ASSERT_FLOAT_EQ(0.0, q[1]);
+    ASSERT_FLOAT_EQ(0.0, q[2]);
+    ASSERT_FLOAT_EQ(0.0, q[3]);
+
+    ac.get_initial_orientation(Eigen::Vector3f(-9.81f, 0.0f, 0.0f), Eigen::Vector3f(600.0f, -3.0f, 0.0f));
+
+    gyr.setZero();
+    q = ac.update(acc, gyr, dt);
+
+    // Check someting changed, but we dont care if its right
+    ASSERT_FALSE(std::abs(1.0 - q[0]) < MAX_ABS_ERROR);
+    ASSERT_FALSE(std::abs(0.0 - q[2]) < MAX_ABS_ERROR);
+
 }
 
 class ACheck_Estimator_Test_Fixture : public ::testing::Test {
@@ -227,13 +269,13 @@ TEST_F(ACheck_Estimator_Test_Fixture, update_marg_with_intitial){
     for(auto tuple : test_data) {
         auto [t_acc, t_gyr, t_mag, q_exp, t_dt] = tuple;
 
-        quaternion::Quaternion<float> out = ac.update(t_acc, t_gyr, t_mag, t_dt);
+        auto out = ac.update(t_acc, t_gyr, t_mag, t_dt);
 
         SCOPED_TRACE("At iteration " + std::to_string(count++));
-        EXPECT_NEAR(out.w(), q_exp[0], MAX_ABS_ERROR);
-        EXPECT_NEAR(out.x(), q_exp[1], MAX_ABS_ERROR);
-        EXPECT_NEAR(out.y(), q_exp[2], MAX_ABS_ERROR);
-        EXPECT_NEAR(out.z(), q_exp[3], MAX_ABS_ERROR);
+        EXPECT_NEAR(out[0], q_exp[0], MAX_ABS_ERROR);
+        EXPECT_NEAR(out[1], q_exp[1], MAX_ABS_ERROR);
+        EXPECT_NEAR(out[2], q_exp[2], MAX_ABS_ERROR);
+        EXPECT_NEAR(out[3], q_exp[3], MAX_ABS_ERROR);
     }
 }
 
@@ -272,12 +314,12 @@ TEST_F(ACheck_Estimator_Test_Fixture, update_imu_with_intitial){
     for(auto tuple : test_data) {
         auto [t_acc, t_gyr, t_mag, q_exp, t_dt] = tuple;
 
-        quaternion::Quaternion<float> out = ac.update(t_acc, t_gyr, t_dt);
+        auto out = ac.update(t_acc, t_gyr, t_dt);
 
         SCOPED_TRACE("At iteration " + std::to_string(count++));
-        EXPECT_NEAR(out.w(), q_exp[0], MAX_ABS_ERROR);
-        EXPECT_NEAR(out.x(), q_exp[1], MAX_ABS_ERROR);
-        EXPECT_NEAR(out.y(), q_exp[2], MAX_ABS_ERROR);
-        EXPECT_NEAR(out.z(), q_exp[3], MAX_ABS_ERROR);
+        EXPECT_NEAR(out[0], q_exp[0], MAX_ABS_ERROR);
+        EXPECT_NEAR(out[1], q_exp[1], MAX_ABS_ERROR);
+        EXPECT_NEAR(out[2], q_exp[2], MAX_ABS_ERROR);
+        EXPECT_NEAR(out[3], q_exp[3], MAX_ABS_ERROR);
     }
 }
