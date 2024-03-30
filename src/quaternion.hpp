@@ -206,26 +206,4 @@ private:
     const T EPS { 0.0000001 };
     std::array<T, 4> m_q;
 };
-
-// float fast_inv_sqrt(float x) {
-//     float halfx = 0.5f * x;
-//     float y = x;
-//     long i = *(long*)&y;
-//     i = 0x5f3759df - (i>>1);
-//     y = *(float*)&i;
-//     y = y * (1.5f - (halfx * y * y));
-//     y = y * (1.5f - (halfx * y * y));
-//     return y;
-// }
-
-// template <>
-// void Quaternion<float>::normalize() {
-//     float i_sqrr = fast_inv_sqrt(std::pow(m_q[0], 2.0) + std::pow(m_q[1], 2.0)
-//             + std::pow(m_q[Y], 2.0) + std::pow(m_q[Z], 2.0));
-
-//     m_q[W] *= i_sqrr;
-//     m_q[X] *= i_sqrr;
-//     m_q[Y] *= i_sqrr;
-//     m_q[Z] *= i_sqrr;
-// }
 } // End namespace quaternion
