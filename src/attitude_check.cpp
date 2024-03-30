@@ -1,10 +1,11 @@
 #include "attitude_check.hpp"
 #include "error_handling.hpp"
+#include "initializers.hpp"
 
+namespace attitude_check {
 typedef Eigen::Vector3f Vec3f;
 typedef quaternion::Quaternion<float> Quat;
 
-namespace attitude_check {
 AttitudeCheck::AttitudeCheck(){ }
 
 AttitudeCheck::AttitudeCheck(float imu_gain, float marg_gain)
@@ -114,6 +115,20 @@ std::array<float, 4> AttitudeCheck::update(Vec3f& acc, Vec3f& gyr, float dt)
 
     return m_q.to_array();
 } // AttitudeCheck::update
+
+void AttitudeCheck::get_initial_orientation(Vec3f& acc, Vec3f& mag)
+{
+    auto q0 = initializers::mag_to_quat(acc, mag);
+
+    set_quaternion(q0.w(), q0.x(), q0.y(), q0.z());
+}
+
+void AttitudeCheck::get_initial_orientation(Vec3f& acc)
+{
+    auto q0 = initializers::acc_to_quat(acc);
+
+    set_quaternion(q0.w(), q0.x(), q0.y(), q0.z());
+}
 
 void AttitudeCheck::set_quaternion(float q_w, float q_x, float q_y, float q_z)
 {

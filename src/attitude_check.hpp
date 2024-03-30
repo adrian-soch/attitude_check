@@ -8,9 +8,9 @@
 #pragma once
 
 #ifdef ARDUINO
-#include <ArduinoEigenDense.h>
+# include <ArduinoEigenDense.h>
 #else
-#include <Eigen/Dense>
+# include <Eigen/Dense>
 #endif
 
 #include "quaternion.hpp"
@@ -72,6 +72,23 @@ public:
     update(Eigen::Vector3f& acc, Eigen::Vector3f& gyr, float dt);
 
     /**
+     * @brief Get the initial orientation object
+     *
+     * @param acc
+     * @param mag
+     */
+    void
+    get_initial_orientation(Eigen::Vector3f& acc, Eigen::Vector3f& mag);
+
+    /**
+     * @brief Get the initial orientation object
+     *
+     * @param acc
+     */
+    void
+    get_initial_orientation(Eigen::Vector3f& acc);
+
+    /**
      * @brief Manually set the quaternion component. Useful when a new initial quaternion
      *  for subsequent calcualtion is desired. For example, after determining absolute
      *  orientation through another source, the quaternion can be reset such that the orientation
@@ -82,7 +99,8 @@ public:
      * @param q_y float
      * @param q_z float
      */
-    void set_quaternion(float q_w, float q_x, float q_y, float q_z);
+    void
+    set_quaternion(float q_w, float q_x, float q_y, float q_z);
 
     /**
      * @brief Set the filter gain values.
