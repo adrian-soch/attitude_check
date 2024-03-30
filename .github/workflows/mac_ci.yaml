@@ -1,0 +1,29 @@
+name: MacOS C++ CI
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install CMake and gtest
+      run: |
+        brew install cmake
+        brew install googletest
+
+    - name: Create build directory
+      run: mkdir build && cd build
+
+    - name: Configure CMake
+      run: cmake .. -G "Unix Makefiles"
+
+    - name: Build
+      run: cmake --build .
+
+    - name: Test with ctest
+      run: ctest
