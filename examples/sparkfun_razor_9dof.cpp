@@ -15,7 +15,7 @@
 #include "attitude_check.hpp"
 #include "initializers.hpp"
 
-MPU9250_DMP imu;  // create IMU object to get the data
+MPU9250_DMP imu;                  // create IMU object to get the data
 attitude_check::AttitudeCheck ac; // create the attitude estimator object
 
 const float DEG2RAD { 0.017453292519943f };
@@ -36,8 +36,8 @@ void get_intial_orientation()
         imu.update(UPDATE_ACCEL | UPDATE_COMPASS);
 
         Eigen::Vector3f acc = { imu.calcAccel(imu.ax), imu.calcAccel(imu.ay), imu.calcAccel(imu.az) };
-        Eigen::Vector3f mag = { imu.calcMag(imu.mx), imu.calcMag(imu.my), imu.calcMag(imu.mz) };
-        mag *= -1.0f;
+        // See section 9.1 https://invensense.tdk.com/wp-content/uploads/2015/02/PS-MPU-9250A-01-v1.1.pdf
+        Eigen::Vector3f mag = { imu.calcMag(imu.my), imu.calcMag(imu.mx), -1.0f * imu.calcMag(imu.mz) };
 
         ac.get_initial_orientation(acc, mag);
     }
@@ -73,8 +73,9 @@ void loop()
         Eigen::Vector3f gyr = { imu.calcGyro(imu.gx), imu.calcGyro(imu.gy), imu.calcGyro(imu.gz) };
         gyr = gyr * DEG2RAD;
         gyr = gyr - Eigen::Vector3f{ -0.03, 0.016, -0.01 }; // Subtract gyro readings when not moving
-        Eigen::Vector3f mag = { imu.calcMag(imu.mx), imu.calcMag(imu.my), imu.calcMag(imu.mz) };
-        mag *= -1.0f;
+
+        // See section 9.1 https://invensense.tdk.com/wp-content/uploads/2015/02/PS-MPU-9250A-01-v1.1.pdf
+        Eigen::Vector3f mag = { imu.calcMag(imu.my), imu.calcMag(imu.mx), -1.0f * imu.calcMag(imu.mz) }; //
 
         auto q = ac.update(acc, gyr, mag, 0.01f);
         SerialUSB.println("Quaternion: " + String(q[0], 4) + ", " + String(q[1], 4) + ", " + String(q[2], 4)
