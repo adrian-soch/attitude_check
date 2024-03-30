@@ -78,7 +78,7 @@ public:
      * @param mag
      */
     void
-    get_initial_orientation(Eigen::Vector3f& acc, Eigen::Vector3f& mag);
+    get_initial_orientation(const Eigen::Vector3f& acc, const Eigen::Vector3f& mag);
 
     /**
      * @brief Get the initial orientation object
@@ -86,7 +86,7 @@ public:
      * @param acc
      */
     void
-    get_initial_orientation(Eigen::Vector3f& acc);
+    get_initial_orientation(const Eigen::Vector3f& acc);
 
     /**
      * @brief Manually set the quaternion component. Useful when a new initial quaternion

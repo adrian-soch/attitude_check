@@ -116,14 +116,14 @@ std::array<float, 4> AttitudeCheck::update(Vec3f& acc, Vec3f& gyr, float dt)
     return m_q.to_array();
 } // AttitudeCheck::update
 
-void AttitudeCheck::get_initial_orientation(Vec3f& acc, Vec3f& mag)
+void AttitudeCheck::get_initial_orientation(const Vec3f& acc, const Vec3f& mag)
 {
     auto q0 = initializers::mag_to_quat(acc, mag);
 
     set_quaternion(q0.w(), q0.x(), q0.y(), q0.z());
 }
 
-void AttitudeCheck::get_initial_orientation(Vec3f& acc)
+void AttitudeCheck::get_initial_orientation(const Vec3f& acc)
 {
     auto q0 = initializers::acc_to_quat(acc);
 

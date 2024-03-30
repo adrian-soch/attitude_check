@@ -182,6 +182,49 @@ TEST_F(ACheck_Test_Fixture, set_get_gain){
     ASSERT_FLOAT_EQ(in2, marg);
 }
 
+TEST_F(ACheck_Test_Fixture, get_initial_orientation_imu){
+    ac::AttitudeCheck ac;
+
+    gyr.setZero();
+    auto q = ac.update(acc, gyr, dt);
+
+    ASSERT_FLOAT_EQ(1.0, q[0]);
+    ASSERT_FLOAT_EQ(0.0, q[1]);
+    ASSERT_FLOAT_EQ(0.0, q[2]);
+    ASSERT_FLOAT_EQ(0.0, q[3]);
+
+    ac.get_initial_orientation(Eigen::Vector3f(-9.81f, 0.0f, 0.0f));
+
+    gyr.setZero();
+    q = ac.update(acc, gyr, dt);
+
+    // Check someting changed, but we dont care if its right
+    ASSERT_FALSE(std::abs(1.0 - q[0]) < MAX_ABS_ERROR);
+    ASSERT_FALSE(std::abs(0.0 - q[2]) < MAX_ABS_ERROR);
+}
+
+TEST_F(ACheck_Test_Fixture, get_initial_orientation_marg){
+    ac::AttitudeCheck ac;
+
+    gyr.setZero();
+    auto q = ac.update(acc, gyr, dt);
+
+    ASSERT_FLOAT_EQ(1.0, q[0]);
+    ASSERT_FLOAT_EQ(0.0, q[1]);
+    ASSERT_FLOAT_EQ(0.0, q[2]);
+    ASSERT_FLOAT_EQ(0.0, q[3]);
+
+    ac.get_initial_orientation(Eigen::Vector3f(-9.81f, 0.0f, 0.0f), Eigen::Vector3f(600.0f, -3.0f, 0.0f));
+
+    gyr.setZero();
+    q = ac.update(acc, gyr, dt);
+
+    // Check someting changed, but we dont care if its right
+    ASSERT_FALSE(std::abs(1.0 - q[0]) < MAX_ABS_ERROR);
+    ASSERT_FALSE(std::abs(0.0 - q[2]) < MAX_ABS_ERROR);
+
+}
+
 class ACheck_Estimator_Test_Fixture : public ::testing::Test {
 protected:
     // Tuple(Acc, Gyr, Mag, Expected_Quaternion)
