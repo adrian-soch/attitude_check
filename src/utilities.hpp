@@ -16,6 +16,7 @@
 namespace utils {
 template<typename T>
 using Quat = quaternion::Quaternion<T>;
+
 /**
  * @brief Convert Euler angles to a Quaternion
  *  This follows the ZYX, or Yall*Pitch*Roll convention
