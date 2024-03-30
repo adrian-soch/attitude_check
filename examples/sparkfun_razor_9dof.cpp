@@ -15,10 +15,8 @@
 #include "attitude_check.hpp"
 #include "initializers.hpp"
 
-using namespace attitude_check;
-
 MPU9250_DMP imu;  // create IMU object to get the data
-AttitudeCheck ac; // create the attitude estimator object
+attitude_check::AttitudeCheck ac; // create the attitude estimator object
 
 const float DEG2RAD { 0.017453292519943f };
 
@@ -41,8 +39,7 @@ void get_intial_orientation()
         Eigen::Vector3f mag = { imu.calcMag(imu.mx), imu.calcMag(imu.my), imu.calcMag(imu.mz) };
         mag *= -1.0f;
 
-        auto q0 = initializers::mag_to_quat(acc, mag);
-        ac.set_quaternion(q0.w(), q0.x(), q0.y(), q0.z());
+        ac.get_initial_orientation(acc, mag);
     }
 }
 

@@ -13,10 +13,8 @@
 #include "attitude_check.hpp"
 #include "initializers.hpp"
 
-using namespace attitude_check;
-
 MPU9250_DMP imu;
-AttitudeCheck ac(0.031, 0.041);
+attitude_check::AttitudeCheck ac(0.031, 0.041);
 
 const float DEG2RAD { 0.017453292519943f };
 
@@ -37,8 +35,7 @@ void get_intial_orientation()
 
         Eigen::Vector3f acc = { imu.calcAccel(imu.ax), imu.calcAccel(imu.ay), imu.calcAccel(imu.az) };
 
-        auto q0 = initializers::acc_to_quat(acc);
-        ac.set_quaternion(q0.w(), q0.x(), q0.y(), q0.z());
+        ac.get_initial_orientation(acc);
     }
 }
 
