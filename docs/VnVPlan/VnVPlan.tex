@@ -72,8 +72,8 @@ all sections filled in.}
 For symbols and units see the Section 1 of the SRS \citep{SRS}. Table \ref{tab:abb} defines the
 abbreviations and acronyms used in this document.
 
-% \renewcommand{\arraystretch}{1.2} \begin{tabular}{l l} \toprule
-%   \textbf{symbol} & \textbf{description}\\
+% \renewcommand{\arraystretch}{1.2} \begin{tabular}{l l} \toprule \textbf{symbol} &
+%   \textbf{description}\\
 %   \midrule T & Test\\
 %   \bottomrule \end{tabular}\\
 
@@ -130,7 +130,7 @@ descriptions.
 
 \subsection{Summary}
 
-\progname{} is an IMU-based attitude estimation algorithm. It consumes sensor data and produces and
+\progname{} is an IMU-based attitude estimation algorithm. It consumes sensor data and produces an
 estimate of the current orientation of the sensor relative to the Earth.
 
 \wss{Say what software is being tested.  Give its name and a brief overview of its general
@@ -182,7 +182,8 @@ that you will assume that external library has already been verified by its impl
 See the Software Requirements Specification \citep{SRS} for \progname{}, it details the goals,
 requirements, assumptions, and theory of the software.
 
-Further reading about attitude estimation can be found at \citep{madgwick_ecient_nodate}. Information regarding evaluation of attitude estimation algorithms can be found at \citep{broad}.
+Further reading about attitude estimation can be found at \citep{madgwick_ecient_nodate}.
+Information regarding evaluation of attitude estimation algorithms can be found at \citep{broad}.
 
 \wss{Don't just list the other documents.  You should explain why they are relevant and how they
 relate to your VnV efforts.}
@@ -324,7 +325,8 @@ The derivation of RMSE can be found in the Section \ref{sec:calc}.
 \subsubsection{Inputs and Outputs}
 
 This section covers requirements R1 and R4 of the SRS. This includes the input and output
-requirements for \progname{}. For input constraints see Section 4.2.8 of the \href{https://github.com/adrian-soch/attitude_check/blob/main/docs/SRS/SRS.pdf}{SRS}.
+requirements for \progname{}. For input constraints see Section 4.2.8 of the
+\href{https://github.com/adrian-soch/attitude_check/blob/main/docs/SRS/SRS.pdf}{SRS}.
 
 \wss{It would be nice to have a blurb here to explain why the subsections below cover the
   requirements.  References to the SRS would be good here.  If a section covers tests for input
@@ -403,9 +405,13 @@ The accuracy metric is described in \cite{broad}, it defines the difference betw
     \text{RMSE} =& \sqrt{\cfrac{\sum_{t=0}^n(e)^2}{n}}  \label{eqn:rmse}
 \end{align}
 
-Often computing separate errors for the heading and inclination components provides better insight into the performance. When magnetometer data is not available, the header error will be much larger than the other sources of error.
+Often computing separate errors for the heading and inclination components provides better insight
+into the performance. When magnetometer data is not available, the header error will be much larger
+than the other sources of error.
 
-First the difference between the estimate and the ground truth must be expressed in the Earth frame (\ref{eqn:diff_quat2}). The equation for the heading only error is defined in (\ref{eqn:heading_err}) and the inclination only error is defined by (\ref{eqn:inc_error}):
+First the difference between the estimate and the ground truth must be expressed in the Earth frame
+(\ref{eqn:diff_quat2}). The equation for the heading only error is defined in
+(\ref{eqn:heading_err}) and the inclination only error is defined by (\ref{eqn:inc_error}):
 
 \begin{align}
     {}^E \mathbf{q}_{e,t} =& {}^S_E\mathbf{q}_{est, t} {}^S_E\mathbf{q}^{*}_{gt, t} = [q_w, q_x, q_y, q_z]^T \label{eqn:diff_quat2} \\
@@ -413,7 +419,9 @@ First the difference between the estimate and the ground truth must be expressed
     e_{i} =&  2 \arccos(\sqrt{q_w^2 + q_z^2}) \label{eqn:inc_error}
 \end{align}
 
-\textbf{Note:} Ground truth quaternions and their corresponding sensor measurements are provided in the Appendix \ref{sec:imu_data} for quick reference, however the tester should use the full dataset found in \citep{broad_code}.
+\textbf{Note:} Ground truth quaternions and their corresponding sensor measurements are provided in
+the Appendix \ref{sec:imu_data} for quick reference, however the tester should use the full dataset
+found in \citep{broad_code}.
 
 \begin{enumerate}
 
@@ -434,9 +442,9 @@ Magnetometer} \\
         \end{tabular} & - \\ \hline
         2 & \begin{tabular}[c]{@{}l@{}}Call ``update" and loop through \\ measurements in Table
         \ref{tab:gt_data} \end{tabular} & Assert output quat is normalized     \\ \hline
-        3 & \begin{tabular}[c]{@{}l@{}}Calculate RMSE for $e_q, e_h, e_i$\\ vs. ground truth in table
-            \ref{tab:gt_label}\end{tabular}             & \begin{tabular}[c]{@{}l@{}}Assert average
-            error is within\\ the tolerance.\end{tabular} \\ \hline
+        3 & \begin{tabular}[c]{@{}l@{}}Calculate RMSE for $e_q, e_h, e_i$\\ vs. ground truth in
+            table \ref{tab:gt_label}\end{tabular}             & \begin{tabular}[c]{@{}l@{}}Assert
+            average error is within\\ the tolerance.\end{tabular} \\ \hline
         \end{tabular}
         \end{table}
 
@@ -462,8 +470,9 @@ Magnetometer}\\
         \end{tabular} & - \\ \hline
         2 & \begin{tabular}[c]{@{}l@{}}Call ``update" with \\ measurements at $t=0$ from Table
         \ref{tab:gt_data} \end{tabular} & Assert output quat is normalized     \\ \hline
-        3 & \begin{tabular}[c]{@{}l@{}}Call ``update" and loop through \\ \{accel, gyro\} measurements
-        in Table \ref{tab:gt_data} \end{tabular} & Assert output quat is normalized     \\ \hline
+        3 & \begin{tabular}[c]{@{}l@{}}Call ``update" and loop through \\ \{accel, gyro\}
+        measurements in Table \ref{tab:gt_data} \end{tabular} & Assert output quat is normalized
+        \\ \hline
         4 & \begin{tabular}[c]{@{}l@{}}Calculate RMSE of $e_q, e_h, e_i$\\ vs. ground truth in table
             \ref{tab:gt_label}\end{tabular}             & \begin{tabular}[c]{@{}l@{}}Assert average
             error is within\\ the tolerance.\end{tabular} \\ \hline
@@ -592,9 +601,9 @@ given below.}
 \wss{Reference your MIS (detailed design document) and explain your overall philosophy for test case
 selection.}
 
-\wss{To save space and time, it may be an option to provide less detail in this section.
-For the unit tests you can potentially layout your testing strategy here.  That is, you can explain
-how tests will be selected for each module.  For instance, your test building approach could be test
+\wss{To save space and time, it may be an option to provide less detail in this section. For the
+unit tests you can potentially layout your testing strategy here.  That is, you can explain how
+tests will be selected for each module.  For instance, your test building approach could be test
 cases for each access program, including one test for normal behaviour and as many tests as needed
 for edge cases.  Rather than create the details of the input and output here, you could point to the
 unit testing code.  For this to work, you code needs to be well-documented, with meaningful names
@@ -788,9 +797,9 @@ $t$ & $q_w$ & $q_x$ & $q_y$ & $q_z$ \\ \hline
     \label{tab:gt_data}
     \begin{tabular}{|l||l|l|l|l|l|l|l|l|l|}
     \hline
-    {$t$} & {$\text{acc}_x$} & {$\text{acc}_y$} & {$\text{acc}_z$} &
-    {$\text{gyro}_x$} & {$\text{gyro}_y$} & {$\text{gyro}_z$} &
-    {$\text{mag}_x$} & {$\text{mag}_y$} & {$\text{mag}_z$} \\ \hline \hline
+    {$t$} & {$\text{acc}_x$} & {$\text{acc}_y$} & {$\text{acc}_z$} & {$\text{gyro}_x$} &
+    {$\text{gyro}_y$} & {$\text{gyro}_z$} & {$\text{mag}_x$} & {$\text{mag}_y$} & {$\text{mag}_z$}
+    \\ \hline \hline
     0 & 0.090941 & -0.031273 & 9.759028 & 0.005327 & -0.000000 & -0.004260 & 0.554144  & 14.948225 &
     -41.506577 \\ \hline
     1 & 0.130181 & -0.001843 & 9.793363 & 0.005327 & 0.001065  & -0.008522 & 0.035031  & 15.327949 &
