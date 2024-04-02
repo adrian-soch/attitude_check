@@ -412,9 +412,10 @@ The accuracy metric is described in \cite{broad}, it defines the difference betw
     \text{RMSE} =& \sqrt{\cfrac{\sum_{t=0}^n(e)^2}{n}}  \label{eqn:rmse}
 \end{align}
 
-Often computing separate errors for the heading and inclination components provides better insight
-into the performance. When magnetometer data is not available, the header error will be much larger
-than the other sources of error.
+see \cite{broad} for the symbol definitions and a full explanation. Often computing separate errors
+for the heading and inclination components provides better insight into the performance. When
+magnetometer data is not available, the header error will be much larger than the other sources of
+error.
 
 First the difference between the estimate and the ground truth must be expressed in the Earth frame
 (\ref{eqn:diff_quat2}). The equation for the heading only error is defined in
@@ -427,8 +428,8 @@ First the difference between the estimate and the ground truth must be expressed
 \end{align}
 
 \textbf{Note:} Ground truth quaternions and their corresponding sensor measurements are provided in
-the Appendix \ref{sec:imu_data} for quick reference, however the tester should use the full dataset
-found in \citep{broad_code}.
+the Appendix \ref{sec:imu_data} in Tables \ref{tab:gt_data} and \ref{tab:gt_label}, however the
+tester should use the full dataset found in \citep{broad_code}.
 
 \begin{enumerate}
 
@@ -448,15 +449,15 @@ Magnetometer} \\
         {}^E\mathbf{b} = [16676.8, -3050.9, 49916.9],$\\ $\text{outputType} = \text{Quat} $
         \end{tabular} & - \\ \hline
         2 & \begin{tabular}[c]{@{}l@{}}Call ``update" and loop through \\ measurements in Table
-        \ref{tab:gt_data} \end{tabular} & Assert output quat is normalized     \\ \hline
+        \ref{tab:gt_data} \end{tabular} & Assert quaternion magnitude is 1.     \\ \hline
         3 & \begin{tabular}[c]{@{}l@{}}Calculate RMSE for $e_q, e_h, e_i$\\ vs. ground truth in
             table \ref{tab:gt_label}\end{tabular}             & \begin{tabular}[c]{@{}l@{}}Assert
-            average error is within\\ the tolerance.\end{tabular} \\ \hline
+            average error is within\\ the tolerance, $\epsilon$.\end{tabular} \\ \hline
         \end{tabular}
         \end{table}
 
     \textbf{Test Case Derivation:} Benchmark dataset with labelled ground truth orientation for each
-    set of sensor measurements.
+    set of sensor measurements from \citep{broad_code}.
 
     \textbf{How test will be performed:} At each step, apply the inputs and assert the output.
 
@@ -475,19 +476,17 @@ Magnetometer}\\
         1    & \begin{tabular}[c]{@{}l@{}l@{}}Initialize with: $ \Delta t = 10.0, \gamma = 0.6,$ \\$
         {}^E\mathbf{b} = [16676.8, -3050.9, 49916.9],$\\ $\text{outputType} = \text{Quat} $
         \end{tabular} & - \\ \hline
-        2 & \begin{tabular}[c]{@{}l@{}}Call ``update" with \\ measurements at $t=0$ from Table
-        \ref{tab:gt_data} \end{tabular} & Assert output quat is normalized     \\ \hline
-        3 & \begin{tabular}[c]{@{}l@{}}Call ``update" and loop through \\ \{accel, gyro\}
+        2 & \begin{tabular}[c]{@{}l@{}}Call ``update" and loop through \\ \{accel, gyro\}
         measurements in Table \ref{tab:gt_data} \end{tabular} & Assert output quat is normalized \\
         \hline
-        4 & \begin{tabular}[c]{@{}l@{}}Calculate RMSE of $e_q, e_h, e_i$\\ vs. ground truth in table
+        3 & \begin{tabular}[c]{@{}l@{}}Calculate RMSE of $e_q, e_h, e_i$\\ vs. ground truth in table
             \ref{tab:gt_label}\end{tabular}             & \begin{tabular}[c]{@{}l@{}}Assert average
-            error is within\\ the tolerance.\end{tabular} \\ \hline
+            error is within\\ the tolerance $\epsilon$.\end{tabular} \\ \hline
         \end{tabular}
         \end{table}
 
     \textbf{Test Case Derivation:} Benchmark dataset with labelled ground truth orientation for each
-    set of sensor measurements.
+    set of sensor measurements from \citep{broad_code}.
 
     \textbf{How test will be performed:} At each step, apply the inputs and assert the output.
 
