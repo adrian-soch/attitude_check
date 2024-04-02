@@ -128,6 +128,8 @@ descriptions.
 
 \section{General Information} \label{sec:general}
 
+This section will provide the background and objectives for this document.
+
 \subsection{Summary}
 
 \progname{} is an IMU-based attitude estimation algorithm. It consumes sensor data and produces an
@@ -180,7 +182,11 @@ that you will assume that external library has already been verified by its impl
   written, since by the time the project is done, they will be written.}
 
 See the Software Requirements Specification \citep{SRS} for \progname{}, it details the goals,
-requirements, assumptions, and theory of the software.
+requirements, assumptions, and theory of the software. The
+\href{https://github.com/adrian-soch/attitude_check/blob/main/docs/Design/SoftArchitecture/MG.pdf}{MG}
+and
+\href{https://github.com/adrian-soch/attitude_check/blob/main/docs/Design/SoftDetailedDes/MIS.pdf}{MIS}
+document the design of \progname{}.
 
 Further reading about attitude estimation can be found at \citep{madgwick_ecient_nodate}.
 Information regarding evaluation of attitude estimation algorithms can be found at \citep{broad}.
@@ -471,8 +477,8 @@ Magnetometer}\\
         2 & \begin{tabular}[c]{@{}l@{}}Call ``update" with \\ measurements at $t=0$ from Table
         \ref{tab:gt_data} \end{tabular} & Assert output quat is normalized     \\ \hline
         3 & \begin{tabular}[c]{@{}l@{}}Call ``update" and loop through \\ \{accel, gyro\}
-        measurements in Table \ref{tab:gt_data} \end{tabular} & Assert output quat is normalized
-        \\ \hline
+        measurements in Table \ref{tab:gt_data} \end{tabular} & Assert output quat is normalized \\
+        \hline
         4 & \begin{tabular}[c]{@{}l@{}}Calculate RMSE of $e_q, e_h, e_i$\\ vs. ground truth in table
             \ref{tab:gt_label}\end{tabular}             & \begin{tabular}[c]{@{}l@{}}Assert average
             error is within\\ the tolerance.\end{tabular} \\ \hline
