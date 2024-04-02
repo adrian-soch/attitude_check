@@ -307,11 +307,9 @@ tests.
 \subsection{Software Validation Plan}
 
 For the scope of this project, software validation will consist of benchmarking against existing
-algorithms. The Root Mean Squared Error (RMSE) of \progname{} should lie within $\epsilon$ of the
-RMSE of attitude estimators implemented by \citet{broad_code}. The data will come from the BROAD
-dataset \citep{broad}.
-
-The derivation of RMSE can be found in the Section \ref{sec:calc}.
+algorithms. The \% difference of the Root Mean Squared Error (RMSE) of \progname{} and
+\href{https://ahrs.readthedocs.io/en/latest/filters/madgwick.html}{AHRS} should be $\leq \epsilon$.
+The data will come from the BROAD dataset \citep{broad}. The derivation of RMSE can be found in the Section \ref{sec:calc}.
 
 \wss{If there is any external data that can be used for validation, you should point to it here.  If
   there are no plans for validation, you should state that here.} \wss{You might want to use review
@@ -450,9 +448,11 @@ Magnetometer} \\
         \end{tabular} & - \\ \hline
         2 & \begin{tabular}[c]{@{}l@{}}Call ``update" and loop through \\ measurements in Table
         \ref{tab:gt_data} \end{tabular} & Assert quaternion magnitude is 1.     \\ \hline
-        3 & \begin{tabular}[c]{@{}l@{}}Calculate RMSE for $e_q, e_h, e_i$\\ vs. ground truth in
-            table \ref{tab:gt_label}\end{tabular}             & \begin{tabular}[c]{@{}l@{}}Assert
-            average error is within\\ the tolerance, $\epsilon$.\end{tabular} \\ \hline
+        3 & \begin{tabular}[c]{@{}l@{}}Calculate RMSE of $e_i$ for
+          \href{https://ahrs.readthedocs.io/en/latest/filters/madgwick.html}{AHRS}\\and \progname{}
+          using table \ref{tab:gt_label}\end{tabular}             &
+          \begin{tabular}[c]{@{}l@{}}Assert that the \% difference between \\ methods $\leq
+          \epsilon$.\end{tabular} \\ \hline
         \end{tabular}
         \end{table}
 
@@ -479,9 +479,11 @@ Magnetometer}\\
         2 & \begin{tabular}[c]{@{}l@{}}Call ``update" and loop through \\ \{accel, gyro\}
         measurements in Table \ref{tab:gt_data} \end{tabular} & Assert output quat is normalized \\
         \hline
-        3 & \begin{tabular}[c]{@{}l@{}}Calculate RMSE of $e_q, e_h, e_i$\\ vs. ground truth in table
-            \ref{tab:gt_label}\end{tabular}             & \begin{tabular}[c]{@{}l@{}}Assert average
-            error is within\\ the tolerance $\epsilon$.\end{tabular} \\ \hline
+        3 & \begin{tabular}[c]{@{}l@{}}Calculate RMSE of $e_i$ for
+            \href{https://ahrs.readthedocs.io/en/latest/filters/madgwick.html}{AHRS}\\and
+            \progname{} using table \ref{tab:gt_label}\end{tabular}             &
+            \begin{tabular}[c]{@{}l@{}}Assert that the \% difference between \\ methods $\leq
+            \epsilon$.\end{tabular} \\ \hline
         \end{tabular}
         \end{table}
 
@@ -515,9 +517,10 @@ given below.}
 
 \item[\refstepcounter{testnum} \Tthetestnum \label{t:a1}:] \textbf{test-a1} \\
 
-    Type: Automatic
+    Type: Manual
 
-    This test refers to Section \ref{sec:calc}.
+    This test refers to Section \ref{sec:calc}. The accuracy test will be conducted when changes to
+    the logic or calculation components of the program are made. See \url{https://github.com/adrian-soch/attitude_check/blob/main/scripts/compare_results.py}.
 \end{enumerate}
 
 \subsubsection{Understandability}
@@ -557,6 +560,8 @@ given below.}
     How test will be performed: If a likely change needs to be added, measure the development time
     and compare it to the total development time. If it is less than the threshold specified in the
     SRS, this test passes.
+
+    This test will not be explicitly conducted.
 \end{enumerate}
 
 \subsubsection{Portability}
@@ -573,9 +578,8 @@ given below.}
 
     Output/Result: Result of compilation and execution.
 
-    How test will be performed: Build the project, initialize and input 1 set of measurements. Test
-    is successful if the build has no errors and if the code produces the same result on Windows 11,
-    macOS, and Ubuntu.
+    How test will be performed: Build the project on Ubuntu and MacOS. Build and execute \progname{}
+    on a microcontroller with an IMU/MARg sensor.
 \end{enumerate}
 
 \subsection{Traceability Between Test Cases and Requirements}
@@ -601,140 +605,105 @@ given below.}
 
 \section{Unit Test} \label{sec:unit_test}
 
-\wss{This section should not be filled in until after the MIS (detailed design document) has been
-  completed.}
-
-\wss{Reference your MIS (detailed design document) and explain your overall philosophy for test case
-selection.}
-
-\wss{To save space and time, it may be an option to provide less detail in this section. For the
-unit tests you can potentially layout your testing strategy here.  That is, you can explain how
-tests will be selected for each module.  For instance, your test building approach could be test
-cases for each access program, including one test for normal behaviour and as many tests as needed
-for edge cases.  Rather than create the details of the input and output here, you could point to the
-unit testing code.  For this to work, you code needs to be well-documented, with meaningful names
-for all of the tests.}
+This section provides details on the white box unit testing for \progname{}.
 
 \subsection{Unit Testing Scope}
 
-This will be updated when the MG and MIS are complete.
-
-\wss{What modules are outside of the scope.  If there are modules that are developed by someone
-  else, then you would say here if you aren't planning on verifying them.  There may also be modules
-  that are part of your software, but have a lower priority for verification than others.  If this
-  is the case, explain your rationale for the ranking of module importance.}
+The scope of the unit tests will not include testing the matrix math functionality of the Eigen
+library.
 
 \subsection{Tests for Functional Requirements}
 
-This will be updated when the MG and MIS are complete.
+The tests for each module will be detailed here, each test will be part of an automated unit test
+suite.
 
-\wss{Most of the verification will be through automated unit testing.  If appropriate specific
-  modules can be verified by a non-testing based technique.  That can also be documented in this
-  section.}
+\subsubsection{Quaternion Module}
 
-\subsubsection{Module 1}
-
-\wss{Include a blurb here to explain why the subsections below cover the module. References to the
-  MIS would be good.  You will want tests from a black box perspective and from a white box
-  perspective.  Explain to the reader how the tests were selected.}
+This module contributes to R1, R2, R3, and R4. Tests can be found in
+\href{https://github.com/adrian-soch/attitude_check/blob/main/test/quaternion_test.cpp}{quaternion\_test.cpp}
+The test names are related to the function that it tests. The tests are self documenting, since the
+assertions and expected values are explicitly coded. Some tests are repeated for single and double
+precision floating point values.
 
 \begin{enumerate}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Invalid initialization}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Conjugate}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Product}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Norm}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Scalar product}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Subtract}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Add}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Subtract Equals}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Equals}
+\end{enumerate}
 
-\item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Inputs: Invalid time} \\
+\subsubsection{Utilities Module}
 
-    \textbf{Initial State:} ...
+This module contributes to R2. Tests can be found in
+\href{https://github.com/adrian-soch/attitude_check/blob/main/test/utilities_test.cpp}{utilities\_test.cpp}
+The test names are related to the function that it tests. The tests are self documenting, since the
+assertions and expected values are explicitly coded.
 
-    \textbf{Input:} ...
+\begin{enumerate}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Euler to quat (double)}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Euler to quat (float)}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Rotation Matrix to quat (double)}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Rotation Matrix to quat (single)}
+\end{enumerate}
 
-    \textbf{Output:} ...
+\subsubsection{Initializers Module}
 
-    \textbf{Test Case Derivation:} ...
+This module contributes to R2. Tests can be found in
+\href{https://github.com/adrian-soch/attitude_check/blob/main/test/initializers_test.cpp}{initializers\_test.cpp}
+The test names are related to the function that it tests. The tests are self documenting, since the
+assertions and expected values are explicitly coded.
 
-    \textbf{How test will be performed:} ...
+\begin{enumerate}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Accel to quat}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Mag to quat}
+\end{enumerate}
 
-\item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Inputs: Invalid mag ref} \\
+\subsubsection{Attitude Check Module}
 
-    \textbf{Initial State:} ...
+This module contributes to R1, R2, R3, R4, and R5. Tests can be found in
+\href{https://github.com/adrian-soch/attitude_check/blob/main/test/attitude_check_test.cpp}{attitude\_check\_test.cpp}
+The test names are related to the function that it tests. The tests are self documenting, since the
+assertions and expected values are explicitly coded.
 
-    \textbf{Input:} ...
-
-    \textbf{Output:} ...
-
-    \textbf{Test Case Derivation:} ...
-
-    \textbf{How test will be performed:} ...
-
-\item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Inputs: Invalid gamma} \\
-
-    \textbf{Initial State:} ...
-
-    \textbf{Input:} ...
-
-    \textbf{Output:} ...
-
-    \textbf{Test Case Derivation:} ...
-
-    \textbf{How test will be performed:} ...
-
-\item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Inputs: Invalid output type} \\
-
-    \textbf{Initial State:} ...
-
-    \textbf{Input:} ...
-
-    \textbf{Output:} ...
-
-    \textbf{Test Case Derivation:} ...
-
-    \textbf{How test will be performed:} ...
-
-\item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Inputs: Valid} \\
-
-    \textbf{Initial State:} ...
-
-    \textbf{Input:} ...
-
-    \textbf{Output:} ...
-
-    \textbf{Test Case Derivation:} ...
-
-    \textbf{How test will be performed:} ...
-
+\begin{enumerate}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Invalid Initialization}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Invalid call to update}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Call with zero mag vector}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Call with zero gyro vector}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Call with zero acc vector}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Set quaternion}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Set gain}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Get gain}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Get Initial orientation}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Check MARG calculation}
+  \item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{Check IMU calculation}
 \end{enumerate}
 
 \subsection{Tests for Nonfunctional Requirements}
 
-\wss{If there is a module that needs to be independently assessed for performance, those test cases
-  can go here.  In some projects, planning for nonfunctional tests of units will not be that
-  relevant.}
-
-\wss{These tests may involve collecting performance data from previously mentioned functional
-  tests.}
-
-This will be updated when the MG and MIS are complete.
-
-\subsubsection{Module TBD}
-
-\begin{enumerate}
-
-\item[\refstepcounter{utestnum} \UTthetestnum:] \textbf{test-id1} \\
-
-Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will be automatic}
-
-Initial State:
-
-Input/Condition:
-
-Output/Result:
-
-How test will be performed:
-
-\end{enumerate}
-
+There are no unit tests for nonfunctional requirement.
 
 \subsection{Traceability Between Test Cases and Modules}
 
-This will be updated when the MG and MIS are complete.
+\begin{table}[h]
+  \centering
+  \caption{Traceability Between Test Cases and Modules}
+  \vspace{3mm}
+  \label{tab:my-table}
+  \begin{tabular}{l|c}
+  Module         & Tests \\ \hline
+  Quaternion     & UT1 - UT9      \\
+  Matrix Math    &  None     \\
+  Utilities      &   UT10 - UT13    \\
+  Initializers   &  UT14 - UT15     \\
+  Attitude Check &    UT16 - UT 26
+  \end{tabular}
+  \end{table}
 
 \wss{Provide evidence that all of the modules have been considered.}
 
@@ -759,7 +728,7 @@ section for easy maintenance.
     \begin{tabular}{|l|l|}
     \hline
     \textbf{Param} & \textbf{Value} \\ \hline
-    $\epsilon$     &      5 \%          \\ \hline
+    $\epsilon$     &      3 \%          \\ \hline
     \end{tabular}
     \end{table}
 
