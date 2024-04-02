@@ -324,7 +324,7 @@ The derivation of RMSE can be found in the Section \ref{sec:calc}.
 \subsubsection{Inputs and Outputs}
 
 This section covers requirements R1 and R4 of the SRS. This includes the input and output
-requirements for \progname{}. For input constraints see Section 4.2.8 of the SRS.
+requirements for \progname{}. For input constraints see Section 4.2.8 of the \href{https://github.com/adrian-soch/attitude_check/blob/main/docs/SRS/SRS.pdf}{SRS}.
 
 \wss{It would be nice to have a blurb here to explain why the subsections below cover the
   requirements.  References to the SRS would be good here.  If a section covers tests for input
@@ -393,7 +393,7 @@ requirements for \progname{}. For input constraints see Section 4.2.8 of the SRS
 
 \subsubsection{Calculations} \label{sec:calc} This section covers requirements R2 and R3 of the SRS.
 This includes the input and output requirements for \progname{}. For input constraints see Section
-4.2.8 of the SRS.
+4.2.8 of the \href{https://github.com/adrian-soch/attitude_check/blob/main/docs/SRS/SRS.pdf}{SRS}.
 
 The accuracy metric is described in \cite{broad}, it defines the difference between two quaternions
 (\ref{eqn:diff_quat}), the total error (\ref{eqn:error}), and the RMSE (\ref{eqn:rmse}):
@@ -403,9 +403,9 @@ The accuracy metric is described in \cite{broad}, it defines the difference betw
     \text{RMSE} =& \sqrt{\cfrac{\sum_{t=0}^n(e)^2}{n}}  \label{eqn:rmse}
 \end{align}
 
-Often computing separate errors for the heading and inclination components provides better incite into the performance. When magnetometer data is not available, the header error will be much larger than the other sources of error.
+Often computing separate errors for the heading and inclination components provides better insight into the performance. When magnetometer data is not available, the header error will be much larger than the other sources of error.
 
-First the difference between the estimate and the ground truth mus tbe expressed in the Earth frame (\ref{eqn:diff_quat2}). The equation for the heading only error is defined in (\ref{eqn:heading_err}) and the inclination only error is defined by (\ref{eqn:inc_error}):
+First the difference between the estimate and the ground truth must be expressed in the Earth frame (\ref{eqn:diff_quat2}). The equation for the heading only error is defined in (\ref{eqn:heading_err}) and the inclination only error is defined by (\ref{eqn:inc_error}):
 
 \begin{align}
     {}^E \mathbf{q}_{e,t} =& {}^S_E\mathbf{q}_{est, t} {}^S_E\mathbf{q}^{*}_{gt, t} = [q_w, q_x, q_y, q_z]^T \label{eqn:diff_quat2} \\
@@ -413,7 +413,7 @@ First the difference between the estimate and the ground truth mus tbe expressed
     e_{i} =&  2 \arccos(\sqrt{q_w^2 + q_z^2}) \label{eqn:inc_error}
 \end{align}
 
-\textbf{Note:}Ground truth quaternions and their corresponding sensor measurements are provided in the Appendix \ref{sec:imu_data} for quick reference, however the tester should use the full dataset found in \citep{broad_code}.
+\textbf{Note:} Ground truth quaternions and their corresponding sensor measurements are provided in the Appendix \ref{sec:imu_data} for quick reference, however the tester should use the full dataset found in \citep{broad_code}.
 
 \begin{enumerate}
 
