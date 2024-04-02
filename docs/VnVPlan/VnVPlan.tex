@@ -236,6 +236,10 @@ reviewer will use the following checklist:
     \item Create a high-level diagram that represents the relationships between modules based on the
     Module Guide (MG) and Module Interface Specification (MIS) [to be cited]. This is intended to
     find gaps in the design.
+    \item Confirm traceability matrices are complete.
+    \item The uses diagram is a hierarchy.
+    \item Spelling and grammar check.
+    \item Low coupling between modules.
 \end{todolist}
 
 \wss{Plans for design verification}
@@ -248,7 +252,8 @@ This VnV plan will be verified via inspection from a domain expert and a seconda
 inspection will look for the following items:
 \begin{todolist}
     \item Confirm all sections contain a verification checklist or description.
-    \item Inspect system-level test cases for coverage of SRS requirements and goal statements.
+    \item Inspect system-level test cases for coverage of SRS requirements and goal statements, via
+    traceability matrices.
     \item Inspect all test cases for complete definitions.
 \end{todolist}
 
@@ -280,16 +285,12 @@ tests.
     \item GoogleTest is a unit testing framework that support C++ code. It also includes a mocking
     framework. See \url{https://github.com/google/googletest}.
     \item GCOV, LCOV are tools for calculating and displaying unit test coverage metrics.
-    \item Valgrind is a suite of tools for memory and performance profiling. It will be used to
-    check for memory leaks and efficient memory utilization.
     \item Uncrustify is a tool that applies code formatting rules based on a configuration file. It
     will be used before every commit to the repo.
     \item GitHub PR checklists will help reviewers/developers see and check that all rules and tests
     are completed before code is merged into a protected branch (i.e. main).
     \item GitHub CI workflow will automate regression tests and checks that \progname{} builds are
     passing before a code is merged into a protected branch.
-    \item Docker is a mechanism to containerize applications. It will be used to ensure
-    installability and understandability of the project.
 \end{itemize}
 
 \wss{What tools are you using for automated testing.  Likely a unit testing framework and maybe a
