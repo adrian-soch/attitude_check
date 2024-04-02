@@ -5,6 +5,10 @@
 [![C/C++ CI](https://github.com/adrian-soch/attitude_check/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/adrian-soch/attitude_check/actions/workflows/ci.yaml)
 [![codecov](https://codecov.io/gh/adrian-soch/attitude_check/graph/badge.svg?token=2VGQ9KA5G8)](https://codecov.io/gh/adrian-soch/attitude_check)
 
+<p align="center">
+    <img src="https://github.com/adrian-soch/attitude_check/assets/6884645/aa21f86e-6b74-4a9d-a757-ec63950c2f18" alt="Gif of Attitude Check in action." />
+</p>
+
 This project implements the Madwick attitude estimation algorithm. The focus of this repository is high quality documentation.
 The repo structure is:
 
