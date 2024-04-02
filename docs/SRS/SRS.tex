@@ -135,6 +135,7 @@
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X} \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
 2024/02/02 & 1.0 & Initial Release.\\
+2024/04/01 & 2.0 & Addressed reviewer comments.\\
 \bottomrule
 \end{tabularx}
 
@@ -932,11 +933,9 @@ $\prescript{S}{F}{\mathbf{q}}_\alpha$, the quaternion that represents the orient
 frame relative to the fixed-frame. Where the subscript $d$ denotes the quaternion is minimized using
 $\prescript{F}{}{\mathbf{d}}$. }
 % #6 Notes
-{
-The function $\mathbf{p}(\mathbf{v})$ creates a pure quaternion, $(0, v_x, v_y, v_z) \in
+{ The function $\mathbf{p}(\mathbf{v})$ creates a pure quaternion, $(0, v_x, v_y, v_z) \in
 \mathbf{R}^4$ from $\mathbf{v} \in \mathbf{R}^3$.  Quaternion multiplication uses the Hamilton
-product \cite{hamilton}.
-}
+product \cite{hamilton}. }
 % #7 Source
 {\cite{madgwick_ecient_nodate}}
 % #8 Referenced by
@@ -1467,7 +1466,8 @@ exhibit.
     accelerometer and gyroscope measurements. Refs \iref{i:o_from_comp_acc_gyro}.
 
     \item[R\refstepcounter{reqnum}\thereqnum \label{r:output}:] \plt{Output related requirements.}
-    \progname{} shall output the orientation in the user specified format. Refs \iref{i:o_from_comp_acc_gyro}, \iref{i:o_from_comp_all_3}.
+    \progname{} shall output the orientation in the user specified format. Refs
+    \iref{i:o_from_comp_acc_gyro}, \iref{i:o_from_comp_all_3}.
 \end{itemize}
 
 \plt{Every IM should map to at least one requirement, but not every requirement has to map to a corresponding IM.}
@@ -1494,15 +1494,17 @@ exhibit.
         $<$engineering or scientific application$>$.  The level of accuracy achieved by \progname{}
         shall be described following the procedure given in Section~X of the Verification and
         Validation Plan.''  A link to the VnV plan would be a nice extra.} The level of accuracy
-        achieved by \progname{} shall be described in Section 5.2.1 of the Verification and Validation plan \cite{VnV}.
+        achieved by \progname{} shall be described in Section 5.2.1 of the Verification and
+        Validation plan \cite{VnV}.
 
-    \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{nfr:usability}:] \textbf{Usability}:
-      \progname{} shall follow standard coding conventions such that the Application programming
-      Interface (API) is clearly understood by a typical user. \plt{Characterize the usability by
-      giving the context/use for the software. You should likely reference the user characteristics
-      section.  The level of usability achieved by the software shall be described following the
-      procedure given in Section~X of the Verification and Validation Plan.  A link to the VnV plan
-      would be a nice extra.}
+    \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{nfr:understandability}:]
+      \textbf{Understandability}: \progname{} shall follow standard coding conventions such that the
+      Application programming Interface (API) is clearly understood by a typical user.
+
+      \plt{Characterize the usability by giving the context/use for the software. You should likely
+      reference the user characteristics section.  The level of usability achieved by the software
+      shall be described following the procedure given in Section~X of the Verification and
+      Validation Plan.  A link to the VnV plan would be a nice extra.}
 
     \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{nfr:maintainability}:]
     \textbf{Maintainability}: The effort required to make any of the likely changes listed for
