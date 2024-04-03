@@ -135,7 +135,7 @@
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X} \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
 2024/02/02 & 1.0 & Initial Release.\\
-2024/04/01 & 2.0 & Addressed reviewer comments.\\
+2024/04/03 & 2.0 & Addressed reviewer comments.\\
 \bottomrule
 \end{tabularx}
 
@@ -196,13 +196,13 @@ literature and existing documentation. The symbols are listed in alphabetical or
 \midrule
 % $v$ & \si[per-mode=symbol] {\meter\per\second} & linear velocity\\
 $a$ & \si[per-mode=symbol] {\meter\per\second\squared} & linear acceleration\\
-$m$ & \si[per-mode=symbol] {\tesla} & magnetic field strength\\
+$m$ & \si[per-mode=symbol] {\micro \tesla} & magnetic field strength\\
 $\theta$ & \si[per-mode=symbol] {\radian} & angular position \\
 $\omega$ & \si[per-mode=symbol] {\radian\per\second} & angular velocity\\
 $\Delta t$ & \si[per-mode=symbol] {\milli\second} & sampling time\\
 $\mathbf{g}_0$ & \si[per-mode=symbol] {\meter\per\second\squared} & gravitational acceleration
 vector\\
-${}^E\mathbf{b}$ & \si{\nano\tesla} & local magnetic field vector\\
+${}^E\mathbf{b}$ & \si{\micro\tesla} & local magnetic field vector\\
 $\gamma$ & - & Complimentary filter parameter\\
 ${}^S_E\mathbf{q}$ & \si{\radian} & Attitude (orientation) of the sensor-frame relative to the
 earth-frame\\
@@ -1343,6 +1343,64 @@ Ref.\ By & \rref{r:calculate1}.\\
 \end{tabular}
 \end{minipage}\\
 
+~\newline
+%Instance Model 7
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+\hline
+\rowcolor[gray]{0.9}
+Number& IM\refstepcounter{instnum}\theinstnum \label{i:acc_to_quat}\\
+\hline
+Label& \bf Initial orientation from Accelerometer\\
+\hline
+Input& $\prescript{S}{}{\mathbf{a}}$\\
+& The sensor measurements are from the current time step, and the quaternion estimate is from the
+previous time step. \\
+\hline
+Output &   $\theta = \arctan(\cfrac{a_y}{a_z})$\\
+& $\phi = \arctan\left(\cfrac{-a_x}{\sqrt{a_y^2 + a_z^2}}\right)$ \\
+& $\psi = 0$\\
+\hline
+Description&  Using accelerometer data, roll and pitch Euler angles can be computed. Yaw cannot be
+computed and is set to 0. \\
+\hline
+Sources & \url{https://ahrs.readthedocs.io/en/latest/filters/tilt.html} \\
+\hline
+Ref.\ By & \rref{r:input2}.\\
+\hline
+\end{tabular}
+\end{minipage}\\
+
+~\newline
+%Instance Model 6
+\begin{minipage}{\textwidth}
+  \renewcommand*{\arraystretch}{1.5}
+  \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+  \hline
+  \rowcolor[gray]{0.9}
+  Number& IM\refstepcounter{instnum}\theinstnum \label{i:mag_to_quat}\\
+  \hline
+  Label& \bf Initial orientation from Accelerometer, and Magnetometer\\
+  \hline
+  Input& $\prescript{S}{}{\mathbf{a}}, \prescript{S}{}{\mathbf{m}}$\\
+  & Sensor measurements.\\
+  \hline
+  Output & $\theta = \arctan(\cfrac{a_y}{a_z})$\\
+  & $\phi = \arctan\left(\cfrac{-a_x}{\sqrt{a_y^2 + a_z^2}}\right)$ \\
+  & $\psi = \mathrm{arctan2}\big(m_z\sin\phi - m_y\cos\phi, \; m_x\cos\theta +
+  \sin\theta(m_y\sin\phi + m_z\cos\phi)\big) $ \\
+  \hline
+  Description & Using accelerometer and magnetometer data, an initial orientation in Euler angles
+  can be computed. \\
+  \hline
+  Sources & \url{https://ahrs.readthedocs.io/en/latest/filters/tilt.html} \\
+  \hline
+  Ref.\ By & \rref{r:input2}.\\
+  \hline
+  \end{tabular}
+  \end{minipage}\\
+
 % \subsubsection*{Derivation of ...}
 
 \plt{The derivation shows how the IM is derived from the TMs/GDs.  In cases where the derivation
@@ -1378,7 +1436,7 @@ Value} & \textbf{Uncertainty}\\
     \tesla} & See sensor datasheet. \\
     $\omega$ & $-\infty < \omega < \infty$ & $|\mathbf{\omega}| \leq \omega_{\text{max}}$ & 1.0
     \si[per-mode=symbol] {\radian\per\second} & See sensor datasheet. \\
-    $\gamma$ & - & $0.0 \leq \gamma \leq 1.0$ & 0.5 & - \\
+    $\gamma$ & - & $0.0 \leq \gamma \leq 1.0$ & 0.041 & - \\
 \bottomrule
 \end{longtable*}
 \end{table}
@@ -1444,29 +1502,29 @@ exhibit.
     that are supplied by the user.  This information has to be explicit.} The user shall provide
     system inputs at initialization and every time step as listed below.
 
-    \textbf{Initialization}: the sensor sampling time $\Delta t$, the local magnetic field intensity
-    vector, the gain parameter $\gamma$, the desired output format, and the initial orientation if
-    magnetometer measurements are not present.
+    \textbf{Initialization}: None are required. Optional parameters are: the gain parameter
+    $\gamma$, and the initial orientation.
 
     \textbf{Each time step}: temporally synchronized (accelerometer, magnetometer, gyroscope)
-    measurements or (accelerometer, gyroscope) measurements.
+    measurements or (accelerometer, gyroscope) measurements, and the sensor sampling time $\Delta
+    t$.
 
     Refs \iref{i:o_from_comp_acc_gyro}, \iref{i:o_from_comp_all_3}.
 
     \item[R\refstepcounter{reqnum}\thereqnum \label{r:input2}:] If an initial orientation is not
-    provided \progname{} shall use the initial magnetometer measurement to produce an initial
-    orientation. Refs \iref{i:o_from_comp_acc_gyro}, \iref{i:o_from_comp_all_3}.
+    provided \progname{} shall use the initial sensor measurements to produce an initial
+    orientation. Refs \iref{i:acc_to_quat}, \iref{i:mag_to_quat}.
 
     \item[R\refstepcounter{reqnum}\thereqnum \label{r:calculate1}:] \progname{} shall calculate the
     orientation relative to the Earth frame when provided with  accelerometer, gyroscope, and
     magnetometer measurements. Refs \iref{i:o_from_comp_all_3}.
 
     \item[R\refstepcounter{reqnum}\thereqnum \label{r:calculate2}:] \progname{} shall calculate the
-    yaw and pitch components of the orientation relative to the Earth frame when provided with
-    accelerometer and gyroscope measurements. Refs \iref{i:o_from_comp_acc_gyro}.
+    the orientation relative to the Earth frame when provided with accelerometer and gyroscope
+    measurements. Refs \iref{i:o_from_comp_acc_gyro}.
 
     \item[R\refstepcounter{reqnum}\thereqnum \label{r:output}:] \plt{Output related requirements.}
-    \progname{} shall output the orientation in the user specified format. Refs
+    \progname{} shall output the orientation in quaternion format. Refs
     \iref{i:o_from_comp_acc_gyro}, \iref{i:o_from_comp_all_3}.
 \end{itemize}
 
@@ -1526,9 +1584,8 @@ exhibit.
 
 The scope and assumptions in this document reflect realistic assumptions for a real-world sensors
 and systems. For small drones and robotics applications, the accuracy and quality of the sensors are
-too low to require accounting for the rotation of the Earth.
-
-Typical values reflect values in recreational and hobby drones and robots.
+too low to require accounting for the rotation of the Earth. Typical values reflect values in
+recreational and hobby drones and robots.
 
 \plt{Provide a rationale for the decisions made in the documentation.  Rationale should be provided
 for scope decisions, modelling decisions, assumptions and typical values.}
@@ -1538,10 +1595,11 @@ for scope decisions, modelling decisions, assumptions and typical values.}
 \begin{itemize}
     % \item[LC\refstepcounter{lcnum}\thelcnum\label{lc:list}:] Add functionality to process a list
     % of sequential measurements and output a list of orientations instead of one at a time.
-    \item[LC\refstepcounter{lcnum}\thelcnum\label{lc:gyro}:] Add online gyroscope bias compensation.
-    This removes \aref{a:gyro}.
-    \item[LC\refstepcounter{lcnum}\thelcnum\label{lc:mag}:] Add magnetic disturbance compensation.
-    This removes \aref{a:mag}.
+    \item[LC\refstepcounter{lcnum}\thelcnum\label{lc:acc}:] Detect significant linear accerleration,
+    and ignore accelerometer measurements during large accerleration events. This removes
+    \aref{a:static}.
+    \item[LC\refstepcounter{lcnum}\thelcnum\label{lc:mag}:] Detect siginifiacnt magnetic disturbance
+    and ignore magnetmeter measurements. This removes \aref{a:mag}.
 \end{itemize}
 
 \section{Unlikely Changes} \label{sec:unlikely_changes}
@@ -1578,23 +1636,25 @@ and data constraints on each other.
 	&\aref{a:east_mag}&\aref{a:rotation}&\aref{a:nonlinear}&\aref{a:bandwidth}&\aref{a:gsense}&\aref{a:quant}&\aref{a:range}&\aref{a:gyro}&\aref{a:mag}
 	&\aref{a:rigid}& \aref{a:static} \\
 \hline
-\tref{TM:SMM}               & & & & X& X& & X& X& & & & \\ \hline
-\tref{TM:AV}                & & & & & & & & & & & X& \\ \hline
-\tref{TM:RK}                & & & & & & & & & & & X&X \\ \hline
+\tref{TM:SMM}               & & & &X&X& &X&X& & & & \\ \hline
+\tref{TM:AV}                & & & & & & & & & & &X& \\ \hline
+\tref{TM:RK}                & & & & & & & & & & &X&X\\ \hline
 \tref{TM:LA}                & & & & & & & & & & & & \\ \hline
 \tref{TM:CF}                & & & & & & & & & & & & \\ \hline
 \tref{TM:OFV}               & & & & & & & & & & & & \\ \hline
-\dref{gd:q}                 & & & & & & & & & & & X& \\ \hline
-\ddref{dd:acc}              & & & & X& X& X& X& X& & & & \\ \hline
-\ddref{dd:gyro}             & & & X& X& X& & X& X& X& & & \\ \hline
-\ddref{dd:mag}              & & & & X& X& & X& X& & X& & \\ \hline
-\iref{i:o_from_gyro}        & & & X& X& X& & X& X& X& & X&X \\ \hline
-\iref{i:o_from_min_acc}     & X& & & X& X& X& X& X& & & &X \\ \hline
-\iref{i:o_from_min_acc_mag} & X& X& & X& X& X& X& X& & X& &X \\ \hline
-\iref{i:o_from_comp_acc_gyro}&X& & X& X& X& X& X& X& X& & X&X \\ \hline
-\iref{i:o_from_comp_all_3}  & X& X& X& X& X& X& X& X& X& X& X&X  \\ \hline
-\lcref{lc:gyro}             & & & & & & & & & X& & & \\ \hline
-\lcref{lc:mag}              & & & & & & & & & & X& & \\ \hline
+\dref{gd:q}                 & & & & & & & & & & &X& \\ \hline
+\ddref{dd:acc}              & & & &X&X&X&X&X& & & & \\ \hline
+\ddref{dd:gyro}             & & &X&X&X& &X&X&X& & & \\ \hline
+\ddref{dd:mag}              & & & &X&X& &X&X& &X& & \\ \hline
+\iref{i:o_from_gyro}        & & &X&X&X& &X&X&X& &X&X\\ \hline
+\iref{i:o_from_min_acc}     &X& & &X&X&X&X&X& & & &X\\ \hline
+\iref{i:o_from_min_acc_mag} &X&X& &X&X&X&X&X& &X& &X\\ \hline
+\iref{i:o_from_comp_acc_gyro}&X& &X&X&X&X&X&X&X& &X&X\\ \hline
+\iref{i:o_from_comp_all_3}  &X&X&X&X&X&X&X&X&X&X&X&X \\ \hline
+\iref{i:acc_to_quat}        &X& & & &X&X& &X& & &X&X\\ \hline
+\iref{i:mag_to_quat}        &X&X& & &X&X& &X& &X&X&X\\ \hline
+\lcref{lc:acc}              & & & & & & & & &  & & &X\\ \hline
+\lcref{lc:mag}              & & & & & & & & & &X& & \\ \hline
 \end{tabular}
 \caption{Traceability Matrix Showing the Connections Between Assumptions and Other Items}
 \label{Table:A_trace}
@@ -1605,27 +1665,29 @@ and data constraints on each other.
 \begin{landscape}
 \begin{table}[h!]
 \centering
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
 \hline
     & \tref{TM:SMM} &\tref{TM:AV}  &\tref{TM:RK}  &\tref{TM:LA}  &\tref{TM:CF}  &\tref{TM:OFV}
     &\dref{gd:q}   &\ddref{dd:acc}&\ddref{dd:gyro}&\ddref{dd:mag}&\iref{i:o_from_gyro}
     &\iref{i:o_from_min_acc}      &\iref{i:o_from_min_acc_mag}  &\iref{i:o_from_comp_acc_gyro}
-    &\iref{i:o_from_comp_all_3} \\ \hline
-    \tref{TM:SMM}                 & & & & & & & & & & & & & & &  \\ \hline
-    \tref{TM:AV}                  & & & & & & & & & & & & & & &  \\ \hline
-    \tref{TM:RK}                  & &X& & & & & & & & & & & & &  \\ \hline
-    \tref{TM:LA}                  & & & & & & & & & & & & & & &  \\ \hline
-    \tref{TM:CF}                  & & & & & & & & & & & & & & &  \\ \hline
-    \tref{TM:OFV}                 & & & & & & & & & & & & & & &  \\ \hline
-    \dref{gd:q}                   & &X& & & & & & & & & & & & &  \\ \hline
-    \ddref{dd:acc}                &X& & &X& & & & & & & & & & &  \\ \hline
-    \ddref{dd:gyro}               &X&X& & & & & & & & & & & & &  \\ \hline
-    \ddref{dd:mag}                &X& & & & & & & & & & & & & &  \\ \hline
-    \iref{i:o_from_gyro}          &X&X&X& & & &X& & & & & & & &  \\ \hline
-    \iref{i:o_from_min_acc}       &X& & &X& &X& &X& & & & & & &  \\ \hline
-    \iref{i:o_from_min_acc_mag}   &X& & &X& &X& & & &X& & & & &  \\ \hline
-    \iref{i:o_from_comp_acc_gyro} &X&X&X&X&X&X&X&X&X& &X&X& & &  \\ \hline
-    \iref{i:o_from_comp_all_3}    &X&X&X&X&X&X&X&X&X&X&X& &X& &  \\ \hline
+    &\iref{i:o_from_comp_all_3} & \iref{i:acc_to_quat} & \iref{i:mag_to_quat}\\ \hline
+    \tref{TM:SMM}                 & & & & & & & & & & & & & & & & & \\ \hline
+    \tref{TM:AV}                  & & & & & & & & & & & & & & & & & \\ \hline
+    \tref{TM:RK}                  & &X& & & & & & & & & & & & & & & \\ \hline
+    \tref{TM:LA}                  & & & & & & & & & & & & & & & & & \\ \hline
+    \tref{TM:CF}                  & & & & & & & & & & & & & & & & & \\ \hline
+    \tref{TM:OFV}                 & & & & & & & & & & & & & & & & & \\ \hline
+    \dref{gd:q}                   & &X& & & & & & & & & & & & & & & \\ \hline
+    \ddref{dd:acc}                &X& & &X& & & & & & & & & & & & & \\ \hline
+    \ddref{dd:gyro}               &X&X& & & & & & & & & & & & & & & \\ \hline
+    \ddref{dd:mag}                &X& & & & & & & & & & & & & & & & \\ \hline
+    \iref{i:o_from_gyro}          &X&X&X& & & &X& & & & & & & & & & \\ \hline
+    \iref{i:o_from_min_acc}       &X& & &X& &X& &X& & & & & & & & & \\ \hline
+    \iref{i:o_from_min_acc_mag}   &X& & &X& &X& & & &X& & & & & & & \\ \hline
+    \iref{i:o_from_comp_acc_gyro} &X&X&X&X&X&X&X&X&X& &X&X& & & & & \\ \hline
+    \iref{i:o_from_comp_all_3}    &X&X&X&X&X&X&X&X&X&X&X& &X& & & & \\ \hline
+    \iref{i:acc_to_quat}          &X& & &X& & & &X& & & & & & & & & \\ \hline
+    \iref{i:mag_to_quat}          &X& & &X& & & &X& &X& & & & & & & \\ \hline
 \end{tabular}
 \caption{Traceability Matrix Showing the Connections Between Items of Different Sections}
 \label{Table:trace}
@@ -1635,22 +1697,25 @@ and data constraints on each other.
 
 \begin{table}[h!]
 \centering
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
 \hline
 	&\iref{i:o_from_gyro}         &\iref{i:o_from_min_acc}      &\iref{i:o_from_min_acc_mag}
-	&\iref{i:o_from_comp_acc_gyro} &\iref{i:o_from_comp_all_3} & \rref{r:inputs} & \rref{r:input2}   &
-	\rref{r:calculate1}  & \rref{r:calculate2}& \rref{r:output}    \\
+	&\iref{i:o_from_comp_acc_gyro} &\iref{i:o_from_comp_all_3} & \iref{i:acc_to_quat} &
+	\iref{i:mag_to_quat} & \rref{r:inputs} & \rref{r:input2}   & \rref{r:calculate1}  &
+	\rref{r:calculate2}& \rref{r:output}    \\
 \hline
-\iref{i:o_from_gyro}         & & & & & & & & & &\\ \hline
-\iref{i:o_from_min_acc}      & & & & & & & & & &\\ \hline
-\iref{i:o_from_min_acc_mag}  & & & & & & & & & &\\ \hline
-\iref{i:o_from_comp_acc_gyro}& & & & & &X&X& &X&\\ \hline
-\iref{i:o_from_comp_all_3}   & & & & & &X&X&X& &\\ \hline
-\rref{r:inputs}              & & & & & & & & & &\\ \hline
-\rref{r:input2}              & & & & & & & & & &\\ \hline
-\rref{r:calculate1}          & & & & & & & & & &\\ \hline
-\rref{r:calculate2}          & & & & & & & & & &\\ \hline
-\rref{r:output}              & & & & & & & & & &\\ \hline
+\iref{i:o_from_gyro}         & & & & & & & & & & & &\\ \hline
+\iref{i:o_from_min_acc}      & & & & & & & & & & & &\\ \hline
+\iref{i:o_from_min_acc_mag}  & & & & & & & & & & & &X\\ \hline
+\iref{i:o_from_comp_acc_gyro}& & & & & & & &X& & &X&X\\ \hline
+\iref{i:o_from_comp_all_3}   & & & & & & & &X& &X& &\\ \hline
+\iref{i:acc_to_quat}         & & & & & & & & &X& & &\\ \hline
+\iref{i:mag_to_quat}         & & & & & & & & &X& & &\\ \hline
+\rref{r:inputs}              & & & & & & & & & & & &\\ \hline
+\rref{r:input2}              & & & & & & & & & & & &\\ \hline
+\rref{r:calculate1}          & & & & & & & & & & & &\\ \hline
+\rref{r:calculate2}          & & & & & & & & & & & &\\ \hline
+\rref{r:output}              & & & & & & & & & & & &\\ \hline
 \end{tabular}
 \caption{Traceability Matrix Showing the Connections Between Requirements and Instance Models}
 \label{Table:R_trace}
