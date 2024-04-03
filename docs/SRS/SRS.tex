@@ -1418,7 +1418,7 @@ scenario.  The uncertainty column provides an estimate of the confidence with wh
 quantities can be measured.  This information would be part of the input if one were performing an
 uncertainty quantification exercise.
 
-The specification parameters in Table~\ref{TblInputVar} are listed in Table~\ref{TblSpecParams}.
+% The specification parameters in Table~\ref{TblInputVar} are listed in Table~\ref{TblSpecParams}.
 
 \begin{table}[!h]
   \caption{Input Variables} \label{TblInputVar}
@@ -1428,14 +1428,8 @@ The specification parameters in Table~\ref{TblInputVar} are listed in Table~\ref
 \textbf{Var} & \textbf{Physical Constraints} & \textbf{Software Constraints} & \textbf{Typical
 Value} & \textbf{Uncertainty}\\
 \midrule
-    $\Delta t$ & $\Delta t > 0$ & $\Delta t_{\text{min}} \leq \Delta t \leq \Delta t_{\text{max}}$ &
+    $\Delta t$ & $\Delta t > 0$ & $\Delta t > 0$ &
     10 \si[per-mode=symbol] {\milli\second} & - \\
-    $a$ & $-\infty < a < \infty$ & $|a| \leq a_{\text{max}}$ & 9.81 \si[per-mode=symbol]
-    {\meter\per\square\second} & See sensor datasheet. \\
-    $m$ & $-\infty < m < \infty$ & $|m| \leq m_{\text{max}}$ & 25 \si[per-mode=symbol] {\micro
-    \tesla} & See sensor datasheet. \\
-    $\omega$ & $-\infty < \omega < \infty$ & $|\mathbf{\omega}| \leq \omega_{\text{max}}$ & 1.0
-    \si[per-mode=symbol] {\radian\per\second} & See sensor datasheet. \\
     $\gamma$ & - & $0.0 \leq \gamma \leq 1.0$ & 0.041 & - \\
 \bottomrule
 \end{longtable*}
@@ -1444,21 +1438,21 @@ Value} & \textbf{Uncertainty}\\
 % \noindent \begin{description} \item[(*)] \plt{you might need to add some notes or clarifications}
 % \end{description}
 
-\begin{table}[!h]
-\caption{Specification Parameter Values} \label{TblSpecParams}
-\renewcommand{\arraystretch}{1.2}
-\noindent \begin{longtable*}{l l}
-\toprule
-\textbf{Var} & \textbf{Value} \\
-\midrule
-    $\Delta t_\text{min}$ & 1 \si{\milli\second}\\
-    $\Delta t_\text{max}$ & 100000 \si{\milli\second}\\
-    $a_\text{max}$ & See sensor datasheet [\si{\meter\per\square\second}].\\
-    $m_\text{max}$ & See sensor datasheet [\si{\tesla}].\\
-    $\omega_\text{max}$ & See sensor datasheet [\si{\radian\per\second}].\\
-\bottomrule
-\end{longtable*}
-\end{table}
+% \begin{table}[!h]
+% \caption{Specification Parameter Values} \label{TblSpecParams}
+% \renewcommand{\arraystretch}{1.2}
+% \noindent \begin{longtable*}{l l}
+% \toprule
+% \textbf{Var} & \textbf{Value} \\
+% \midrule
+%     $\Delta t_\text{min}$ & 1 \si{\milli\second}\\
+%     $\Delta t_\text{max}$ & 100000 \si{\milli\second}\\
+%     $a_\text{max}$ & See sensor datasheet [\si{\meter\per\square\second}].\\
+%     $m_\text{max}$ & See sensor datasheet [\si{\tesla}].\\
+%     $\omega_\text{max}$ & See sensor datasheet [\si{\radian\per\second}].\\
+% \bottomrule
+% \end{longtable*}
+% \end{table}
 
 \subsubsection{Properties of a Correct Solution} \label{sec_CorrectSolution}
 
