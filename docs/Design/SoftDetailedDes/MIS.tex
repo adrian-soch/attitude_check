@@ -113,11 +113,8 @@ quaternion & $\mathbf{q}$ & a quaternion $\in \mathbb{R}^4$, see SRS for details
 \end{center}
 
 \noindent
-The specification of \progname \ uses some derived data types: sequences, strings, and tuples.
-Sequences are lists filled with elements of the same data type. Strings are sequences of characters.
-Tuples contain a list of values, potentially of different types. In addition, \progname \ uses
-functions, which are defined by the data types of their inputs and outputs. Local functions are
-described by giving their type signature followed by their specification.
+\progname{} uses functions, which are defined by the data types of their inputs and outputs. Local
+functions are described by giving their type signature followed by their specification.
 
 \section{Module Decomposition}
 
@@ -175,8 +172,10 @@ Math Module (Sec \ref{mm})
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-update & $q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3, \text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$ & $q_\text{out}:=\mathbf{q}$ & ValueError \\
-update & $q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$ & $q_\text{out}:=\mathbf{q}$ & ValueError \\
+update & $q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3,
+\text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$ & $q_\text{out}:=\mathbf{q}$ & ValueError \\
+update & $q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$
+& $q_\text{out}:=\mathbf{q}$ & ValueError \\
 get\_mag\_norm & $q:=\mathbf{q}, $ & $\,^E\mathbf{b}:=\mathbb{R}^3$ & ValueError \\
 set\_gain & gain:=$\mathbb{R}$ & - ValueError \\
 get\_gain & - & gain:=$\mathbb{R}$ - \\
@@ -193,10 +192,13 @@ get\_gain & - & gain:=$\mathbb{R}$ - \\
 
 \subsubsection{Access Routine Semantics}
 
-\noindent update($q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3, \text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$):
+\noindent update($q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3,
+\text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$):
 \begin{itemize}
 \item transition: None
-\item output: $q_\text{out} =  q + \Big( \dot{q}_{\omega} - \text{gain}\frac{\text{transpose}(J( q, \,^E\mathbf{b}))f_{g,b}( q, \text{acc}, \,^E\mathbf{b}, \text{mag})}{\text{norm}(\text{transpose}(J( q, \,^E\mathbf{b}))f_{g,b}( q, \text{acc}, \,^E\mathbf{b}, \text{mag}))}\Big) \text{dt}$ where
+\item output: $q_\text{out} =  q + \Big( \dot{q}_{\omega} - \text{gain}\frac{\text{transpose}(J( q,
+\,^E\mathbf{b}))f_{g,b}( q, \text{acc}, \,^E\mathbf{b}, \text{mag})}{\text{norm}(\text{transpose}(J(
+q, \,^E\mathbf{b}))f_{g,b}( q, \text{acc}, \,^E\mathbf{b}, \text{mag}))}\Big) \text{dt}$ where
 \begin{align*}
   \dot{q}_{\omega} =& \frac{1}{2} \text{quat\_prod}(q, \text{create\_quat}(0, \text{gyr})) \\
   \,^E\mathbf{b} =& \text{get\_mag\_norm}(q, [m_x, m_y, m_z])\\
@@ -227,10 +229,13 @@ get\_gain & - & gain:=$\mathbb{R}$ - \\
 \item exception: ValueError
 \end{itemize}
 
-\noindent update($q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$):
+\noindent update($q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3,
+\text{dt}:=\mathbb{R}$):
 \begin{itemize}
 \item transition: None
-\item output: $q_\text{out} = q + \Big( \dot{q}_{\omega} - \text{gain}\frac{\text{transpose}(J(q))f_g( q, \text{acc})}{\text{norm}(\text{transpose}(J(q))f_g( q, \text{acc}))}\Big) \text{dt}$ where
+\item output: $q_\text{out} = q + \Big( \dot{q}_{\omega} -
+\text{gain}\frac{\text{transpose}(J(q))f_g( q, \text{acc})}{\text{norm}(\text{transpose}(J(q))f_g(
+q, \text{acc}))}\Big) \text{dt}$ where
 \begin{align*}
   \dot{q}_{\omega} =& \frac{1}{2} \text{quat\_prod}(q, \text{create\_quat}(0, \text{gyr})) \\
   [a_x, a_y, a_z] =& \cfrac{\text{acc}}{|\text{acc}|} \\
@@ -341,7 +346,8 @@ Math Module (Sec \ref{mm})
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-mag\_to\_quat & $\mathbf{m}:=\mathbb{R}^3, \mathbf{a}:=\mathbb{R}^3$ & $q_\text{out} := \mathbf{q}$ & ValueError \\
+mag\_to\_quat & $\mathbf{m}:=\mathbb{R}^3, \mathbf{a}:=\mathbb{R}^3$ & $q_\text{out} := \mathbf{q}$
+& ValueError \\
 \hline
 \end{tabular}
 \end{center}
@@ -358,7 +364,8 @@ mag\_to\_quat & $\mathbf{m}:=\mathbb{R}^3, \mathbf{a}:=\mathbb{R}^3$ & $q_\text{
   \phi &= \text{atan2}(-a_x, \sqrt{a_y^2+a_z^2}) \\
   \psi &= \text{atan2}(m_z\sin\phi - m_y\cos\phi, m_x\cos\theta + \sin\theta(m_y\sin\phi + m_z\cos\phi))
 \end{align*}
-where $[a_x, a_y, a_z] = \cfrac{\mathbf{a}}{|\mathbf{a}|}$ and $[m_x, m_y, m_z] = \cfrac{\mathbf{m}}{|\mathbf{m}|}$
+where $[a_x, a_y, a_z] = \cfrac{\mathbf{a}}{|\mathbf{a}|}$ and $[m_x, m_y, m_z] =
+\cfrac{\mathbf{m}}{|\mathbf{m}|}$
 \item exception: ValueError
 \end{itemize}
 
@@ -383,8 +390,11 @@ None
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-input\_checker & $q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3, \text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}, \text{gain}:= \mathbb{R}$ & y:=$\mathbb{B}$ & ValueError \\
-input\_checker & $q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}, \text{gain}:= \mathbb{R}$ & y:=$\mathbb{B}$ & ValueError \\
+input\_checker & $q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3,
+\text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}, \text{gain}:= \mathbb{R}$ & y:=$\mathbb{B}$ &
+ValueError \\
+input\_checker & $q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3,
+\text{dt}:=\mathbb{R}, \text{gain}:= \mathbb{R}$ & y:=$\mathbb{B}$ & ValueError \\
 \hline
 \end{tabular}
 \end{center}
@@ -394,15 +404,19 @@ input\_checker & $q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R
 
 \subsubsection{Access Routine Semantics}
 
-\noindent input\_checker($q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3, \text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}, \text{gain}:= \mathbb{R}$):
+\noindent input\_checker($q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3,
+\text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}, \text{gain}:= \mathbb{R}$):
 \begin{itemize}
-\item output: y:= true, if input values are within the bounds specified in Section 4.2.8 Input Data Constraints of the SRS.
+\item output: y:= true, if input values are within the bounds specified in Section 4.2.8 Input Data
+Constraints of the SRS.
 \item exception: ValueError
 \end{itemize}
 
-\noindent input\_checker($q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}, \text{gain}:= \mathbb{R}$):
+\noindent input\_checker($q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3,
+\text{dt}:=\mathbb{R}, \text{gain}:= \mathbb{R}$):
 \begin{itemize}
-\item output: y:= true, if input values are within the bounds specified in Section 4.2.8 Input Data Constraints of the SRS.
+\item output: y:= true, if input values are within the bounds specified in Section 4.2.8 Input Data
+Constraints of the SRS.
 \item exception: ValueError
 \end{itemize}
 
@@ -499,25 +513,24 @@ $\text{quat}: \mathbf{q}$
 
 \noindent quat\_to\_euler():
 \begin{itemize}
-\item output: \begin{align*}
-  \mathbf{e} :=& \begin{bmatrix}
-    \text{yaw} \\ \text{pitch} \\ \text{roll}
-  \end{bmatrix} =
+\item output: \begin{align*} \mathbf{e} :=& \begin{bmatrix} \text{yaw} \\ \text{pitch} \\
+  \text{roll} \end{bmatrix} =
   \begin{bmatrix}
     \text{atan2}(2 q_y q_w - 2 q_x q_z, 1 - 2 q_y^2 - 2 q_z ^ 2) \\
     \text{asin}(2 q_x q_y + 2 q_z q_w) \\
     \text{atan2}(2 q_x q_w - 2 q_y q_z, 1 - 2 q_x^2 - 2 q_z ^2)
   \end{bmatrix}
 \end{align*}
-See \url{https://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/index.htm} for 2 special cases.
+See
+\url{https://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/index.htm}
+for 2 special cases.
 \item exception: ValueError
 \end{itemize}
 
 \noindent quat\_to\_rot():
 \begin{itemize}
-\item output: \begin{align*}
-  \mathbf{R}:= & \begin{bmatrix}
-    1- 2 q_y^2 - 2 q_z^2 & 2 q_x q_y - 2 q_z q_w & 2 q_x q_z + 2 q_y q_w \\
+\item output: \begin{align*} \mathbf{R}:= & \begin{bmatrix} 1- 2 q_y^2 - 2 q_z^2 & 2 q_x q_y - 2 q_z
+  q_w & 2 q_x q_z + 2 q_y q_w \\
     2 q_x q_y + 2 q_z q_w & 1 -2 q_x^2 - 2 q_z^2 & 2 q_y q_z - 2 q_x q_w \\
     2 q_x q_z - 2 q_y q_w & 2 q_y q_z + 2 q_x q_w & 1 -2 q_x^2 - 2 q_y ^2
   \end{bmatrix}
@@ -572,14 +585,12 @@ None
 \hline
 * & $\mathbb{R}^{m \times n} \times \mathbb{R}^{n \times m}$ & $m:=\mathbb{R}^{n \times n}$ &
 ValueError \\
-* & $\mathbb{R}^{m \times n} \times \mathbb{R}$ & $m:=\mathbb{R}^{m \times n}$ &
-ValueError \\
+* & $\mathbb{R}^{m \times n} \times \mathbb{R}$ & $m:=\mathbb{R}^{m \times n}$ & ValueError \\
 + & $\mathbb{R}^{m \times n} \times \mathbb{R}^{m \times n}$ & $m:=\mathbb{R}^{m \times n}$ &
 ValueError \\
 % - & $\mathbb{R}^{m \times n} \times \mathbb{R}^{m \times n}$ & $\mathbb{R}^{m \times n}$ &
 %   ValueError \\
-transpose & $\mathbb{R}^{m \times n}$ & $m:=\mathbb{R}^{n \times m}$ & ValueError
-\\
+transpose & $\mathbb{R}^{m \times n}$ & $m:=\mathbb{R}^{n \times m}$ & ValueError \\
 norm & $\mathbf{x}:=\mathbb{R}^n$ & $\mathbf{y}:=\mathbb{R}^n$ & ValueError\\
 \hline
 \end{tabular}
@@ -702,13 +713,15 @@ rot\_to\_quat & $\mathbf{R} := \mathbb{R}^{3 \times 3}$ & $y:=\mathbf{q}$ & Valu
 
 \noindent euler\_to\_quat($\mathbf{e}:=\mathbb{R}^3$):
 \begin{itemize}
-\item output: See \url{https://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm}
+\item output: See
+\url{https://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm}
 \item exception: ValueError
 \end{itemize}
 
 \noindent rot\_to\_quat($\mathbf{R} := \mathbb{R}^{3 \times 3}$):
 \begin{itemize}
-\item output: See \url{https://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/}
+\item output: See
+\url{https://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/}
 \item exception: ValueError
 \end{itemize}
 
