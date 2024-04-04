@@ -108,6 +108,7 @@ boolean & $\mathbb{B}$ & value in $[\text{false}=0, \text{true}=1]$\\
 matrix & $\mathbb{R}^{m \times n}$ & matrix of any number in (-$\infty$, $\infty$)\\
 vector & $\mathbb{R}^{m}$ & column vector of any number in (-$\infty$, $\infty$)\\
 quaternion & $\mathbb{H}^4$ & a quaternion $\in \mathbb{R}^4$, see SRS for details\\
+string & stringT & a sequence of characters \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -381,7 +382,7 @@ none
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-error\_handler & string & - & string \\
+error\_handler & stringT & - & stringT \\
 \hline
 \end{tabular}
 \end{center}
@@ -394,6 +395,8 @@ error\_handler & string & - & string \\
 \begin{itemize}
 \item exception: Exception := exception
 \end{itemize}
+
+This function creates an exception based on the string passed to it.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
