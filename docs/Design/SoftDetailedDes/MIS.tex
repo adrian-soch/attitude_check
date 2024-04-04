@@ -107,7 +107,7 @@ real & $\mathbb{R}$ & any number in (-$\infty$, $\infty$)\\
 boolean & $\mathbb{B}$ & value in $[\text{false}=0, \text{true}=1]$\\
 matrix & $\mathbb{R}^{m \times n}$ & matrix of any number in (-$\infty$, $\infty$)\\
 vector & $\mathbb{R}^{m}$ & column vector of any number in (-$\infty$, $\infty$)\\
-quaternion & $\mathbf{q}$ & a quaternion $\in \mathbb{R}^4$, see SRS for details\\
+quaternion & $\mathbb{H}^4$ & a quaternion $\in \mathbb{R}^4$, see SRS for details\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -130,14 +130,14 @@ The following table is taken directly from the Module Guide document for this pr
 % {Hardware-Hiding Module} & ~ \\
 % \midrule
 
-\multirow{4}{0.3\textwidth}{Behaviour-Hiding Module} & Estimator Module \\
-  & Input Module \\
-  & Accel To Quat Module \\
-  & Mag To Quat Module \\
+\multirow{2}{0.3\textwidth}{Behaviour-Hiding Module} & \progname{} Module \\
+  & Initializers Module \\
 \midrule
-\multirow{3}{0.3\textwidth}{Software Decision Module} & Math Module\\
+\multirow{5}{0.3\textwidth}{Software Decision Module} & Math Module\\
   & Matrix Math Module \\
   & Quaternion Module \\
+  & Error Handling Module \\
+  & Utilities Module \\
 \bottomrule
 
 \end{tabular}
@@ -150,15 +150,14 @@ The following table is taken directly from the Module Guide document for this pr
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{MIS of Estimator Module} \label{em}
+\section{MIS of \progname{} Module} \label{ac}
 
 \subsection{Module}
-estimator
+attitude\_check
 
 \subsection{Uses}
-Accel To Quat Module (Sec \ref{iqewomm}) \newline
-Mag To Quat Module (Sec \ref{iqewmm}) \newline
-Input Module (Sec \ref{ivm}) \newline
+Initializers Module (Sec \ref{im}) \newline
+Error Handling Module (Sec \ref{err}) \newline
 Quaternion Module (Sec \ref{qm})\newline
 Matrix Math Module (Sec \ref{mmm}) \newline
 Math Module (Sec \ref{mm})
@@ -168,17 +167,21 @@ Math Module (Sec \ref{mm})
 \subsubsection{Exported Access Programs}
 
 \begin{center}
-\begin{tabular}{p{2.5cm} p{6cm} p{2cm} p{1.5cm}}
+\begin{tabular}{p{5cm} p{4cm} p{1.5cm} p{2.5cm}}
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-update & $q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3,
-\text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$ & $q_\text{out}:=\mathbf{q}$ & ValueError \\
-update & $q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$
-& $q_\text{out}:=\mathbf{q}$ & ValueError \\
-get\_mag\_norm & $q:=\mathbf{q}, $ & $\,^E\mathbf{b}:=\mathbb{R}^3$ & ValueError \\
-set\_gain & gain:=$\mathbb{R}$ & - ValueError \\
-get\_gain & - & gain:=$\mathbb{R}$ - \\
+AttitudeCheck & - & - & - \\
+AttitudeCheck & $\mathbb{R}$, $\mathbb{R}$ & - & ValueError \\
+AttitudeCheck & $\mathbb{R}$, $\mathbb{R}$, $\mathbb{R}$, $\mathbb{R}$, $\mathbb{R}$, $\mathbb{R}$ &
+- & ValueError \\
+update & $\mathbb{R}^3, \mathbb{R}^3, \mathbb{R}^3, \mathbb{R}$ & $\mathbb{R}^4$ & - \\
+update & $\mathbb{R}^3, \mathbb{R}^3, \mathbb{R}$ & $\mathbb{R}^4$ & - \\
+get\_mag\_norm & $\mathbb{H}^4$, $\mathbb{R}^3$ & $\mathbb{R}^3$ & - \\
+set\_gain & $\mathbb{R}$ & - & ValueError \\
+get\_gain & - & $\mathbb{R}$ & - \\
+get\_initial\_orientation & $\mathbb{R}^3, \mathbb{R}^3$ & - & - \\
+get\_initial\_orientation & $\mathbb{R}^3$ & - & - \\
 \hline
 \end{tabular}
 \end{center}
@@ -187,28 +190,41 @@ get\_gain & - & gain:=$\mathbb{R}$ - \\
 
 \subsubsection{State Variables}
 \begin{itemize}
-  \item[gain] : $\mathbb{R}$
+  \item[imuGain] : $\mathbb{R}$
+  \item[margGain] : $\mathbb{R}$
+  \item[$q$] :  $\mathbb{H}^4$
 \end{itemize}
 
 \subsubsection{Access Routine Semantics}
 
-\noindent update($q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3,
-\text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}$):
+\noindent AttitudeCheck():
 \begin{itemize}
-\item transition: None
-\item output: $q_\text{out} =  q + \Big( \dot{q}_{\omega} - \text{gain}\frac{\text{transpose}(J( q,
+\item transition: imuGain:=0.033, margGain:=0.041, $q$:=[1, 0, 0, 0]
+\end{itemize}
+
+\noindent AttitudeCheck(g1, g2):
+\begin{itemize}
+\item transition: imuGain:=g1, margGain:=g2, $q$:=[1, 0, 0, 0]
+\item exception: ValueError if $0 > \text{g1, g2} > 1$
+\end{itemize}
+
+\noindent AttitudeCheck(g1, g2, w, x, y, z):
+\begin{itemize}
+\item transition: imuGain:=g1, margGain:=g2, $q$:=[w, x, y, z]
+\item exception: ValueError if $(0 > \text{g1, g2} > 1) \vee (|q| \neq 1)$
+\end{itemize}
+
+\noindent update($\text{acc}, \text{gyr}, \text{mag}, \text{dt}$):
+\begin{itemize}
+  \item transition: $q$ =: out
+\item output: ${out} :=  q + \Big( \dot{q}_{\omega} - \text{margGain}\frac{\text{transpose}(J( q,
 \,^E\mathbf{b}))f_{g,b}( q, \text{acc}, \,^E\mathbf{b}, \text{mag})}{\text{norm}(\text{transpose}(J(
 q, \,^E\mathbf{b}))f_{g,b}( q, \text{acc}, \,^E\mathbf{b}, \text{mag}))}\Big) \text{dt}$ where
 \begin{align*}
-  \dot{q}_{\omega} =& \frac{1}{2} \text{quat\_prod}(q, \text{create\_quat}(0, \text{gyr})) \\
+  \dot{q}_{\omega} =& \frac{1}{2} \text{quat\_prod}(q, \text{Quaternion}(0, \text{gyr})) \\
   \,^E\mathbf{b} =& \text{get\_mag\_norm}(q, [m_x, m_y, m_z])\\
   [a_x, a_y, a_z] =& \cfrac{\text{acc}}{|\text{acc}|} \\
   [m_x, m_y, m_z] =& \cfrac{\text{mag}}{|\text{mag}|} \\
-  % J_b =& \begin{bmatrix}
-  %   -2b_zq_y          & 2b_zq_z         & -4b_xq_y-2b_zq_w & -4b_xq_z+2b_zq_x \\
-  %   -2b_xq_z+2b_zq_x  & 2b_xq_y+2b_zq_w & 2b_xq_x+2b_zq_z  & -2b_xq_w+2b_zq_y \\
-  %   2b_xq_y           & 2b_xq_z-4b_zq_x & 2b_xq_w-4b_zq_y  & 2b_xq_x
-  %   \end{bmatrix}\\
   f_{g,b} =& \begin{bmatrix}
     2(q_xq_z-q_wq_y)-a_x \\
     2(q_wq_x+q_yq_z)-a_y \\
@@ -226,18 +242,17 @@ q, \,^E\mathbf{b}))f_{g,b}( q, \text{acc}, \,^E\mathbf{b}, \text{mag}))}\Big) \t
       2b_xq_y           & 2b_xq_z-4b_zq_x & 2b_xq_w-4b_zq_y  & 2b_xq_x
       \end{bmatrix}\\
 \end{align*}
-\item exception: ValueError
+% \item exception: ValueError when
 \end{itemize}
 
-\noindent update($q:=\mathbf{q}, \text{acc}:=\mathbb{R}^3, \text{gyr}:=\mathbb{R}^3,
-\text{dt}:=\mathbb{R}$):
+\noindent update($\text{acc}, \text{gyr}, \text{dt}$):
 \begin{itemize}
-\item transition: None
-\item output: $q_\text{out} = q + \Big( \dot{q}_{\omega} -
-\text{gain}\frac{\text{transpose}(J(q))f_g( q, \text{acc})}{\text{norm}(\text{transpose}(J(q))f_g(
-q, \text{acc}))}\Big) \text{dt}$ where
+\item transition: $q$ =: out
+\item output: $\text{out} := q + \Big( \dot{q}_{\omega} -
+\text{imuGain}\frac{\text{transpose}(J(q))f_g( q,
+\text{acc})}{\text{norm}(\text{transpose}(J(q))f_g( q, \text{acc}))}\Big) \text{dt}$ where
 \begin{align*}
-  \dot{q}_{\omega} =& \frac{1}{2} \text{quat\_prod}(q, \text{create\_quat}(0, \text{gyr})) \\
+  \dot{q}_{\omega} =& \frac{1}{2} \text{quat\_prod}(q, \text{Quaternion}(0, \text{gyr})) \\
   [a_x, a_y, a_z] =& \cfrac{\text{acc}}{|\text{acc}|} \\
   J =& \begin{bmatrix}
     -2q_y & 2q_z & -2q_w & 2q_x \\
@@ -248,45 +263,52 @@ q, \text{acc}))}\Big) \text{dt}$ where
     2(q_xq_z-q_wq_y)-a_x \\ 2(q_wq_x+q_yq_z)-a_y \\ 2(\frac{1}{2}-q_x^2-q_y^2)-a_z
   \end{bmatrix}
 \end{align*}
-\item exception: ValueError
+% \item exception: ValueError
 \end{itemize}
 
-\noindent get\_mag\_norm($q:=\mathbf{q}, \text{mag}:=\mathbb{R}^3$):
+\noindent get\_mag\_norm($q, \text{mag}$):\
 \begin{itemize}
-\item transition: None
-\item output: $\,^E\mathbf{b}:= [b_x, 0, b_z]$ where
-\begin{align*}
-  \text{m\_quat} =& \text{quat\_prod}(\text{create\_quat}(0, m_x, m_y, m_z), \text{quat\_conj}(q)) \\
+  % \item transition: None
+  \item output: $\,^E\mathbf{b}:= [b_x, 0, b_z]$ where
+\begin{align*} \text{m\_quat} =& \text{quat\_prod}(\text{Quaternion}(0, m_x, m_y, m_z),
+\text{conjugate}(q)) \\
   b_x =& \text{norm}([\text{m\_quat}_x, \text{m\_quat}_y]) \\
   b_z =& \text{m\_quat}_z
 \end{align*}
-\item exception: ValueError
 \end{itemize}
 
 \noindent get\_gain():
 \begin{itemize}
 % \item transition:
-\item output: gain:=$\mathbb{R}$
-\item exception: none
+\item output: out:=[imuGain, margGain]
+% \item exception: none
 \end{itemize}
 
-\noindent set\_gain(gain:=$\mathbb{R}$):
+\noindent set\_gain(g1, g2):
 \begin{itemize}
-\item transition: gain is updated
+\item transition: imuGain:=g1, margGain:=g2
 % \item output:
-\item exception: ValueError
+\item exception: ValueError if $0 > \text{gain} > 1$
 \end{itemize}
 
+\noindent get\_initial\_orientation(a, m):
+\begin{itemize}
+\item transition: $q:=$ mag\_to\_quat(m, a)
+\end{itemize}
 
+\noindent get\_initial\_orientation(a):
+\begin{itemize}
+\item transition: $q:=$ acc\_to\_quat(a)
+\end{itemize}
 
 \newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{MIS of Accel To Quat Module} \label{iqewomm}
+\section{MIS of Initializers Module} \label{im}
 
 \subsection{Module}
-acc2quat
+Initializers
 
 \subsection{Uses}
 Quaternion Module (Sec \ref{qm})\newline
@@ -298,11 +320,12 @@ Math Module (Sec \ref{mm})
 \subsubsection{Exported Access Programs}
 
 \begin{center}
-\begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
+\begin{tabular}{p{3cm} p{3cm} p{3cm} p{3cm}}
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-acc\_to\_quat & $\mathbf{a}:=\mathbb{R}^3$ & $q_\text{out} := \mathbf{q}$ & - \\
+acc\_to\_quat & $\mathbb{R}^3$ & $\mathbb{H}^4$ & - \\
+mag\_to\_quat & $\mathbb{R}^3, \mathbb{R}^3$ & $\mathbb{H}^4$ & - \\
 \hline
 \end{tabular}
 \end{center}
@@ -311,54 +334,21 @@ acc\_to\_quat & $\mathbf{a}:=\mathbb{R}^3$ & $q_\text{out} := \mathbf{q}$ & - \\
 
 \subsubsection{Access Routine Semantics}
 
-\noindent acc\_to\_quat($\mathbf{a}:=\mathbb{R}^3$):
+\noindent acc\_to\_quat($\mathbf{a}$):
 \begin{itemize}
-\item output: $q_\text{out}:= \text{euler\_to\_quat}(\theta, \phi, \psi)$ given
+\item output: $\text{out}:= \text{euler\_to\_quat}(\theta, \phi, \psi)$ given
 \begin{align*}
   \theta &= \text{atan2}(a_y, a_z) \\
   \phi &= \text{atan2}(-a_x, \sqrt{a_y^2+a_z^2}) \\
   \psi &= 0
 \end{align*}
 where $[a_x, a_y, a_z] = \cfrac{\mathbf{a}}{|\mathbf{a}|}$
-\item exception: none
+% \item exception: none
 \end{itemize}
 
-\newpage
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{MIS of Mag To Quat Module} \label{iqewmm}
-
-\subsection{Module}
-mag2quat
-
-\subsection{Uses}
-Quaternion Module (Sec \ref{qm})\newline
-Matrix Math Module (Sec \ref{mmm}) \newline
-Math Module (Sec \ref{mm})
-
-\subsection{Syntax}
-
-\subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabular}{p{3cm} p{4cm} p{3cm} p{2cm}}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-mag\_to\_quat & $\mathbf{m}:=\mathbb{R}^3, \mathbf{a}:=\mathbb{R}^3$ & $q_\text{out} := \mathbf{q}$
-& ValueError \\
-\hline
-\end{tabular}
-\end{center}
-
-\subsection{Semantics}
-
-\subsubsection{Access Routine Semantics}
-
-\noindent mag\_to\_quat($\mathbf{m}:=\mathbb{R}^3, \mathbf{a}:=\mathbb{R}^3$):
+\noindent mag\_to\_quat($\mathbf{m}, \mathbf{a}$):
 \begin{itemize}
-\item output: $q_\text{out}:= \text{euler\_to\_quat}(\theta, \phi, \psi)$ given
+\item output: $\text{out}:= \text{euler\_to\_quat}(\theta, \phi, \psi)$ given
 \begin{align*}
   \theta &= \text{atan2}(a_y, a_z) \\
   \phi &= \text{atan2}(-a_x, \sqrt{a_y^2+a_z^2}) \\
@@ -366,61 +356,90 @@ mag\_to\_quat & $\mathbf{m}:=\mathbb{R}^3, \mathbf{a}:=\mathbb{R}^3$ & $q_\text{
 \end{align*}
 where $[a_x, a_y, a_z] = \cfrac{\mathbf{a}}{|\mathbf{a}|}$ and $[m_x, m_y, m_z] =
 \cfrac{\mathbf{m}}{|\mathbf{m}|}$
-\item exception: ValueError
+% \item exception: ValueError
 \end{itemize}
 
 \newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{MIS of Input Module} \label{ivm}
+
+\section{MIS of Error Handler Module} \label{err}
 
 \subsection{Module}
-input
+error\_handler
 
 \subsection{Uses}
-None
+none
 
 \subsection{Syntax}
 
 \subsubsection{Exported Access Programs}
 
 \begin{center}
-\begin{tabular}{p{3cm} p{8cm} p{1cm} p{2cm}}
+\begin{tabular}{p{4cm} p{3cm} p{2cm} p{2.5cm}}
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-input\_checker & $q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3,
-\text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}, \text{gain}:= \mathbb{R}$ & y:=$\mathbb{B}$ &
-ValueError \\
-input\_checker & $q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3,
-\text{dt}:=\mathbb{R}, \text{gain}:= \mathbb{R}$ & y:=$\mathbb{B}$ & ValueError \\
+error\_handler & string & - & string \\
 \hline
 \end{tabular}
 \end{center}
 
 \subsection{Semantics}
 
+\subsubsection{Access Routine Semantics}
+
+\noindent error\_handler(exception):
+\begin{itemize}
+\item exception: Exception := exception
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+
+\section{MIS of Utilities Module} \label{um}
+
+\subsection{Module}
+utilities
+
+\subsection{Uses}
+Math Module (Sec \ref{mm})
+
+\subsection{Syntax}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{4cm} p{3cm} p{2cm} p{2.5cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+euler\_to\_quat & $\mathbb{R}$, $\mathbb{R}$, $\mathbb{R}$ & $\mathbb{H}^4$ & - \\
+rotm\_to\_quat & $\mathbb{R}^{3 \times 3}$ & $\mathbb{H}^4$ & - \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
 
 \subsubsection{Access Routine Semantics}
 
-\noindent input\_checker($q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3,
-\text{mag}:=\mathbb{R}^3, \text{dt}:=\mathbb{R}, \text{gain}:= \mathbb{R}$):
+\noindent euler\_to\_quat(roll, pitch, yaw):
 \begin{itemize}
-\item output: y:= true, if input values are within the bounds specified in Section 4.2.8 Input Data
-Constraints of the SRS.
-\item exception: ValueError
+\item output: See
+\url{https://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm}
+% \item exception:
 \end{itemize}
 
-\noindent input\_checker($q:=\mathbf{q}, \text{gyr}:=\mathbb{R}^3, \text{acc}:=\mathbb{R}^3,
-\text{dt}:=\mathbb{R}, \text{gain}:= \mathbb{R}$):
+\noindent rotm\_to\_quat($\mathbf{R}$):
 \begin{itemize}
-\item output: y:= true, if input values are within the bounds specified in Section 4.2.8 Input Data
-Constraints of the SRS.
-\item exception: ValueError
+\item output: See
+\url{https://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/}
+% \item exception: ValueError
 \end{itemize}
 
-\newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -442,18 +461,19 @@ Math Module (Sec \ref{mm})
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-create\_quat & w:=$\mathbb{R}, x:=\mathbb{R}, y:=\mathbb{R}, z:=\mathbb{R}$ & - & ValueError \\
-quat\_prod & $p:=\mathbf{q},  q:=\mathbf{q}$ & $q_\text{out}:=\mathbf{q}$ & ValueError \\
-normalize & - & - & ValueError \\
-quat\_conj & - & $q_\text{conj}:= \mathbf{q}$ & - \\
-assert\_is\_norm & w:=$\mathbb{R}, x:=\mathbb{R}, y:=\mathbb{R}, z:=\mathbb{R}$ & out$:=\mathbb{B}$
-& ValueError \\
-quat\_to\_euler & - & $\mathbf{e}:=\mathbb{R}^3$ & ValueError \\
-quat\_to\_rot & - & $\mathbf{R} := \mathbb{R}^{3 \times 3}$ & ValueError \\
-get\_w & - & y:=$\mathbb{R}$ & - \\
-get\_x & - & y:=$\mathbb{R}$ & - \\
-get\_y & - & y:=$\mathbb{R}$ & - \\
-get\_z & - & y:=$\mathbb{R}$ & - \\
+Quaternion & - & - & - \\
+Quaternion & $\mathbb{R}, \mathbb{R}, \mathbb{R}, \mathbb{R}$ & - & ValueError \\
+quat\_prod & $\mathbb{H}^4, \mathbb{H}^4$ & $\mathbb{H}^4$ & - \\
+normalize & - & - & - \\
+conjugate & - & $ \mathbb{H}^4$ & - \\
+% assert\_is\_norm & $\mathbb{R}, \mathbb{R}, \mathbb{R}, \mathbb{R}$ & $\mathbb{B}$ & - \\
+% quat\_to\_euler & - & $\mathbf{e}:=\mathbb{R}^3$ & ValueError \\
+% quat\_to\_rot & - & $\mathbf{R} := \mathbb{R}^{3 \times 3}$ & ValueError \\
+to\_array & - & $\mathbb{R}^4$ & - \\
+get\_w & - & $\mathbb{R}$ & - \\
+get\_x & - & $\mathbb{R}$ & - \\
+get\_y & - & $\mathbb{R}$ & - \\
+get\_z & - & $\mathbb{R}$ & - \\
 \hline
 \end{tabular}
 \end{center}
@@ -462,13 +482,18 @@ get\_z & - & y:=$\mathbb{R}$ & - \\
 
 \subsubsection{State Variables}
 
-$\text{quat}: \mathbf{q}$
+$\text{quat}: \mathbb{H}^4$
 
 \subsubsection{Access Routine Semantics}
 
-\noindent create\_quat($w, x, y, z$):
+\noindent Quaternion():
 \begin{itemize}
-\item transition: quat $:= \mathbf{q}$ where $[q_w = w, q_x = x, q_y = y, q_z = z]$
+\item transition: quat $:=[q_w = 1, q_x = 0, q_y = 0, q_z = 0]$
+\end{itemize}
+
+\noindent Quaternion($w, x, y, z$):
+\begin{itemize}
+\item transition: quat $:=[q_w = w, q_x = x, q_y = y, q_z = z]$
 % \item output: $\t\mathbf{q}$
 \item exception: ValueError when $|\text{quat}| = 0$
 \end{itemize}
@@ -485,15 +510,14 @@ $\text{quat}: \mathbf{q}$
       p_w q_z + p_x q_y - p_y q_x + p_z q_w
   \end{bmatrix}
   \end{align*}
-
-\item exception: ValueError
+% \item exception: ValueError
 \end{itemize}
 
-\noindent quat\_conj():
+\noindent conjugate():
 \begin{itemize}
 % \item transition: \wss{if appropriate}
 \item output: $q_\text{conj} :=  [q_w, -q_x, -q_y, -q_z]$
-\item exception: -
+% \item exception: -
 \end{itemize}
 
 \noindent normalize():
@@ -501,65 +525,54 @@ $\text{quat}: \mathbf{q}$
 \item transition: quat $:= \left[ \cfrac{\text{quat}_w}{d}, \cfrac{\text{quat}_x}{d},
 \cfrac{\text{quat}_y}{d}, \cfrac{\text{quat}_z}{d} \right]$ where $d = \sqrt{\text{quat}_w^2 +
 \text{quat}_x^2 + \text{quat}_y^2 + \text{quat}_z^2}$
-% \item output: $\mathbf{q}$
-\item exception: ValueError
+% \item output: $\mathbf{q}$ \item exception: ValueError
 \end{itemize}
 
-\noindent assert\_is\_norm():
-\begin{itemize}
-\item output: out$:= (1 == \sqrt{w^2 + x^2 + y^2 + z^2})$
-\item exception: ValueError
-\end{itemize}
+% \noindent assert\_is\_norm(): \begin{itemize} \item output: out$:= (1 == \sqrt{w^2 + x^2 + y^2 +
+% z^2})$ \item exception: ValueError \end{itemize}
 
-\noindent quat\_to\_euler():
-\begin{itemize}
-\item output: \begin{align*} \mathbf{e} :=& \begin{bmatrix} \text{yaw} \\ \text{pitch} \\
-  \text{roll} \end{bmatrix} =
-  \begin{bmatrix}
-    \text{atan2}(2 q_y q_w - 2 q_x q_z, 1 - 2 q_y^2 - 2 q_z ^ 2) \\
-    \text{asin}(2 q_x q_y + 2 q_z q_w) \\
-    \text{atan2}(2 q_x q_w - 2 q_y q_z, 1 - 2 q_x^2 - 2 q_z ^2)
-  \end{bmatrix}
-\end{align*}
-See
-\url{https://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/index.htm}
-for 2 special cases.
-\item exception: ValueError
-\end{itemize}
+% \noindent quat\_to\_euler(): \begin{itemize} \item output: \begin{align*} \mathbf{e} :=&
+% \begin{bmatrix} \text{yaw} \\ \text{pitch} \\
+%   \text{roll} \end{bmatrix} = \begin{bmatrix} \text{atan2}(2 q_y q_w - 2 q_x q_z, 1 - 2 q_y^2 - 2
+%   q_z ^ 2) \\
+%     \text{asin}(2 q_x q_y + 2 q_z q_w) \\
+%     \text{atan2}(2 q_x q_w - 2 q_y q_z, 1 - 2 q_x^2 - 2 q_z ^2) \end{bmatrix} \end{align*} See
+%   \url{https://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/index.htm}
+%   for 2 special cases. \item exception: ValueError \end{itemize}
 
-\noindent quat\_to\_rot():
+% \noindent quat\_to\_rot(): \begin{itemize} \item output: \begin{align*} \mathbf{R}:= &
+% \begin{bmatrix} 1- 2 q_y^2 - 2 q_z^2 & 2 q_x q_y - 2 q_z q_w & 2 q_x q_z + 2 q_y q_w \\
+%     2 q_x q_y + 2 q_z q_w & 1 -2 q_x^2 - 2 q_z^2 & 2 q_y q_z - 2 q_x q_w \\
+%     2 q_x q_z - 2 q_y q_w & 2 q_y q_z + 2 q_x q_w & 1 -2 q_x^2 - 2 q_y ^2 \end{bmatrix}
+%   \end{align*} \item exception: ValueError \end{itemize}
+
+\noindent to\_array():
 \begin{itemize}
-\item output: \begin{align*} \mathbf{R}:= & \begin{bmatrix} 1- 2 q_y^2 - 2 q_z^2 & 2 q_x q_y - 2 q_z
-  q_w & 2 q_x q_z + 2 q_y q_w \\
-    2 q_x q_y + 2 q_z q_w & 1 -2 q_x^2 - 2 q_z^2 & 2 q_y q_z - 2 q_x q_w \\
-    2 q_x q_z - 2 q_y q_w & 2 q_y q_z + 2 q_x q_w & 1 -2 q_x^2 - 2 q_y ^2
-  \end{bmatrix}
-\end{align*}
-\item exception: ValueError
+\item output: $\mathbf{R} = [q_w, q_x, q_y, q_z]$
 \end{itemize}
 
 \noindent get\_w():
 \begin{itemize}
 \item output: y:=$q_w$
-\item exception: none
+% \item exception: none
 \end{itemize}
 
 \noindent get\_x():
 \begin{itemize}
 \item output: y:=$q_x$
-\item exception: none
+% \item exception: none
 \end{itemize}
 
 \noindent get\_y():
 \begin{itemize}
 \item output: y:=$q_y$
-\item exception: none
+% \item exception: none
 \end{itemize}
 
 \noindent get\_z():
 \begin{itemize}
 \item output: y:=$q_z$
-\item exception: none
+% \item exception: none
 \end{itemize}
 
 \newpage
@@ -572,26 +585,23 @@ for 2 special cases.
 matrix
 
 \subsection{Uses}
-None
+Math Module (Sec \ref{mm})
 
 \subsection{Syntax}
 
 \subsubsection{Exported Access Programs}
 
 \begin{center}
-\begin{tabular}{p{2cm} p{3cm} p{2.5cm} p{4.5cm}}
+\begin{tabular}{p{3cm} p{4cm} p{3cm} p{3cm}}
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-* & $\mathbb{R}^{m \times n} \times \mathbb{R}^{n \times m}$ & $m:=\mathbb{R}^{n \times n}$ &
-ValueError \\
-* & $\mathbb{R}^{m \times n} \times \mathbb{R}$ & $m:=\mathbb{R}^{m \times n}$ & ValueError \\
-+ & $\mathbb{R}^{m \times n} \times \mathbb{R}^{m \times n}$ & $m:=\mathbb{R}^{m \times n}$ &
-ValueError \\
-% - & $\mathbb{R}^{m \times n} \times \mathbb{R}^{m \times n}$ & $\mathbb{R}^{m \times n}$ &
-%   ValueError \\
-transpose & $\mathbb{R}^{m \times n}$ & $m:=\mathbb{R}^{n \times m}$ & ValueError \\
-norm & $\mathbf{x}:=\mathbb{R}^n$ & $\mathbf{y}:=\mathbb{R}^n$ & ValueError\\
+* & $\mathbb{R}^{m \times n} \times \mathbb{R}^{n \times m}$ & $\mathbb{R}^{n \times n}$ & - \\
+* & $\mathbb{R}^{m \times n} \times \mathbb{R}$ & $\mathbb{R}^{m \times n}$ & - \\
++ & $\mathbb{R}^{m \times n} \times \mathbb{R}^{m \times n}$ & $\mathbb{R}^{m \times n}$ & - \\
+- & $\mathbb{R}^{m \times n} \times \mathbb{R}^{m \times n}$ & $\mathbb{R}^{m \times n}$ & - \\
+transpose & $\mathbb{R}^{m \times n}$ & $\mathbb{R}^{n \times m}$ & - \\
+norm & $\mathbb{R}^n$ & $\mathbb{R}^n$ & -\\
 \hline
 \end{tabular}
 \end{center}
@@ -600,50 +610,55 @@ norm & $\mathbf{x}:=\mathbb{R}^n$ & $\mathbf{y}:=\mathbb{R}^n$ & ValueError\\
 
 \subsubsection{Access Routine Semantics}
 
-\noindent transpose($\mathbb{R}^{m \times n}$):
+\noindent $\mathbf{A} * \mathbf{B}$:
 \begin{itemize}
-% \item transition: \wss{if appropriate}
-\item output: $m:=\mathbb{R}^{m \times n}$
-\item exception: ValueError
+\item output: $m:=\mathbf{C}$
+% \item exception: ValueError
 \end{itemize}
-
-$[\mathbf{A}^T]_{i,j} = [\mathbf{A}]_{j,i}$
-\newline
-
-\noindent $\mathbb{R}^{m \times n} * \mathbb{R}^{n \times m}$:
-\begin{itemize}
-\item output: $m:=\mathbb{R}^{n \times n}$
-\item exception: ValueError
-\end{itemize}
-
 Let $\mathbf{A} = [a_{i,j}]_{m\times n}$ and $\mathbf{B} = [b_{i,j}]_{n\times m}$. Then $\mathbf{C}
 = \mathbf{A} * \mathbf{B}$ with $c_{i,j} = a_{i,0} b_{0,j} + a_{i,1} b_{1,j} ...  a_{i,n}b_{n,j}$.
 \newline
 
-\noindent $\mathbb{R}^{m \times n} * \mathbb{R}$:
+\noindent $\mathbf{A} * k$:
 \begin{itemize}
-\item output: $m:=\mathbb{R}^{m \times n}$
-\item exception: ValueError
+\item output: $m:=\mathbf{C}$
+% \item exception: ValueError
 \end{itemize}
-
 Let $\mathbf{A} = [a_{i,j}]_{m\times n}$ and $k = \mathbb{R}$. Then $\mathbf{C} = \mathbf{A} * k$
 with $c_{i,j} = k a_{i,j}$.
 \newline
 
-\noindent $\mathbb{R}^{m \times n} + \mathbb{R}^{m \times n}$:
+\noindent $\mathbf{A} + \mathbf{B}$:
 \begin{itemize}
-\item output: $m:=\mathbb{R}^{m \times n}$
-\item exception: ValueError
+\item output: $m:= \mathbf{A} + \mathbf{B}$
+% \item exception: ValueError
 \end{itemize}
-
 Let $\mathbf{A} = [a_{i,j}]_{m \times n}$ and $\mathbf{B} = [b_{i,j}]_{m \times n}$. Then
 $\mathbf{A} + \mathbf{B} = [a_{i,j} + b_{i,j}]_{m \times n}$.
 \newline
 
-\noindent norm(x:=$\mathbb{R}^{n}$):
+\noindent $\mathbf{A} - \mathbf{B}$:
 \begin{itemize}
-\item output: $y:=\mathbb{R}^{n}$ where $y = \cfrac{\mathbf{x}}{|\mathbf{x}|}$
-\item exception: ValueError
+\item output: $m:= \mathbf{A} - \mathbf{B}$
+% \item exception: ValueError
+\end{itemize}
+Let $\mathbf{A} = [a_{i,j}]_{m \times n}$ and $\mathbf{B} = [b_{i,j}]_{m \times n}$. Then
+$\mathbf{A} - \mathbf{B} = [a_{i,j} - b_{i,j}]_{m \times n}$.
+\newline
+
+\noindent transpose($\mathbf{A}$):
+\begin{itemize}
+% \item transition: \wss{if appropriate}
+\item output: $\mathbf{A^T}$
+% \item exception: ValueError
+\end{itemize}
+$[\mathbf{A}^T]_{i,j} = [\mathbf{A}]_{j,i}$
+\newline
+
+\noindent norm($\mathbf{A}$):
+\begin{itemize}
+\item output: $y:= \cfrac{\mathbf{A}}{|\mathbf{A}|}$
+% \item exception: ValueError
 \end{itemize}
 
 \newpage
@@ -658,12 +673,8 @@ None
 
 \subsection{Syntax}
 
-\subsubsection{Exported Constants}
-\begin{itemize}
-  \item[PI] := 3.141592654
-  \item[RAD2DEG] := $\cfrac{180}{\text{PI}}$
-  \item[DEG2RAD] := $\cfrac{\text{PI}}{180}$
-\end{itemize}
+% \subsubsection{Exported Constants} \begin{itemize} \item[PI] := 3.141592654 \item[RAD2DEG] :=
+% $\cfrac{180}{\text{PI}}$ \item[DEG2RAD] := $\cfrac{\text{PI}}{180}$ \end{itemize}
 
 
 \subsubsection{Exported Access Programs}
@@ -673,12 +684,10 @@ None
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-sin & x:=$\mathbb{R}$ & out:=$\mathbb{R}$ & ValueError \\
-cos & x:=$\mathbb{R}$ & out:=$\mathbb{R}$ & ValueError \\
-asin & x:=$\mathbb{R}$ & out:=$\mathbb{R}$ & ValueError \\
-atan2 & x:=$\mathbb{R}$, y:=$\mathbb{R}$ & out:=$\mathbb{R}$ & ValueError \\
-euler\_to\_quat & $\mathbf{e}:=\mathbb{R}^3$& $y:=\mathbf{q}$ & ValueError \\
-rot\_to\_quat & $\mathbf{R} := \mathbb{R}^{3 \times 3}$ & $y:=\mathbf{q}$ & ValueError \\
+sin & $\mathbb{R}$ & $\mathbb{R}$ & - \\
+cos & $\mathbb{R}$ & $\mathbb{R}$ & - \\
+asin & $\mathbb{R}$ & $\mathbb{R}$ & - \\
+atan2 & $\mathbb{R}$, $\mathbb{R}$ & $\mathbb{R}$ & - \\
 \hline
 \end{tabular}
 \end{center}
@@ -687,42 +696,28 @@ rot\_to\_quat & $\mathbf{R} := \mathbb{R}^{3 \times 3}$ & $y:=\mathbf{q}$ & Valu
 
 \subsubsection{Access Routine Semantics}
 
-\noindent sin(x:=$\mathbb{R}$):
+\noindent sin(x):
 \begin{itemize}
 \item output: $y = \sin(x)$
-\item exception: ValueError
+% \item exception: ValueError
 \end{itemize}
 
-\noindent cos(x:=$\mathbb{R}$):
+\noindent cos(x):
 \begin{itemize}
 \item output: $y = \cos(x)$
-\item exception: ValueError
+% \item exception: ValueError
 \end{itemize}
 
-\noindent asin(x:=$\mathbb{R}$):
+\noindent asin(x):
 \begin{itemize}
 \item output: $y = \sin(x)$
-\item exception: ValueError
+% \item exception: ValueError
 \end{itemize}
 
-\noindent atan2(y:=$\mathbb{R}$, x:=$\mathbb{R}$):
+\noindent atan2(y, x):
 \begin{itemize}
 \item output: See \url{https://en.wikipedia.org/wiki/Atan2#Definition_and_computation}
 \item exception: ValueError if $x =0, y =0$
-\end{itemize}
-
-\noindent euler\_to\_quat($\mathbf{e}:=\mathbb{R}^3$):
-\begin{itemize}
-\item output: See
-\url{https://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm}
-\item exception: ValueError
-\end{itemize}
-
-\noindent rot\_to\_quat($\mathbf{R} := \mathbb{R}^{3 \times 3}$):
-\begin{itemize}
-\item output: See
-\url{https://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/}
-\item exception: ValueError
 \end{itemize}
 
 \newpage
