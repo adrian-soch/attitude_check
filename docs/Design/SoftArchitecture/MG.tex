@@ -218,6 +218,8 @@ the module is provided by the operating system or by standard programming langua
 Only the leaf modules in the hierarchy have to be implemented. If a dash (\emph{--}) is shown, this
 means that the module is not a leaf and will not have to be implemented.
 
+Usually, there is a hardware hiding module, however \progname{} is used like a library in other projects that interface with hardware. Thus, the design is not concerned with the hardware.
+
 % \subsection{Hardware Hiding Modules (\mref{mHH})}
 
 % \begin{description}
@@ -320,10 +322,10 @@ the modules and the anticipated changes.
 \toprule
 \textbf{Req.} & \textbf{Modules}\\
 \midrule
-R1 & \mref{m:ac} \\
+R1 & \mref{m:ac}, \mref{m:err} \\
 R2 & \mref{m:mm}, \mref{m:mmm}, \mref{m:um}, \mref{m:qm}, \mref{m:im} \\
-R3 & \mref{m:mm}, \mref{m:mmm}, \mref{m:qm}, \mref{m:ac} \\
-R4 & \mref{m:mm}, \mref{m:mmm}, \mref{m:qm}, \mref{m:ac} \\
+R3 & \mref{m:mm}, \mref{m:mmm}, \mref{m:qm}, \mref{m:ac}, \mref{m:err}\\
+R4 & \mref{m:mm}, \mref{m:mmm}, \mref{m:qm}, \mref{m:ac}, \mref{m:err} \\
 R5 & \mref{m:qm}, \mref{m:ac} \\
 \bottomrule
 \end{tabular}
