@@ -40,7 +40,8 @@
 
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X} \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-\today & 1.0 & Initial draft\\
+March 17, 2024 & 1.0 & Initial draft\\
+April 4, 2024 & 2.0 & Update design\\
 \bottomrule
 \end{tabularx}
 
@@ -140,7 +141,7 @@ Ideally, changing one of the anticipated changes will only require changing the 
 hides the associated decision. The approach adapted here is called design for change.
 
 \begin{description}
-\item[\refstepcounter{acnum} \actheacnum \label{lc:gyro}:] Add online gyroscope bias compensation.
+\item[\refstepcounter{acnum} \actheacnum \label{lc:acc}:] Detect significant linear accerlerations and ignore acceleromater data until the event is complete.
 \item[\refstepcounter{acnum} \actheacnum \label{lc:mag}:] Add magnetic disturbance compensation.
 \end{description}
 
@@ -157,14 +158,13 @@ decomposed by secrets in Table \ref{TblMH}. The modules listed below, which are 
 hierarchy tree, are the modules that will actually be implemented.
 
 \begin{description}
-\item [\refstepcounter{mnum} \mthemnum \label{m:mm}:] Math Module
+  \item [\refstepcounter{mnum} \mthemnum \label{m:mm}:] Math Module
 \item [\refstepcounter{mnum} \mthemnum \label{m:mmm}:] Matrix Math Module
+\item [\refstepcounter{mnum} \mthemnum \label{m:um}:] Utilities Module
 \item [\refstepcounter{mnum} \mthemnum \label{m:qm}:] Quaternion Module
-\item [\refstepcounter{mnum} \mthemnum \label{m:im}:] Input Module
-\item [\refstepcounter{mnum} \mthemnum \label{m:iqwomm}:] Accel To Quat
-Module
-\item [\refstepcounter{mnum} \mthemnum \label{m:iqwmm}:] Mag To Quat Module
-\item [\refstepcounter{mnum} \mthemnum \label{m:em}:] Estimator Module
+\item [\refstepcounter{mnum} \mthemnum \label{m:im}:] Initializers Module
+\item [\refstepcounter{mnum} \mthemnum \label{m:ac}:] \progname{} Module
+\item [\refstepcounter{mnum} \mthemnum \label{m:err}:] Error Handling Module
 \end{description}
 
 
@@ -178,14 +178,14 @@ Module
 % {Hardware-Hiding Module} & ~ \\
 % \midrule
 
-\multirow{4}{0.3\textwidth}{Behaviour-Hiding Module} & Estimator Module \\
-  & Input Module \\
-  & Accel To Quat Module \\
-  & Mag To Quat Module \\
+\multirow{2}{0.3\textwidth}{Behaviour-Hiding Module} & \progname{} Module \\
+  & Initializers Module \\
 \midrule
-\multirow{3}{0.3\textwidth}{Software Decision Module} & Math Module\\
+\multirow{5}{0.3\textwidth}{Software Decision Module} & Math Module\\
   & Matrix Math Module \\
   & Quaternion Module \\
+  & Error Handling Module \\
+  & Utilities Module \\
 \bottomrule
 
 \end{tabular}
@@ -239,40 +239,22 @@ means that the module is not a leaf and will not have to be implemented.
 \item[Implemented By:] --
 \end{description}
 
-\subsubsection{Input Module (\mref{m:im})}
-
-\begin{description}
-\item[Secrets:] Limits for each of the input parameters described in the SRS.
-\item[Services:] Verifies input data is within the limits described in the SRS.
-\item[Implemented By:] \progname
-\item[Type of Module:] Library
-\end{description}
-
-\subsubsection{Accel To Quat Module (\mref{m:iqwomm})}
-
-\begin{description}
-\item[Secrets:] The algorithm for computing a quaternion from a single accelerometer and gyroscope measurement.
-\item[Services:] Calculates an initial orientation quaternion from accelerometer and gyroscope data.
-\item[Implemented By:] \progname
-\item[Type of Module:] Library
-\end{description}
-
-\subsubsection{Mag To Quat Module (\mref{m:iqwmm})}
-
-\begin{description}
-\item[Secrets:] The algorithm for computing a quaternion from a single set of accelerometer, gyroscope, and magnetometer measurements.
-\item[Services:] Calculates an initial orientation quaternion from accelerometer, gyroscope, and magnetic data.
-\item[Implemented By:] \progname
-\item[Type of Module:] Library
-\end{description}
-
-\subsubsection{Estimator Module (\mref{m:em})}
+\subsubsection{Attitude Check Module (\mref{m:ac})}
 
 \begin{description}
 \item[Secrets:] The algorithms for estimating attitude (orientation) using sequential sensor data.
 \item[Services:] Calculates orientation estimates from sensor data.
 \item[Implemented By:] \progname
 \item[Type of Module:] Abstract Data Type
+\end{description}
+
+\subsubsection{Initializer Module (\mref{m:im})}
+
+\begin{description}
+\item[Secrets:] The algorithm for computing a quaternion from a single set of accelerometer, gyroscope, and magnetometer measurements.
+\item[Services:] Calculates an initial orientation quaternion from accelerometer, gyroscope, and magnetic data.
+\item[Implemented By:] \progname
+\item[Type of Module:] Library
 \end{description}
 
 \subsection{Software Decision Module}
@@ -296,7 +278,7 @@ means that the module is not a leaf and will not have to be implemented.
 
 \subsubsection{Matrix Math Module (\mref{m:mmm})}
 \begin{description}
-  \item[Secrets:] Algorithms and functions for matrix math including multiplication, inverses, etc.
+  \item[Secrets:] Functions for matrix math including multiplication, inverses, etc.
   \item[Services:] Performs matrix math.
   \item[Implemented By:] Eigen \citep{eigenweb}
 \end{description}
@@ -306,6 +288,24 @@ means that the module is not a leaf and will not have to be implemented.
   \item[Secrets:] Data structure for quaternion data.
   \item[Services:] Provide a quaternion object and its associated mathematical operations, multiplication, inverses, etc.
   \item[Implemented By:] \progname
+\end{description}
+
+\subsubsection{Utilities Module (\mref{m:um})}
+
+\begin{description}
+\item[Secrets:] Formula for converting rotation representations to quaternion.
+\item[Services:] Converts rotation representations to quaternion
+\item[Implemented By:] \progname
+\item[Type of Module:] Library
+\end{description}
+
+\subsubsection{Error Handling Module (\mref{m:err})}
+
+\begin{description}
+\item[Secrets:] Platform dependent exception throwing or error logging.
+\item[Services:] Handles logging or throwing errors depending on the platform.
+\item[Implemented By:] \progname
+\item[Type of Module:] Library
 \end{description}
 
 \section{Traceability Matrix} \label{SecTM}
@@ -320,11 +320,11 @@ the modules and the anticipated changes.
 \toprule
 \textbf{Req.} & \textbf{Modules}\\
 \midrule
-R1 & \mref{m:im} \\
-R2 & \mref{m:mm}, \mref{m:mmm}, \mref{m:qm}, \mref{m:iqwmm}\\
-R3 & \mref{m:mm}, \mref{m:mmm}, \mref{m:qm}, \mref{m:im}, \mref{m:iqwmm}, \mref{m:em}\\
-R4 & \mref{m:mm}, \mref{m:mmm}, \mref{m:qm}, \mref{m:im}, \mref{m:iqwomm}, \mref{m:em} \\
-R5 & \mref{m:mm}, \mref{m:qm}\\
+R1 & \mref{m:ac} \\
+R2 & \mref{m:mm}, \mref{m:mmm}, \mref{m:um}, \mref{m:qm}, \mref{m:im} \\
+R3 & \mref{m:mm}, \mref{m:mmm}, \mref{m:qm}, \mref{m:ac} \\
+R4 & \mref{m:mm}, \mref{m:mmm}, \mref{m:qm}, \mref{m:ac} \\
+R5 & \mref{m:qm}, \mref{m:ac} \\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Requirements and Modules}
@@ -337,8 +337,8 @@ R5 & \mref{m:mm}, \mref{m:qm}\\
 \toprule
 \textbf{AC} & \textbf{Modules}\\
 \midrule
-\acref{lc:gyro} & \mref{m:em}\\
-\acref{lc:mag} & \mref{m:em}\\
+\acref{lc:acc} & \mref{m:ac}\\
+\acref{lc:mag} & \mref{m:ac}\\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Anticipated Changes and Modules}
