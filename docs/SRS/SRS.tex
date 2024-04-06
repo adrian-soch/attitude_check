@@ -336,6 +336,8 @@ advances in Micro-Electro-Mechanical systems (MEMS) allow an inexpensive Inertia
 presence of noise, bias, drift, and uncertainty in the sensor data, as well as the nonlinearity of
 the object dynamics \cite{statement}.
 
+There are many methods of estimating orientation, this project will reimplement the Madgwick filter \cite{madgwick_ecient_nodate}.
+
 \plt{The introduction section is written to introduce the problem.  It starts general and focuses on
   the problem domain. The general advice is to start with a paragraph or two that describes the
   problem, followed by a ``roadmap'' paragraph.  A roadmap orients the reader by telling them what
@@ -1428,8 +1430,7 @@ uncertainty quantification exercise.
 \textbf{Var} & \textbf{Physical Constraints} & \textbf{Software Constraints} & \textbf{Typical
 Value} & \textbf{Uncertainty}\\
 \midrule
-    $\Delta t$ & $\Delta t > 0$ & $\Delta t > 0$ &
-    10 \si[per-mode=symbol] {\milli\second} & - \\
+    $\Delta t$ & $\Delta t > 0$ & $\Delta t > 0$ & 10 \si[per-mode=symbol] {\milli\second} & - \\
     $\gamma$ & - & $0.0 \leq \gamma \leq 1.0$ & 0.041 & - \\
 \bottomrule
 \end{longtable*}
@@ -1438,21 +1439,15 @@ Value} & \textbf{Uncertainty}\\
 % \noindent \begin{description} \item[(*)] \plt{you might need to add some notes or clarifications}
 % \end{description}
 
-% \begin{table}[!h]
-% \caption{Specification Parameter Values} \label{TblSpecParams}
-% \renewcommand{\arraystretch}{1.2}
-% \noindent \begin{longtable*}{l l}
-% \toprule
-% \textbf{Var} & \textbf{Value} \\
-% \midrule
-%     $\Delta t_\text{min}$ & 1 \si{\milli\second}\\
+% \begin{table}[!h] \caption{Specification Parameter Values} \label{TblSpecParams}
+% \renewcommand{\arraystretch}{1.2} \noindent \begin{longtable*}{l l} \toprule \textbf{Var} &
+% \textbf{Value} \\
+% \midrule $\Delta t_\text{min}$ & 1 \si{\milli\second}\\
 %     $\Delta t_\text{max}$ & 100000 \si{\milli\second}\\
 %     $a_\text{max}$ & See sensor datasheet [\si{\meter\per\square\second}].\\
 %     $m_\text{max}$ & See sensor datasheet [\si{\tesla}].\\
 %     $\omega_\text{max}$ & See sensor datasheet [\si{\radian\per\second}].\\
-% \bottomrule
-% \end{longtable*}
-% \end{table}
+% \bottomrule \end{longtable*} \end{table}
 
 \subsubsection{Properties of a Correct Solution} \label{sec_CorrectSolution}
 
@@ -1548,6 +1543,10 @@ exhibit.
         Validation Plan.''  A link to the VnV plan would be a nice extra.} The level of accuracy
         achieved by \progname{} shall be described in Section 5.2.1 of the Verification and
         Validation plan \cite{VnV}.
+
+    \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{nfr:performance}:]
+      \textbf{Performance}: \progname{} shall have an execution time on an embedded platform that is
+      200 Hz or better.
 
     \item[NFR\refstepcounter{nfrnum}\thenfrnum \label{nfr:understandability}:]
       \textbf{Understandability}: \progname{} shall follow standard coding conventions such that the
@@ -1760,7 +1759,7 @@ for Toronto, ON. Other locations may have different values.
 
 \bibliography {../refs/bib, ../refs/References}
 % \bibliography {./bib, ./References}
-\bibliographystyle{plain}
+\bibliographystyle{unsrt}
 
 \newpage
 \plt{Advice on using the template:
