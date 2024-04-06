@@ -2,7 +2,7 @@
 # TODO: Missing artifacts should be added to this file
 .PHONY:	SRS
 
-all:	SRS MG MIS PS VnVP VnVR
+all:	SRS MG MIS PS VnVP VnVR Refl
 
 SRS:
 	cd SRS && make && cd ..
@@ -22,7 +22,10 @@ VnVP:
 VnVR:
 	cd VnVReport && make && cd ../..
 
-clean:	cleanSRS cleanMG cleanMIS cleanPS cleanVnVP cleanVnVR
+Refl:
+	cd Reflection && make && cd ../..
+
+clean:	cleanSRS cleanMG cleanMIS cleanPS cleanVnVP cleanVnVR cleanRefl
 
 cleanPS:
 	cd ProblemStatementAndGoals && make clean && cd ..
@@ -41,3 +44,6 @@ cleanVnVP:
 
 cleanVnVR:
 	cd VnVReport && make clean && cd ..
+
+cleanRefl:
+        cd Reflection && make clean && cd ..
