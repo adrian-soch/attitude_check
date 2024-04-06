@@ -36,9 +36,10 @@
 
 \section*{Revision History}
 
-\begin{tabularx}{\textwidth}{p{3cm}p{2cm}X} \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
+\begin{tabularx}{\textwidth}{p{3.5cm}p{2cm}X} \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-2024/02/13 & 1.0 & Initial draft\\
+February 13, 2024 & 1.0 & Initial draft\\
+April 6, 2024 & 2.0 & Address comments, add unit tests.\\
 \bottomrule
 \end{tabularx}
 
@@ -95,6 +96,8 @@ abbreviations and acronyms used in this document.
     % MEMS & Micro-electromechanical System \\
     % NED & North-East-Down \\
     % WMM & World Magnetic Model. \\
+    T & Test\\
+    UT & Unit Test \\
     \bottomrule
 \end{tabular}\\
 \label{tab:abb}
@@ -309,7 +312,8 @@ tests.
 For the scope of this project, software validation will consist of benchmarking against existing
 algorithms. The \% difference of the Root Mean Squared Error (RMSE) of \progname{} and
 \href{https://ahrs.readthedocs.io/en/latest/filters/madgwick.html}{AHRS} should be $\leq \epsilon$.
-The data will come from the BROAD dataset \citep{broad}. The derivation of RMSE can be found in the Section \ref{sec:calc}.
+The data will come from the BROAD dataset \citep{broad}. The derivation of RMSE can be found in the
+Section \ref{sec:calc}.
 
 \wss{If there is any external data that can be used for validation, you should point to it here.  If
   there are no plans for validation, you should state that here.} \wss{You might want to use review
@@ -329,7 +333,7 @@ The data will come from the BROAD dataset \citep{broad}. The derivation of RMSE 
 
 \subsubsection{Inputs and Outputs}
 
-This section covers requirements R1 and R4 of the SRS. This includes the input and output
+This section covers requirements R1 and R5 of the SRS. This includes the input and output
 requirements for \progname{}. For input constraints see Section 4.2.8 of the
 \href{https://github.com/adrian-soch/attitude_check/blob/main/docs/SRS/SRS.pdf}{SRS}.
 
@@ -344,7 +348,7 @@ requirements for \progname{}. For input constraints see Section 4.2.8 of the
 \item[\refstepcounter{testnum} \Tthetestnum \label{t:sys_io}:] \textbf{Input/Output Test} \\
 
 
-    \textbf{Control:} Automatic
+    \textbf{Control:} Automated
 
     \textbf{Initial State:} Uninitialized
 
@@ -354,41 +358,28 @@ requirements for \progname{}. For input constraints see Section 4.2.8 of the
     \hline
     Step & Input & Output \\ \hline
     1 &
-        \begin{tabular}[c]{@{}l@{}}Initialize with: $ \Delta t = 1.0,{}^E\mathbf{b} = [1.0, 1.0,
-        1.0],$ \\ $\gamma = 0.6, \text{outputType} = \text{Quat} $ \end{tabular} &
-        \begin{tabular}[c]{@{}l@{}l@{}}Assert ``get params" method equals\\ $ \Delta t =
-        1.0,{}^E\mathbf{b} = [1.0, 1.0, 1.0],$ \\ $\gamma = 0.6, \text{outputType} = \text{Quat}
-        $\end{tabular} \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Initialize with: \\ $\text{imuGain} = 0.42, \text{margGain}=0.69$
+        \end{tabular} &
+        \begin{tabular}[c]{@{}l@{}l@{}}Assert ``get gain" method equals \\
+          $\text{imuGain} = 0.42, \text{margGain}=0.69$  \end{tabular} \\ \hline
     2 &
-        \begin{tabular}[c]{@{}l@{}l@{}}Call ``update" with: \\${}^S\mathbf{a}_t = [0,0,9.81], \quad$
-          ${}^S\mathbf{\bm{\omega}}_t = [0,0,0]$ \\ ${}^S\mathbf{m}_t = [16676.8, -3050.9, 49916.9]$
-          \end{tabular} &
+        \begin{tabular}[c]{@{}l@{}l@{}}Call ``update" with: $\Delta t = 1,$\\${}^S\mathbf{a}_t =
+          [0,0,9.81], \quad$ ${}^S\mathbf{\bm{\omega}}_t = [0,0,0]$ \\ ${}^S\mathbf{m}_t = [16676.8,
+          -3050.9, 49916.9]$ \end{tabular} &
         \begin{tabular}[c]{@{}l@{}}Assert ``update" output is a \\ normalized quaternion $\in
         \mathbb{R}^4$. \end{tabular} \\ \hline
     3 &
-    \begin{tabular}[c]{@{}l@{}}Initialize with: $ \Delta t = 1.0,{}^E\mathbf{b} = [1.0, 1.0, 1.0],$
-      \\ $\gamma = 0.6, \text{outputType} = \text{Rot} $ \end{tabular} &
-      \begin{tabular}[c]{@{}l@{}l@{}}Assert ``get params" method equals\\ $ \Delta t =
-      1.0,{}^E\mathbf{b} = [1.0, 1.0, 1.0],$ \\ $\gamma = 0.6, \text{outputType} = \text{Rot}
-      $\end{tabular} \\ \hline
+    \begin{tabular}[c]{@{}l@{}}Initialize with: \\ $\text{imuGain} = 0.9, \text{margGain}=0.1$ \\
+    $q_0 = [5, 5, 5, 5]$ \end{tabular} &
+      \begin{tabular}[c]{@{}l@{}l@{}}Assert ``get params" method equals\\ $\text{imuGain} = 0.9,
+      \text{margGain}=0.1$ \end{tabular} \\ \hline
     4 &
-    \begin{tabular}[c]{@{}l@{}l@{}}Call ``update" with: \\${}^S\mathbf{a}_t = [0,0,9.81], \quad$
-      ${}^S\mathbf{\bm{\omega}}_t = [0,0,0]$ \\ ${}^S\mathbf{m}_t = [16676.8, -3050.9, 49916.9]$
-      \end{tabular} &
-    \begin{tabular}[c]{@{}l@{}}Assert ``update" output is a \\ matrix $\in \mathbb{R}^{3 \times 3}$.
-    \end{tabular} \\ \hline
-    5 &
-    \begin{tabular}[c]{@{}l@{}}Initialize with: $ \Delta t = 1.0,{}^E\mathbf{b} = [1.0, 1.0, 1.0],$
-      \\ $\gamma = 0.6, \text{outputType} = \text{Euler} $ \end{tabular} &
-      \begin{tabular}[c]{@{}l@{}l@{}}Assert ``get params" method equals\\ $ \Delta t =
-      1.0,{}^E\mathbf{b} = [1.0, 1.0, 1.0],$ \\ $\gamma = 0.6, \text{outputType} = \text{Euler}
-      $\end{tabular} \\ \hline
-    6 &
-    \begin{tabular}[c]{@{}l@{}l@{}}Call ``update" with: \\${}^S\mathbf{a}_t = [0,0,9.81], \quad$
-      ${}^S\mathbf{\bm{\omega}}_t = [0,0,0]$ \\ ${}^S\mathbf{m}_t = [16676.8, -3050.9, 49916.9]$
-      \end{tabular} &
-    \begin{tabular}[c]{@{}l@{}}Assert ``update" output \\ is vector $\in \mathbb{R}^3$.
-    \end{tabular} \\ \hline
+      \begin{tabular}[c]{@{}l@{}l@{}}Call ``update" with: $\Delta t = 1,$\\${}^S\mathbf{a}_t =
+        [0,0,9.81], \quad$ ${}^S\mathbf{\bm{\omega}}_t = [0,0,0]$ \\ ${}^S\mathbf{m}_t = [16676.8,
+        -3050.9, 49916.9]$ \end{tabular} &
+      \begin{tabular}[c]{@{}l@{}}Assert ``update" output is a \\ normalized quaternion $\in
+      \mathbb{R}^4$. \end{tabular} \\ \hline
+
     \end{tabular}
     \end{table}
 
@@ -398,9 +389,10 @@ requirements for \progname{}. For input constraints see Section 4.2.8 of the
 
 \end{enumerate}
 
-\subsubsection{Calculations} \label{sec:calc} This section covers requirements R2 and R3 of the SRS.
-This includes the input and output requirements for \progname{}. For input constraints see Section
-4.2.8 of the \href{https://github.com/adrian-soch/attitude_check/blob/main/docs/SRS/SRS.pdf}{SRS}.
+\subsubsection{Calculations} \label{sec:calc} This section covers requirements R1, R2, R3, R4, and
+R5 of the SRS. This includes the input and output requirements for \progname{}. For input
+constraints see Section 4.2.8 of the
+\href{https://github.com/adrian-soch/attitude_check/blob/main/docs/SRS/SRS.pdf}{SRS}.
 
 The accuracy metric is described in \cite{broad}, it defines the difference between two quaternions
 (\ref{eqn:diff_quat}), the total error (\ref{eqn:error}), and the RMSE (\ref{eqn:rmse}):
@@ -432,9 +424,9 @@ tester should use the full dataset found in \citep{broad_code}.
 \begin{enumerate}
 
 \item[\refstepcounter{testnum} \Tthetestnum \label{t:sys_calc_mag}:] \textbf{Orientation with
-Magnetometer} \\
+Magnetometer (MARG)} \\
 
-    \textbf{Control:} Automatic
+    \textbf{Control:} Manual
 
     \textbf{Initial State:} Uninitialized
 
@@ -443,11 +435,12 @@ Magnetometer} \\
         \begin{tabular}{|l|l|l|}
         \hline
         Step & Input & Output \\ \hline
-        1    & \begin{tabular}[c]{@{}l@{}l@{}}Initialize with: $ \Delta t = 10.0, \gamma = 0.6,$ \\$
-        {}^E\mathbf{b} = [16676.8, -3050.9, 49916.9],$\\ $\text{outputType} = \text{Quat} $
+        1    & \begin{tabular}[c]{@{}l@{}l@{}}Initialize with no parameters (uses defaults)\\
         \end{tabular} & - \\ \hline
-        2 & \begin{tabular}[c]{@{}l@{}}Call ``update" and loop through \\ measurements in Table
-        \ref{tab:gt_data} \end{tabular} & Assert quaternion magnitude is 1.     \\ \hline
+
+        2 & \begin{tabular}[c]{@{}l@{}}Call ``update" with $\Delta t = 0.0035$ \\ and loop through
+        measurements in Table \ref{tab:gt_data} \end{tabular} & Assert quaternion magnitude is 1. \\
+        \hline
         3 & \begin{tabular}[c]{@{}l@{}}Calculate RMSE of $e_i$ for
           \href{https://ahrs.readthedocs.io/en/latest/filters/madgwick.html}{AHRS}\\and \progname{}
           using table \ref{tab:gt_label}\end{tabular}             &
@@ -462,9 +455,9 @@ Magnetometer} \\
     \textbf{How test will be performed:} At each step, apply the inputs and assert the output.
 
 \item[\refstepcounter{testnum} \Tthetestnum \label{t:sys_calc_no_mag}:] \textbf{Orientation without
-Magnetometer}\\
+Magnetometer (IMU)}\\
 
-    \textbf{Control:} Automatic
+    \textbf{Control:} Manual
 
     \textbf{Initial State:} Uninitialized
 
@@ -473,11 +466,14 @@ Magnetometer}\\
         \begin{tabular}{|l|l|l|}
         \hline
         Step & Input & Output \\ \hline
-        1    & \begin{tabular}[c]{@{}l@{}l@{}}Initialize with: $ \Delta t = 10.0, \gamma = 0.6,$ \\$
-        {}^E\mathbf{b} = [16676.8, -3050.9, 49916.9],$\\ $\text{outputType} = \text{Quat} $
+        1    & \begin{tabular}[c]{@{}l@{}l@{}}Initialize with no parameters (uses defaults)\\
         \end{tabular} & - \\ \hline
-        2 & \begin{tabular}[c]{@{}l@{}}Call ``update" and loop through \\ \{accel, gyro\}
-        measurements in Table \ref{tab:gt_data} \end{tabular} & Assert output quat is normalized \\
+
+        2 & \begin{tabular}[c]{@{}l@{}}Call ``update" with $\Delta t = 0.0035$\\ and loop through
+        \{accel, gyro\} \\ measurements in Table \ref{tab:gt_data} \end{tabular}
+
+        & Assert quaternion magnitude is 1. \\
+
         \hline
         3 & \begin{tabular}[c]{@{}l@{}}Calculate RMSE of $e_i$ for
             \href{https://ahrs.readthedocs.io/en/latest/filters/madgwick.html}{AHRS}\\and
@@ -520,8 +516,27 @@ given below.}
     Type: Manual
 
     This test refers to Section \ref{sec:calc}. The accuracy test will be conducted when changes to
-    the logic or calculation components of the program are made. See \url{https://github.com/adrian-soch/attitude_check/blob/main/scripts/compare_results.py}.
+    the logic or calculation components of the program are made. See
+    \url{https://github.com/adrian-soch/attitude_check/blob/main/scripts/compare_results.py}.
 \end{enumerate}
+
+\subsection{Performance}
+
+\begin{enumerate}
+
+  \item[\refstepcounter{testnum} \Tthetestnum \label{t:perf1}:] \textbf{test-perf1} \\
+
+      Type: Manual
+
+      Initial State: N/A
+
+      Input/Condition: N/A
+
+      Output/Result: Execution time on an embedded platform is fast enough for common sensor rates,
+      200 Hz or better.
+
+      How test will be performed: Code is timed on an embedded device.
+  \end{enumerate}
 
 \subsubsection{Understandability}
 
@@ -588,16 +603,17 @@ given below.}
     \centering
     \caption{Relation of Test Cases and Requirements.}
     \label{tab:traceability}
-    \begin{tabular}{|l|l|l|l|l|l|l|l|l|}
+    \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|}
     \hline
-      & R1 & R2 & R3 & R4 & NFR1 & NFR2 & NFR3 & NFR4 \\ \hline
-    \testref{t:sys_io} & X  &    &    & X  &      &      &      &      \\ \hline
-    \testref{t:sys_calc_mag} &    & X  &    &    & X    &      &      &      \\ \hline
-    \testref{t:sys_calc_no_mag} &    &    & X  &    & X    &      &      &      \\ \hline
-    \testref{t:a1} &    &    &    &    & X    &      &      &      \\ \hline
-    \testref{t:u1} &    &    &    &    &      & X    &      &      \\ \hline
-    \testref{t:m1} &    &    &    &    &      &      & X    &      \\ \hline
-    \testref{t:p1} &    &    &    &    &      &      &      & X    \\ \hline
+      & R1 & R2 & R3 & R4 & R5 & NFR1 & NFR2 & NFR3 & NFR4 & NFR5 \\ \hline
+    \testref{t:sys_io} & X  &    &  &  & X  &      &   &   &      &   \\ \hline
+    \testref{t:sys_calc_mag} &  X  &  X & X & &  X  & X  &  &      &      &   \\ \hline
+    \testref{t:sys_calc_no_mag} &   X &  X  &   & X & X & X  &  & &   &  \\ \hline
+    \testref{t:a1} &    &    &    &  &  & X    &      &   &   &      \\ \hline
+    \testref{t:perf1} &    &    &    &    &     & & X    &   &   &   \\ \hline
+    \testref{t:u1} &    &    &    &    &  &   & & X    &   &      \\ \hline
+    \testref{t:m1} &    &    &    &    &   &   &   &   & X    &      \\ \hline
+    \testref{t:p1} &    &    &    &    &   &   &   &   &      & X    \\ \hline
     \end{tabular}
     \end{table}
 
