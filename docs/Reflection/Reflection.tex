@@ -1,0 +1,96 @@
+\documentclass{article}
+
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\title{Reflection Report on \progname}
+
+\author{\authname}
+
+\date{}
+
+\input{../Comments}
+\input{../Common}
+
+\begin{document}
+
+\maketitle
+
+\section{Changes in Response to Feedback}
+
+Feedback from reviewers (Domain expert, Secondary, Instructor) was integrated into the
+documentation.
+
+\plt{Summarize the changes made over the course of the project in response to feedback from TAs, the
+instructor, teammates, other teams, the project supervisor (if present), and from user testers.}
+
+\subsection{SRS}
+
+The issues created by the reviewers and their corresponding commits that resolve them are tracked in
+the Pull Requests that merged them into the main branch. Most of the updates related to added more
+references or information to the Theoretical Models, and updating descriptions or assumptions to be
+more clear. The links below contain each issue and commit.
+
+\begin{itemize}
+    \item \url{https://github.com/adrian-soch/attitude_check/pull/41}
+    \item \url{https://github.com/adrian-soch/attitude_check/pull/71}
+\end{itemize}
+
+Changes to the SRS that came after development were additional instance models added to accommodate
+how to determine an initial orientation given various sensor measurements. See
+\url{https://github.com/adrian-soch/attitude_check/pull/72}.
+
+\subsection{Design and Design Documentation}
+
+Design documentation changes from reviewer comments was mostly grammar and descriptions. See
+\url{https://github.com/adrian-soch/attitude_check/pull/73#issuecomment-2037849232}.
+
+Most MG changes occured after development, to reflect changes to the modules and the hierachy. See
+this commit for MG changes
+\url{https://github.com/adrian-soch/attitude_check/pull/73/commits/9149bb88739fead86f0e5b4bcddd46f3f70f027e}.
+
+After implementation the MIS was updated to reflect the input and output types and module names that
+changed. See this commit
+\url{https://github.com/adrian-soch/attitude_check/pull/73/commits/4520b1efe777c05dea6d5f5d2d2bcd2bb271db19}.
+
+\subsection{VnV Plan}
+
+The VnV Plan was updated to fix typographic errors and hyperlinks. Furthermore, the NFR was
+corrected in the SRS to match the VnV document. Details in this PR:
+\url{https://github.com/adrian-soch/attitude_check/pull/71}.
+
+\section{Design Iteration}
+
+\plt{Explain how you arrived at your final design and implementation.  How did the design evolve
+from the first version to the final version?}
+
+The core of the final design was similar to the initial version, however the user facing return
+types and methods were updated during the implementation. Module names were changed to match the
+file names.
+
+\section{Design Decisions}
+
+\plt{Reflect and justify your design decisions.  How did limitations, assumptions, and constraints
+ influence your decisions?}
+
+The decision to use a custom Quaternion class was mostly to ensure there was enough content for the
+course. If this project was redone it would make more sense to use the quaternion class provided by
+Eigen since it is already a dependency for the matrix math.
+
+The assumptions constrained the problem enough to create a seemingly ``correct'' solution.
+
+% \section{Reflection on Project Management}
+
+% \subsection{What Went Well?}
+
+% \plt{What went well for your project management in terms of processes and technology?}
+
+% \subsection{What Went Wrong?}
+
+% \plt{What went wrong in terms of processes and technology?}
+
+% \subsection{What Would you Do Differently Next Time?}
+
+% \plt{What will you do differently for your next project?}
+
+\end{document}

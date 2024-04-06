@@ -22,6 +22,15 @@ The repo structure is:
 
 ```
 
+The recommended order to read the documentation is
+```mermaid
+graph LR
+    E(SRS) --> D
+    D(VnV Plan) --> C
+    C(MG) --> B
+    B(MIS) --> A(VnV Report)
+```
+
 ---
 
 ## Install
