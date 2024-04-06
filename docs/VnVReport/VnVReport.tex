@@ -3,13 +3,8 @@
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{hyperref}
-\hypersetup{
-    colorlinks,
-    citecolor=black,
-    filecolor=black,
-    linkcolor=red,
-    urlcolor=blue
-}
+\usepackage{float}
+\hypersetup{ colorlinks, citecolor=black, filecolor=black, linkcolor=red, urlcolor=blue }
 \usepackage[round]{natbib}
 
 \input{../Comments}
@@ -27,11 +22,9 @@
 
 \section{Revision History}
 
-\begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
-\toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
+\begin{tabularx}{\textwidth}{p{3cm}p{2cm}X} \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+April 5, 2024 & 1.0 & Initial version\\
 \bottomrule
 \end{tabularx}
 
@@ -45,6 +38,7 @@ Date 2 & 1.1 & Notes\\
   \textbf{symbol} & \textbf{description}\\
   \midrule
   T & Test\\
+  UT & Unit Test \\
   \bottomrule
 \end{tabular}\\
 
@@ -56,63 +50,261 @@ Date 2 & 1.1 & Notes\\
 
 \listoftables %if appropriate
 
-\listoffigures %if appropriate
+% \listoffigures %if appropriate
 
 \newpage
 
 \pagenumbering{arabic}
 
-This document ...
+This document reports the results of executing the
+\href{https://github.com/adrian-soch/attitude_check/blob/main/docs/VnVPlan/VnVPlan.pdf}{VnV Plan}.
 
 \section{Functional Requirements Evaluation}
 
+This section covers the evaluation of the functional requirements.
+
+\subsection{T1} This test evaluates the input and output requirements of \progname{}. This test is
+implemented by the first 3 unit tests in
+\url{https://github.com/adrian-soch/attitude_check/blob/main/test/attitude_check_test.cpp}. This
+requirement is \textbf{satisfied} by \progname{}.
+
+\subsection{T2}\label{t2}
+
+This test evaluates the calculations when accel, gyro, and mag data is provided. To conduct this
+test the following steps are required:
+\begin{enumerate}
+  \item Create a csv file with sensor data and the ground truth with
+  \href{https://github.com/adrian-soch/attitude_check/blob/main/scripts/create_sensor_csv.py}{create\_sensor\_csv.py}
+  \item Use
+  \href{https://github.com/adrian-soch/attitude_check/blob/main/examples/basic_orientation_calculation.cpp}{basic\_orientation\_calculation.cpp}
+  to estimate quaternions.
+  \item Calculate RMSE for the inclination component of the quaternion using
+  \href{https://github.com/adrian-soch/attitude_check/blob/main/scripts/compare_results.py}{compare\_results.py}
+\end{enumerate}
+
+\begin{table}[H]
+    \centering
+    \caption{Accel, Gyro, Mag Test Results}
+    \label{tab:my-table}
+    \begin{tabular}{|l|l|}
+    \hline
+    Program        & Inclination RMSE (deg) \\ \hline
+    Attitude Check & 7.027 deg              \\ \hline
+    \href{https://ahrs.readthedocs.io/en/latest/filters/madgwick.html}{AHRS} & 7.218 deg \\ \hline
+    \hline
+    \% Difference  & 2.65 \%                \\ \hline
+    \end{tabular}
+\end{table}
+
+Since $2.65 < 3$ this test passes. Furthermore, \progname{} is more accurate than the AHRS implementation for this test data.
+
+\subsection{T3} This test evaluates the calculations when accel and gyro data is provided. It is
+conducted using the procedure from T2.
+
+\begin{table}[H]
+    \centering
+    \caption{Accel and Gyro Test Results}
+    \label{tab:my-table}
+    \begin{tabular}{|l|l|}
+    \hline
+    Program        & Inclination RMSE (deg) \\ \hline
+    Attitude Check & 5.9709                 \\ \hline
+    \href{https://ahrs.readthedocs.io/en/latest/filters/madgwick.html}{AHRS} & 5.9708 \\ \hline
+    \% Difference  & 0.002 \%               \\ \hline
+    \end{tabular}
+  \end{table}
+
+  Since $0.002 < 3$ this test passes.
+
 \section{Nonfunctional Requirements Evaluation}
 
-\subsection{Usability}
+This section covers the evaluation of the nonfunctional requirements.
+
+\subsection{Accuracy} \label{acc}
+
+See T2 and T3 for accuracy results.
+
+\subsection{Understandability}
+
+This NFR was outside the scope of the VnV Plan.
 
 \subsection{Performance}
 
-\subsection{etc.}
+The runtime for the SparkFun Razor 9DoF IMU are reported:
 
-\section{Comparison to Existing Implementation}
+\begin{itemize}
+  \item (Acc, Gyr, Mag) estimation: 1.5 ms
+  \item (Acc, Gyr) estimation: 0.8 ms
+\end{itemize}
 
-This section will not be appropriate for every project.
+Both are fast enough to keep up with average sensor update rates (20 - 600 Hz).
+
+\subsection{Maintainability}
+
+A likely change was not implemented, thus this test was not executed.
+
+\subsection{Portability}
+
+\progname{} was successfully executed on x86 and ARM hardware, it compiles for Linux and Arduino.
+Thus, it passes the portability test.
 
 \section{Unit Testing}
 
+Each file with source code has its own unit test file
+(\url{https://github.com/adrian-soch/attitude_check/tree/main/test}). Each commit tot the main branch must pass all unit tests. There are 36 unit tests in total, covering 100\% of the code.
+
+Each unit test and its result are below:
+
+\begin{small}
+\begin{verbatim}
+  Test project /home/adrian/dev/attitude_check/build/test
+      Start  1: ACheck_Test_Fixture.invalid_init
+ 1/36 Test  #1: ACheck_Test_Fixture.invalid_init ........................  Passed
+      Start  2: ACheck_Test_Fixture.invalid_update
+ 2/36 Test  #2: ACheck_Test_Fixture.invalid_update ......................  Passed
+      Start  3: ACheck_Test_Fixture.marg_zero_gyro
+ 3/36 Test  #3: ACheck_Test_Fixture.marg_zero_gyro ......................  Passed
+      Start  4: ACheck_Test_Fixture.marg_zero_mag
+ 4/36 Test  #4: ACheck_Test_Fixture.marg_zero_mag .......................  Passed
+      Start  5: ACheck_Test_Fixture.marg_zero_acc
+ 5/36 Test  #5: ACheck_Test_Fixture.marg_zero_acc .......................  Passed
+      Start  6: ACheck_Test_Fixture.imu_zero_gyro
+ 6/36 Test  #6: ACheck_Test_Fixture.imu_zero_gyro .......................  Passed
+      Start  7: ACheck_Test_Fixture.imu_zero_acc
+ 7/36 Test  #7: ACheck_Test_Fixture.imu_zero_acc ........................  Passed
+      Start  8: ACheck_Test_Fixture.set_quaternion
+ 8/36 Test  #8: ACheck_Test_Fixture.set_quaternion ......................  Passed
+      Start  9: ACheck_Test_Fixture.set_get_gain
+ 9/36 Test  #9: ACheck_Test_Fixture.set_get_gain ........................  Passed
+      Start 10: ACheck_Test_Fixture.get_initial_orientation_imu
+10/36 Test #10: ACheck_Test_Fixture.get_initial_orientation_imu .........  Passed
+      Start 11: ACheck_Test_Fixture.get_initial_orientation_marg
+11/36 Test #11: ACheck_Test_Fixture.get_initial_orientation_marg ........  Passed
+      Start 12: ACheck_Estimator_Test_Fixture.update_marg_with_intitial
+12/36 Test #12: ACheck_Estimator_Test_Fixture.update_marg_with_intitial .  Passed
+      Start 13: ACheck_Estimator_Test_Fixture.update_imu_with_intitial
+13/36 Test #13: ACheck_Estimator_Test_Fixture.update_imu_with_intitial ..  Passed
+      Start 14: quat_test_suite.invalid_init
+14/36 Test #14: quat_test_suite.invalid_init ............................  Passed
+      Start 15: quat_test_suite.conjugate_f
+15/36 Test #15: quat_test_suite.conjugate_f .............................  Passed
+      Start 16: quat_test_suite.conjugate_d
+16/36 Test #16: quat_test_suite.conjugate_d .............................  Passed
+      Start 17: quat_test_suite.product
+17/36 Test #17: quat_test_suite.product .................................  Passed
+      Start 18: quat_test_suite.norm_d
+18/36 Test #18: quat_test_suite.norm_d ..................................  Passed
+      Start 19: quat_test_suite.norm_f
+19/36 Test #19: quat_test_suite.norm_f ..................................  Passed
+      Start 20: quat_test_suite.scalar_f
+20/36 Test #20: quat_test_suite.scalar_f ................................  Passed
+      Start 21: quat_test_suite.add_f
+21/36 Test #21: quat_test_suite.add_f ...................................  Passed
+      Start 22: quat_test_suite.subtract_f
+22/36 Test #22: quat_test_suite.subtract_f ..............................  Passed
+      Start 23: quat_test_suite.subtract_equals_f
+23/36 Test #23: quat_test_suite.subtract_equals_f .......................  Passed
+      Start 24: quat_test_suite.set_f
+24/36 Test #24: quat_test_suite.set_f ...................................  Passed
+      Start 25: quat_test_suite.to_array
+25/36 Test #25: quat_test_suite.to_array ................................  Passed
+      Start 26: utilities_test_suite.euler_d
+26/36 Test #26: utilities_test_suite.euler_d ............................  Passed
+      Start 27: utilities_test_suite.euler_f
+27/36 Test #27: utilities_test_suite.euler_f ............................  Passed
+      Start 28: utilities_test_suite.euler1_f
+28/36 Test #28: utilities_test_suite.euler1_f ...........................  Passed
+      Start 29: utilities_test_suite.euler2_f
+29/36 Test #29: utilities_test_suite.euler2_f ...........................  Passed
+      Start 30: utilities_test_suite.rotm_d
+30/36 Test #30: utilities_test_suite.rotm_d .............................  Passed
+      Start 31: utilities_test_suite.rotm_f
+31/36 Test #31: utilities_test_suite.rotm_f .............................  Passed
+      Start 32: initializers_test_suite.acc_d
+32/36 Test #32: initializers_test_suite.acc_d ...........................  Passed
+      Start 33: initializers_test_suite.acc1_f
+33/36 Test #33: initializers_test_suite.acc1_f ..........................  Passed
+      Start 34: initializers_test_suite.acc2_f
+34/36 Test #34: initializers_test_suite.acc2_f ..........................  Passed
+      Start 35: initializers_test_suite.mag_d
+35/36 Test #35: initializers_test_suite.mag_d ...........................  Passed
+      Start 36: initializers_test_suite.mag1_f
+36/36 Test #36: initializers_test_suite.mag1_f ..........................  Passed
+
+100% tests passed, 0 tests failed out of 36
+\end{verbatim}
+\end{small}
+
 \section{Changes Due to Testing}
 
-\wss{This section should highlight how feedback from the users and from
-the supervisor (when one exists) shaped the final product.  In particular
-the feedback from the Rev 0 demo to the supervisor (or to potential users)
-should be highlighted.}
+Two bugs were caught when creating unit tests for the \progname{} module, they were arithmatic
+errors that were corrected on the spot. Furthermore, during this process 2 bugs were found in a
+popular open source repository. See:
+\begin{itemize}
+  \item \url{https://github.com/Mayitzin/ahrs/issues/111}
+  \item \url{https://github.com/Mayitzin/ahrs/issues/112}
+\end{itemize}
 
 \section{Automated Testing}
 
+The unit tests are setup to run automatically when a Pull Request is opened, and after any commit is
+made to the $\mathtt{main}$ branch. The
+\href{https://github.com/adrian-soch/attitude_check/blob/main/.github/workflows/ci.yaml}{GitHub
+workflow} runs the same command as the $\mathtt{build.sh}$ script that is used locally to build and
+run tests.
+
 \section{Trace to Requirements}
+
+Table \ref{tab:req_trace} shows the traceability between tests and requirements.
+\begin{table}[H]
+  \centering
+  \caption{Relation of Test Cases to Requirements.}
+  \vspace{2mm}
+  \label{tab:req_trace}
+  \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|}
+  \hline
+     & R1 & R2 & R3 & R4 & R5 & NFR1 & NFR2 & NFR3 & NFR4 & NFR5 \\ \hline
+  T1 & X  &    &    &    & X  &      &      &      &      &      \\ \hline
+  T2 & X  & X  & X  &    & X  & X    &      &      &      &      \\ \hline
+  T3 & X  & X  &    & X  & X  & X    &      &      &      &      \\ \hline
+  T4 &    &    &    &    &    & X    &      &      &      &      \\ \hline
+  T5 &    &    &    &    &    &      & X    &      &      &      \\ \hline
+  T6 &    &    &    &    &    &      &      & X    &      &      \\ \hline
+  T7 &    &    &    &    &    &      &      &      & X    &      \\ \hline
+  T8 &    &    &    &    &    &      &      &      &      & X    \\ \hline
+  \end{tabular}
+\end{table}
 
 \section{Trace to Modules}
 
+Table \ref{tab:mod_trace} shows the traceability between tests and modules.
+
+\begin{table}[H]
+  \centering
+  \caption{Relation of Test Cases to Modules.}
+  \vspace{2mm}
+  \label{tab:mod_trace}
+  \begin{tabular}{|l|l|l|l|l|l|l|l|}
+  \hline
+     & M0 & M1 & M2 & M3 & M4 & M5 & M6 \\ \hline
+  T1 &    &    &    &    &    & X  &    \\ \hline
+  T2 &    &    &    &    &    & X  &    \\ \hline
+  T3 &    &    &    &    &    & X  &    \\ \hline
+  T4 & X  & X  & X  & X  & X  & X  &    \\ \hline
+  T5 & X  & X  & X  & X  & X  & X  &    \\ \hline
+  T6 &    &    &    &    &    & X  & X  \\ \hline
+  T7 &    &    &    &    &    &    &    \\ \hline
+  T8 &    &    &    &    &    &    & X  \\ \hline
+  \end{tabular}
+  \end{table}
+
 \section{Code Coverage Metrics}
 
-\bibliographystyle{plainnat}
-\bibliography{../refs/References}
+The CI pipeline automatically uploads test coverage on the $\mathtt{main}$ branch here:
+\url{https://app.codecov.io/gh/adrian-soch/attitude_check/tree/main/src} (scroll to the bottom and
+click on individual files). Test coverage is 100\% for all 5 files.
 
-\newpage{}
-\section*{Appendix --- Reflection}
-
-The information in this section will be used to evaluate the team members on the
-graduate attribute of Reflection.  Please answer the following question:
-
-\begin{enumerate}
-  \item In what ways was the Verification and Validation (VnV) Plan different
-  from the activities that were actually conducted for VnV?  If there were
-  differences, what changes required the modification in the plan?  Why did
-  these changes occur?  Would you be able to anticipate these changes in future
-  projects?  If there weren't any differences, how was your team able to clearly
-  predict a feasible amount of effort and the right tasks needed to build the
-  evidence that demonstrates the required quality?  (It is expected that most
-  teams will have had to deviate from their original VnV Plan.)
-\end{enumerate}
+% \bibliographystyle{plainnat}
+% \bibliography{../refs/References}
 
 \end{document}
